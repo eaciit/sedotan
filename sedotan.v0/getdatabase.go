@@ -2,7 +2,7 @@ package sedotan
 
 import (
 	// "bytes"
-	"fmt"
+	// "fmt"
 	// "github.com/eaciit/cast"
 	"github.com/eaciit/dbox"
 	_ "github.com/eaciit/dbox/dbc/csv"
@@ -102,14 +102,8 @@ func (g *GetDatabase) ResultFromDatabase(dataSettingId string, out interface{}) 
 	}
 
 	if len(g.CollectionSettings[dataSettingId].FilterCond) > 0 {
-		fmt.Println("TEST 105")
-		// iQ.Where(dbox.Eq("1", "2"))
-		// iQ.Where(filterCondition(ds.FilterCond))
 		iQ.Where(g.CollectionSettings[dataSettingId].filterDbox)
 	}
-	//filter condition Not Yet Implemented
-	// b, e := g.CollectionSettings[dataSettingId].filterDbox.Build()
-	// fmt.Println("getdb line 151, error : ", e, "|| value : ", toolkit.JsonString(b))
 
 	csr, e := iQ.Cursor(nil)
 
@@ -121,19 +115,19 @@ func (g *GetDatabase) ResultFromDatabase(dataSettingId string, out interface{}) 
 	}
 	defer csr.Close()
 
-	ds, e := csr.Fetch(nil, 0, false)
+	results := make([]toolkit.M, 0)
+	e = csr.Fetch(&results, 0, false)
 	if e != nil {
 		return e
 	}
 
 	ms := []toolkit.M{}
-	for _, val := range ds.Data {
+	for _, val := range results {
 		m := toolkit.M{}
-		mval := val.(toolkit.M)
 		for _, column := range g.CollectionSettings[dataSettingId].SelectColumn {
 			m.Set(column.Alias, "")
-			if mval.Has(column.Selector) {
-				m.Set(column.Alias, mval[column.Selector])
+			if val.Has(column.Selector) {
+				m.Set(column.Alias, val[column.Selector])
 			}
 		}
 		ms = append(ms, m)

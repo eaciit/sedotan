@@ -166,14 +166,15 @@ func (a *ConfigurationController) GetData(k *knot.WebContext) interface{} {
 	e = c.Connect()
 	csr, e := c.NewQuery().Select("*").Cursor(nil)
 	fmt.Println(filename)
-	data, _ := csr.Fetch(nil, 0, false)
+	data := []tk.M{}
+	e = csr.Fetch(&data, 0, false)
 	if e != nil {
 		fmt.Println("Found : ", e)
 	}
 	if e != nil {
 		return e.Error()
 	} else {
-		return data.Data
+		return data
 	}
 }
 
