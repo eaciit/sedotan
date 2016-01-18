@@ -142,7 +142,7 @@ func Getquery(nameid string) ([]interface{}, error) {
 		return nil, e
 	}
 
-	result := make([]toolkit.M, 0)
+	result := make([]interface{}, 0)
 	e = csr.Fetch(&result, 0, false)
 	if e != nil {
 		return nil, e
