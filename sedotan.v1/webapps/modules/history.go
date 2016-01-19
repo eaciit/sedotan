@@ -55,31 +55,28 @@ func (h *HistoryModule) OpenHistory() interface{} {
 		return "Cursor not initialized"
 	}
 	defer csr.Close()
-
-	results := make([]toolkit.M, 0)
-	e = csr.Fetch(&results, 0, false)
+	ds := []toolkit.M{}
+	e = csr.Fetch(&ds, 0, false)
 	if e != nil {
 		return e.Error()
 	}
 
 	var history = []interface{}{} //toolkit.M{}
-	for i, v := range results {
-		/*fmt.Println("v>", v["grabdate"])
-		fmt.Println("i>", i)*/
+	for i, v := range ds {
 		// layout := "2006/01/02 15:04:05"
-		castDate, _ := time.Parse(time.RFC3339, v["grabdate"].(string))
+		castDate, _ := time.Parse(time.RFC3339, v.Get("grabdate").(string))
 		h.humanDate = cast.Date2String(castDate, "YYYY/MM/dd HH:mm:ss")
-		h.rowgrabbed, _ = strconv.ParseFloat(v["rowgrabbed"].(string), 64)
-		h.rowsaved, _ = strconv.ParseFloat(v["rowsaved"].(string), 64)
+		h.rowgrabbed, _ = strconv.ParseFloat(v.Get("rowgrabbed").(string), 64)
+		h.rowsaved, _ = strconv.ParseFloat(v.Get("rowsaved").(string), 64)
 
 		var addToMap = toolkit.M{}
 		addToMap.Set("id", i+1)
-		addToMap.Set("datasettingname", v["datasettingname"])
+		addToMap.Set("datasettingname", v.Get("datasettingname"))
 		addToMap.Set("grabdate", h.humanDate)
-		addToMap.Set("grabstatus", v["grabstatus"])
+		addToMap.Set("grabstatus", v.Get("grabstatus"))
 		addToMap.Set("rowgrabbed", h.rowgrabbed)
 		addToMap.Set("rowsaved", h.rowsaved)
-		addToMap.Set("notehistory", v["note"])
+		addToMap.Set("notehistory", v.Get("note"))
 		addToMap.Set("recfile", v.Get("recfile"))
 		addToMap.Set("nameid", h.nameid)
 
