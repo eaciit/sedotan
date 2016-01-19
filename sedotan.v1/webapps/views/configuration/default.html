@@ -48,10 +48,17 @@ iframe{
 .no-margin-bottom{
 	margin-bottom: 0px;
 }
+.full-width{
+	width: 100%;
+}
+#MainForm > .row{
+	margin-bottom: 5px;
+}
 </style>
 <h1>Configuration</h1><br/>
 <script type="text/javascript">
 	var WorkingDirectory = "{{.data_dir}}";
+	var LogDirectory = "{{.log_dir}}";
 	model.PageId("Configuration");
 	function ParameterBase(){
 		var self = this;
@@ -128,17 +135,23 @@ iframe{
 		Data:ko.observableArray([]),
 		isFormActive:ko.observable(false),
 		isURLSet:ko.observable(false),
-		// url:ko.observable("http://www.shfe.com.cn/en/products/Gold/"),
-		url:ko.observable("http://www.dce.com.cn/PublicWeb/MainServlet"),
+		sourcefile:ko.observable(""),
+		url:ko.observable("http://www.shfe.com.cn/en/products/Gold/"),
+		// url:ko.observable("http://www.dce.com.cn/PublicWeb/MainServlet"),
 		// url:ko.observable(""),
 		temp:ko.observable(""),
 		nameid:ko.observable(""),
 		calltype:ko.observable("GET"),
 		parameter:ko.observable(""),
 		grabconf:{
+			doctype:ko.observable(""),
+			connectioninfo:{
+				host:ko.observable(""),
+			},
 			data:ko.observable("")
 		},
 		sourcetype:ko.observable("SourceType_Http"),
+		datasource:ko.observable(""),
 		intervaltype:ko.observable("seconds"),
 		grabinterval:ko.observable(0),
 		timeoutinterval:ko.observable(0),
@@ -177,7 +190,8 @@ iframe{
 		valuetypeList:ko.observableArray(["string","float","integer","date"]),
 		calltypeList:ko.observableArray(["GET","POST"]),
 		intervalList:ko.observableArray(["seconds","minutes","hours"]),
-		sourcetypeList:ko.observableArray(["SourceType_Http"]),
+		sourcetypeList:ko.observableArray(["SourceType_Http","SourceType_Dbox"]),
+		dboxList:ko.observableArray(["xls","csv","json"]),
 		desttypeList:ko.observableArray(["csv","mongo"]),
 		useheaderList:ko.observableArray([true,false]),
 		// Process
@@ -192,6 +206,19 @@ iframe{
 		selectedItem:ko.observable(""),
 		ProcessingURL:ko.observable(false),
 	}
+	Config.ActionButton = ko.computed(function() {
+		var retvalue = "Get URL";
+		switch(Config.sourcetype()){
+			case "SourceType_Http" : 
+				retvalue = "Get URL";
+				break;
+			case "SourceType_Dbox" :
+				retvalue = "Get File Content";
+				break;
+			default:break;
+		}
+        return retvalue;
+    },Config);
 	var URLSource = "";
 </script>
 
@@ -206,79 +233,104 @@ iframe{
 		</div>
 	</div>
 	<div class="row"  data-bind="visible:isFormActive()">
-		<div class="col-md-7">
-			<div class="input-group">
-			  <span class="input-group-addon">Input URL</span>
-			  <input type="text" class="form-control" data-bind="value:url" id="inputURL">
-			</div>
-		</div>
-		<div class="col-md-2">
-			<div class="input-group">
-			  <span class="input-group-addon">Call Type</span>
-			  <input type="text" class="form-control" data-bind="kendoDropDownList:{value:calltype,data:calltypeList}" id="inputCallType" />
-			</div>
-		</div>
-		<div class="col-md-3">
-			<button class="btn btn-info" data-bind="click:GetURL,visible:!isEdit()">Get URL</button>
-			<button class="btn btn-danger" data-bind="click:Reset,visible:!isEdit()">Reset</button>
-			<button class="btn btn-primary" data-bind="click:Cancel">Cancel</button>
-		</div>
-	</div>
-	<br data-bind="visible:isFormActive()"/>
-	<div class="row" data-bind="visible:isFormActive()">
-		<!-- <div class="col-md-12" data-bind="visible:calltype()=='POST'">
-			<div class="input-group">
-			  <span class="input-group-addon">Parameter</span>
-			  <input type="text" class="form-control" data-bind="value:parameter" id="inputURL">
-			</div>
-		</div> -->
-		<div class="col-md-12" data-bind="visible:calltype()=='POST'">
+		<div class="col-md-12" id="MainForm">
 			<div class="row">
-				<label class="col-md-12">Parameter : </label>
+
+				<!-- SourceType_Dbox -->
+				<div class="col-md-3">
+					<div class="input-group input-group-sm">
+					  <span class="input-group-addon">Source Type</span>
+					  <input type="text" class="full-width" data-bind="kendoDropDownList:{value:sourcetype,data:sourcetypeList}" />
+					</div>
+				</div>
+				<div class="col-md-2" data-bind="visible:sourcetype()=='SourceType_Dbox'">
+					<div class="input-group input-group-sm">
+					  <span class="input-group-addon">Data Source</span>
+					  <input type="text" class="full-width" data-bind="kendoDropDownList:{value:datasource,data:dboxList}" />
+					</div>
+				</div>
+				<div class="col-md-5" data-bind="visible:sourcetype()=='SourceType_Dbox'">
+					<div class="input-group input-group-sm">
+					  <span class="input-group-addon">Filename</span>
+					  <input type="file" class="form-control" data-bind="value:sourcefile">
+					</div>
+				</div>
+
+
+
+				<!-- SourceType_Http -->
+				<div class="col-md-5" data-bind="visible:sourcetype()=='SourceType_Http'">
+					<div class="input-group input-group-sm">
+					  <span class="input-group-addon">Input URL</span>
+					  <input type="text" class="form-control" data-bind="value:url" id="inputURL">
+					</div>
+				</div>
+				<div class="col-md-2" data-bind="visible:sourcetype()=='SourceType_Http'">
+					<div class="input-group input-group-sm">
+					  <span class="input-group-addon">Call Type</span>
+					  <input type="text" class="full-width" data-bind="kendoDropDownList:{value:calltype,data:calltypeList}" id="inputCallType" />
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12" data-bind="visible:sourcetype()=='SourceType_Http'&&calltype()=='POST'">
+					<div class="row">
+						<label class="col-md-12">Parameter : </label>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th width="20%">Key</th>
+										<th>Value</th>
+										<th width="15%">Pattern</th>
+										<th width="20%">Format</th>
+										<th width="50px">&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach:parameterList">
+									<tr>
+										<td>
+											<input type="text" data-bind="value:key" class="form-control input-sm"/>
+										</td>
+										<td>
+											<input type="text" data-bind="value:value" class="form-control input-sm"/>
+										</td>
+										<td>
+											<input type="text" data-bind="kendoDropDownList:{value:pattern,data:$parent.patternList,dataTextField: 'Title', dataValueField: 'Id'}" class="form-control input-sm"/>
+										</td>
+										<td>
+											<input type="text" data-bind="value:format,attr:{disabled:pattern()==''?true:false}" class="form-control input-sm"/>
+										</td>
+										<td class="align-center">
+											<button class="btn btn-sm btn-default" data-bind="attr:{onclick:'Config.RemoveParameter('+$index()+')'}">
+												<span class="fa fa-trash"></span>
+											</button>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="align-right">
+								<button class="btn btn-xs btn-default" data-bind="click:Config.AddParameter">
+									<span class="fa fa-plus"></span> add parameter
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<table class="table table-bordered">
-						<thead>
-							<tr>
-								<th width="20%">Key</th>
-								<th>Value</th>
-								<th width="15%">Pattern</th>
-								<th width="20%">Format</th>
-								<th width="50px">&nbsp;</th>
-							</tr>
-						</thead>
-						<tbody data-bind="foreach:parameterList">
-							<tr>
-								<td>
-									<input type="text" data-bind="value:key" class="form-control input-sm"/>
-								</td>
-								<td>
-									<input type="text" data-bind="value:value" class="form-control input-sm"/>
-								</td>
-								<td>
-									<input type="text" data-bind="kendoDropDownList:{value:pattern,data:$parent.patternList,dataTextField: 'Title', dataValueField: 'Id'}" class="form-control input-sm"/>
-								</td>
-								<td>
-									<input type="text" data-bind="value:format,attr:{disabled:pattern()==''?true:false}" class="form-control input-sm"/>
-								</td>
-								<td class="align-center">
-									<button class="btn btn-sm btn-default" data-bind="attr:{onclick:'Config.RemoveParameter('+$index()+')'}">
-										<span class="fa fa-trash"></span>
-									</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<div class="align-right">
-						<button class="btn btn-xs btn-default" data-bind="click:Config.AddParameter">
-							<span class="fa fa-plus"></span> add parameter
-						</button>
-					</div>
+					<button class="btn btn-info btn-sm" data-bind="click:GetURL,visible:!isEdit(),text:ActionButton"></button>
+					<button class="btn btn-danger btn-sm" data-bind="click:Reset,visible:!isEdit()">Reset</button>
+					<button class="btn btn-primary btn-sm" data-bind="click:Cancel">Cancel</button>
 				</div>
 			</div>
 		</div>
 	</div>
+	<br data-bind="visible:isFormActive()"/>
+
 	<br/>
 	<div class="row"  data-bind="visible:isFormActive()">
 		<div class="col-md-4" id="sidebar" data-bind="visible:isURLSet()">
@@ -314,14 +366,6 @@ iframe{
 					</label>
 					<div class="col-md-7">
 						<input type="text" data-bind="value:nameid" class="form-control"/>
-					</div>
-				</div>
-				<div class="row">
-					<label class="col-md-5">
-						Source Type
-					</label>
-					<div class="col-md-7">
-						<input type="text" data-bind="kendoDropDownList:{value:sourcetype,data:sourcetypeList}" />
 					</div>
 				</div>
 				<div class="row">
@@ -783,10 +827,10 @@ iframe{
 	}
 	Config.GetURL = function(){
 		Config.ProcessingURL(true);
+		console.log(Config.isEdit());
 		if(!Config.isEdit()){
 			Config.nameid("");
 			Config.ProcessNumber(1);
-			Config.sourcetype("SourceType_Http");
 			Config.intervaltype("seconds");
 			Config.grabinterval(0);
 			Config.timeoutinterval(0);
@@ -803,17 +847,9 @@ iframe{
 			Config.datasettings.push(new BaseData());
 			Config.AddColumn(0);
 		}
+		var sourcetype = Config.sourcetype();
 
 		var parameter = {}
-		// if(Config.parameter()!==""){
-		// 	parameter = JSON.parse(Config.parameter());
-		// 	for(var i in parameter){
-		// 		var type = typeof parameter[i];
-		// 		if(type!=="object"){
-		// 			parameter[i] = parameter[i].toString();
-		// 		}
-		// 	}
-		// }
 		var parameterList = Config.parameterList();
 		if(parameterList.length>0){
 			for(var p in parameterList){
@@ -824,7 +860,7 @@ iframe{
 				}
 			}
 		}
-		
+
 		var url = "{{BaseUrl}}configuration/geturl";
 		var parm = {
 			URL:Config.url(),
@@ -834,15 +870,8 @@ iframe{
 		ajaxPost(url,parm,function(res){
 			Config.ProcessingURL(false);
 			var BaseUrl = Config.url().substr(0,Config.url().substr(Config.url().indexOf("www")).indexOf("/")+Config.url().indexOf("www")+1);
-
-			// var findcss = new RegExp("href=\"/", 'g');
-			// var findjs = new RegExp("src=\"/", 'g');
-			// res = res.replace(findcss,"href=\""+BaseUrl);
-			// res = res.replace(findjs,"src=\""+BaseUrl);
 			var find = new RegExp("=\"/", 'g');
 			res = res.replace(find,"=\""+BaseUrl);
-			
-
 			var doc = document.getElementById('URLPreview').contentWindow.document;
 			doc.open();
 			doc.write(res);
@@ -852,7 +881,6 @@ iframe{
 			var body = res.substr(startofbody,endofbody-startofbody);
 			startofbody = body.indexOf(">");
 			body = body.substr(startofbody+1);
-			// console.log()
 			URLSource = $.parseHTML(body)
 			$("#sourceCodeWrapper").html("");
 			$(URLSource).each(function(i,e){
@@ -860,9 +888,6 @@ iframe{
 			 	linenumber = Config.GetElement($(this),0,0,0,"body");
 			 }
 			})
-			// $("#sourceCodeWrapper").text(body);
-			// $("#cssCodeWrapper").html("p { color: red }");
-	        // alert("Configuration succesfully saved");
 	    },
 	    function(err){
 	        alert(err.responseText)
@@ -958,6 +983,7 @@ iframe{
 		delete data["operatorList"]
 		delete data["calltypeList"]
 		delete data["intervalList"]
+		delete data["dboxList"]
 		delete data["sourcetypeList"]
 		delete data["desttypeList"]
 		delete data["useheaderList"]
@@ -970,34 +996,62 @@ iframe{
 		delete data["selectingWhat"]
 		delete data["selectedItem"]
 		delete data["ProcessingURL"]
+		delete data["ActionButton"]
 		
-		if(data.calltype()=="GET"){
-			delete data["parameter"]
-			delete data["grabconf"]
-		}else{
-			var parameter = {}
-			var parameterList = Config.parameterList();
-			if(parameterList.length>0){
-				for(var p in parameterList){
-					var key = parameterList[p].key();
-					var value = parameterList[p].value();
-					var pattern = parameterList[p].pattern();
-					var format = parameterList[p].format();
-					if(key.trim()!==""&&value.trim()!==""){
-						if(pattern!==""){
-							parameter[key] = "Date2String("+pattern+",'"+format+"')"
-						}else{
-							parameter[key] = value.toString();
+		// Deleting Data Base on sourcetype condition
+		switch(data.sourcetype()){
+			case "SourceType_Http":
+				if(data.calltype()=="GET"){
+					delete data["parameter"]
+					delete data["grabconf"]
+				}else{
+					var parameter = {}
+					var parameterList = Config.parameterList();
+					if(parameterList.length>0){
+						for(var p in parameterList){
+							var key = parameterList[p].key();
+							var value = parameterList[p].value();
+							var pattern = parameterList[p].pattern();
+							var format = parameterList[p].format();
+							if(key.trim()!==""&&value.trim()!==""){
+								if(pattern!==""){
+									parameter[key] = "Date2String("+pattern+",'"+format+"')"
+								}else{
+									parameter[key] = value.toString();
+								}
+							}
 						}
 					}
+					data.temp({parameter:parameterList});
+					data.grabconf.data = parameter;
+					delete data.grabconf["doctype"]
+					delete data.grabconf["connectioninfo"]
+					delete data["parameter"]
 				}
-			}
-			data.temp({parameter:parameterList});
-			// data.grabconf.data = JSON.parse(data.parameter());
-			data.grabconf.data = parameter;
-
-			delete data["parameter"]
+				delete data["sourcefile"]
+				delete data["datasource"]
+				break;
+			case "SourceType_Dbox":
+				var doctype = data.datasource();
+				data.grabconf.doctype(doctype);
+				data.grabconf.connectioninfo.host("sourcefile")
+				delete data.grabconf["data"]
+				delete data["parameter"]
+				delete data["sourcefile"]
+				delete data["doctype"]
+				delete data["connectioninfo"]
+				delete data["datasource"]
+				break;
+			default:
+				delete data["parameter"]
+				delete data["grabconf"]
+				delete data["sourcefile"]
+				delete data["doctype"]
+				delete data["connectioninfo"]
+				delete data["datasource"]
+				break;
 		}
+		
 		
 		for(var i in data.datasettings()){
 			switch(data.datasettings()[i].desttype()){
@@ -1046,10 +1100,11 @@ iframe{
 				delete data.datasettings()[i]["conditionlist"]
 			}
 		}
-
+		// console.log(data);
+		// return false;
 		var filename = Config.url().substr((Config.url().indexOf("www.")+4));
 		filename = filename.substr(0,filename.indexOf(".")).toUpperCase();
-		data.logconf.logpath("data/Log/"+filename+"/");
+		data.logconf.logpath(LogDirectory);
 		data.logconf.filename("LOG-"+filename);
 		var url = "{{BaseUrl}}configuration/save";
 		var parm = {

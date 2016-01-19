@@ -1,3 +1,12 @@
+<style>
+#widthviewDataResult{
+    height: 1px;
+}
+.grab-stat{
+    margin: 0px;
+    padding: 2px;
+}
+</style>
 <h1>Dashboard</h1>
 <br />
 <script type="text/javascript">
@@ -15,6 +24,9 @@ var ViewData = {
     selectedNameID:ko.observable(""),
 }
 </script>
+<div class="row">
+    <div id="widthviewDataResult" class="col-md-10">&nbsp;</div>
+</div>
 <div id="viewDataResult">
     <div data-bind="visible:ViewData.Processing()" class="align-center">
         <h4>Please wait while processing your request</h4>
@@ -169,15 +181,25 @@ var commonSettings = {
     {field: "nameid",title: "NAME ID",width: 100}, 
     {field: "url",title: "SOURCE",}, 
     {field: "grabinterval",title: "INTERVAL",filterable: false, width: 85}, 
-    {field: "lastGrab",title: "LAST GRAB",filterable: {
-        ui: "datetimepicker"
-    },title: "START",format: "{0:yyyy/MM/dd HH:mm tt}",width: 120}, 
-    {field: "nextGrab",title: "NEXT GRAB",filterable: {
-        ui: "datetimepicker"
-    },title: "START",format: "{0:yyyy/MM/dd HH:mm tt}",width: 120}, 
-    {field: "grabStat",title: "GRAB STAT",filterable: false, width: 70}, 
+    {
+        field: "lastGrab",title: "LAST GRAB",
+        filterable: {ui: "datetimepicker"},
+        format: "{0:yyyy/MM/dd HH:mm tt}",
+        width: 125
+    }, 
+    {
+        field: "nextGrab",title: "NEXT GRAB",
+        filterable: {
+            ui: "datetimepicker"
+        },
+        format: "{0:yyyy/MM/dd HH:mm tt}",width: 125
+    }, 
+    {
+        field: "grabStat",title: "GRAB STAT",filterable: false, width: 120,attributes:{ class:"align-center" },
+        template:"#if(grabStat){#<div class='alert alert-success grab-stat'><span class='fa fa-check'></span> SUCCESS</div>#}else{#<div class='alert alert-danger grab-stat'><span class='fa fa-minus'></span> FAILED</div>#}#"
+    }, 
     {field: "note",title: "NOTE", encoded: false, filterable: false}, 
-    {field: "history",title: "History",width:80,attributes:{ class:"align-center" },template:"<button class='btn btn-default' onclick='Config.History(\"#:nameid#\")'><span>History</span></button>", filterable: false}
+    {field: "history",title: "&nbsp;",width:80,attributes:{ class:"align-center" },template:"<button class='btn btn-default' onclick='Config.History(\"#:nameid#\")'><span>History</span></button>", filterable: false}
     ]
 }
 
@@ -407,7 +429,7 @@ Config.History = function(nameid){
                 dataBound: onHistoryDataBound,
                 pageable: {pageSizes: true},
                 columns: [
-                {field: "id",title: "ID", filterable: false, width: 50}, 
+                {field: "id",title: "ID", filterable: false, width: 50,attributes:{class:"align-center"}}, 
                 {field: "grabstatus",title: "STATUS", attributes:{ class:"align-center" }, template: kendo.template($("#status-history-template").html()), filterable: false, width: 60},
                 {field: "datasettingname",title: "DATA NAME"}, 
                 {field: "grabdate",filterable: {
@@ -441,7 +463,8 @@ ViewData.Prepare = function(datasettingname){
         var field = columnsettings[i].alias.replace(/ /g, "_");
         var s = {
             field:field,
-            title:columnsettings[i].alias
+            title:columnsettings[i].alias,
+            width:100
         }
         series.push(s);
     }
@@ -473,12 +496,13 @@ Config.ViewData = function(datasettingname,id){
         obj.data("kendoWindow").open();
         obj.data("kendoWindow").center();
     }else{
+        var width = $("#widthviewDataResult").width();
         obj.kendoWindow({
             title: "View Data",
             actions: [ "Maximize","Close" ],
             modal: true,
             resizable: true,
-            width: 600,
+            width: width,
             heigt:350,
         });
         obj.data("kendoWindow").center();

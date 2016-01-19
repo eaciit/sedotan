@@ -29,6 +29,7 @@ func (a *ConfigurationController) Default(k *knot.WebContext) interface{} {
 	d, _ := os.Getwd()
 	d = strings.Replace(d, "\\cli", "", -1)
 	data.Set("data_dir", d+"\\data\\Output\\")
+	data.Set("log_dir", d+"\\data\\Log\\")
 	return data
 }
 
@@ -165,7 +166,6 @@ func (a *ConfigurationController) GetData(k *knot.WebContext) interface{} {
 	defer c.Close()
 	e = c.Connect()
 	csr, e := c.NewQuery().Select("*").Cursor(nil)
-	fmt.Println(filename)
 	data := []tk.M{}
 	e = csr.Fetch(&data, 0, false)
 	if e != nil {
