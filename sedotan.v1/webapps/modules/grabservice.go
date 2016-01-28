@@ -87,8 +87,8 @@ func GrabHtmlConfig(data toolkit.M) (*sdt.GrabService, error) {
 
 	xGrabService.SourceType = sdt.SourceType_HttpHtml
 
-	grabintervalToInt := toolkit.ToInt(data["grabinterval"])
-	timeintervalToInt := toolkit.ToInt(data["timeoutinterval"])
+	grabintervalToInt := toolkit.ToInt(data["grabinterval"], toolkit.RoundingAuto)
+	timeintervalToInt := toolkit.ToInt(data["timeoutinterval"], toolkit.RoundingAuto)
 	if data["intervaltype"].(string) == "seconds" {
 		gi = time.Duration(grabintervalToInt) * time.Second
 		ti = time.Duration(timeintervalToInt) * time.Second
@@ -116,7 +116,7 @@ func GrabHtmlConfig(data toolkit.M) (*sdt.GrabService, error) {
 			}
 			for key, subGrabDataConf := range grabDataConf {
 				if reflect.ValueOf(subGrabDataConf).Kind() == reflect.Float64 {
-					i := toolkit.ToInt(subGrabDataConf)
+					i := toolkit.ToInt(subGrabDataConf, toolkit.RoundingAuto)
 					toString := strconv.Itoa(i)
 					dataurl[key] = toString
 				} else {
@@ -180,7 +180,7 @@ func GrabHtmlConfig(data toolkit.M) (*sdt.GrabService, error) {
 			if e != nil {
 				return nil, e
 			}
-			i := toolkit.ToInt(columnToMap["index"])
+			i := toolkit.ToInt(columnToMap["index"], toolkit.RoundingAuto)
 			tempDataSetting.Column(i, &sdt.GrabColumn{Alias: columnToMap["alias"].(string), Selector: columnToMap["selector"].(string)})
 		}
 
@@ -297,8 +297,8 @@ func GrabDocConfig(data toolkit.M) (*sdt.GrabService, error) {
 	GrabService.Name = data["nameid"].(string) //"iopriceindices"
 	GrabService.SourceType = sdt.SourceType_DocExcel
 
-	grabintervalToInt := toolkit.ToInt(data["grabinterval"])
-	timeintervalToInt := toolkit.ToInt(data["timeoutinterval"])
+	grabintervalToInt := toolkit.ToInt(data["grabinterval"], toolkit.RoundingAuto)
+	timeintervalToInt := toolkit.ToInt(data["timeoutinterval"], toolkit.RoundingAuto)
 	if data["intervaltype"].(string) == "seconds" {
 		gi = time.Duration(grabintervalToInt) * time.Second
 		ti = time.Duration(timeintervalToInt) * time.Second

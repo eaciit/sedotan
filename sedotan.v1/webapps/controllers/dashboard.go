@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	filename = wd + "data\\Config\\config_backup.json"
+	filename = wd + "data\\Config\\config.json"
 )
 
 type DashboardController struct {
@@ -57,7 +57,8 @@ func (a *DashboardController) Griddashboard(k *knot.WebContext) interface{} {
 	csr, e := c.NewQuery().Select("nameid", "url", "grabinterval", "intervaltype", "datasettings").Cursor(nil)
 	defer csr.Close()
 
-	result := make([]toolkit.M, 0)
+	// result := make([]toolkit.M, 0)
+	result := []toolkit.M{}
 	e = csr.Fetch(&result, 0, false)
 	if e != nil {
 		return e
@@ -76,8 +77,8 @@ func (a *DashboardController) Startservice(k *knot.WebContext) interface{} {
 	if e != nil {
 		return e.Error()
 	}
-
 	ds, _ := Getquery(t.NameId)
+	// fmt.Println(ds)
 	er, isRun := modules.Process(ds)
 	if er != nil {
 		return er.Error()
@@ -116,7 +117,6 @@ func (a *DashboardController) Stat(k *knot.WebContext) interface{} {
 	if e != nil {
 		return e.Error()
 	}
-
 	ds, _ := Getquery(t.NameId)
 	gs := modules.NewGrabService()
 	grabStatus := gs.CheckStat(ds)
@@ -136,16 +136,19 @@ func Getquery(nameid string) ([]interface{}, error) {
 		return nil, e
 	}
 	defer c.Close()
-
 	csr, e := c.NewQuery().Where(dbox.Eq("nameid", nameid)).Cursor(nil)
 	if e != nil {
 		return nil, e
 	}
 
-	result := make([]toolkit.M, 0)
-	e = csr.Fetch(&result, 0, false)
+	result := []interface{}{}
+	data := []toolkit.M{}
+	e = csr.Fetch(&data, 0, false)
 	if e != nil {
 		return nil, e
+	}
+	for _, v := range data {
+		result = append(result, v)
 	}
 	return result, nil
 }
