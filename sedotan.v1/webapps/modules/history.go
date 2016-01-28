@@ -8,7 +8,7 @@ import (
 	_ "github.com/eaciit/dbox/dbc/csv"
 	"github.com/eaciit/toolkit"
 	"os"
-	"strconv"
+	// "strconv"
 	"strings"
 	"time"
 )
@@ -66,8 +66,8 @@ func (h *HistoryModule) OpenHistory() interface{} {
 		// layout := "2006/01/02 15:04:05"
 		castDate, _ := time.Parse(time.RFC3339, v.Get("grabdate").(string))
 		h.humanDate = cast.Date2String(castDate, "YYYY/MM/dd HH:mm:ss")
-		h.rowgrabbed, _ = strconv.ParseFloat(v.Get("rowgrabbed").(string), 64)
-		h.rowsaved, _ = strconv.ParseFloat(v.Get("rowsaved").(string), 64)
+		h.rowgrabbed = toolkit.ToFloat64(v.Get("rowgrabbed"), 2, toolkit.RoundingAuto) //strconv.ParseFloat(v.Get("rowgrabbed").(string), 64)
+		h.rowsaved = toolkit.ToFloat64(v.Get("rowsaved"), 2, toolkit.RoundingAuto)     //strconv.ParseFloat(v.Get("rowsaved").(string), 64)
 
 		var addToMap = toolkit.M{}
 		addToMap.Set("id", i+1)
