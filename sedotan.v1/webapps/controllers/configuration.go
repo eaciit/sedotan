@@ -27,9 +27,9 @@ func (a *ConfigurationController) Default(k *knot.WebContext) interface{} {
 	k.Config.OutputType = knot.OutputTemplate
 	data := tk.M{}
 	d, _ := os.Getwd()
-	d = strings.Replace(d, "\\cli", "", -1)
-	data.Set("data_dir", d+"\\data\\Output\\")
-	data.Set("log_dir", d+"\\data\\Log\\")
+	d = strings.Replace(d, "/cli", "", -1)
+	data.Set("data_dir", d+"/data/Output/")
+	data.Set("log_dir", d+"/data/Log/")
 	return data
 }
 
@@ -69,7 +69,7 @@ func (a *ConfigurationController) Save(k *knot.WebContext) interface{} {
 		fmt.Println("Found : ", e)
 	}
 
-	filename = wd + "data\\Config\\config.json"
+	filename = wd + "data/Config/config.json"
 	ci := &dbox.ConnectionInfo{filename, "", "", "", nil}
 	c, e := dbox.NewConnection("json", ci)
 	defer c.Close()
@@ -100,7 +100,7 @@ func (a *ConfigurationController) Delete(k *knot.WebContext) interface{} {
 	e := k.GetPayload(&d)
 	k.Config.OutputType = knot.OutputJson
 
-	filename = wd + "data\\Config\\config.json"
+	filename = wd + "data/Config/config.json"
 	ci := &dbox.ConnectionInfo{filename, "", "", "", nil}
 	c, e := dbox.NewConnection("json", ci)
 	defer c.Close()
@@ -132,7 +132,7 @@ func (a *ConfigurationController) TestingDBOX(k *knot.WebContext) interface{} {
 	dataurl["Submit"] = "Go"
 	dataurl["action"] = "Pu00231_result"
 
-	filename := wd + "data\\temp.json"
+	filename := wd + "data/temp.json"
 	// filename = "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\cli/../data\\temp.json"
 	// filename = filename[0:len(filename)-3] +
 	// filename = "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\temp.json"
@@ -160,7 +160,7 @@ func (a *ConfigurationController) TestingDBOX(k *knot.WebContext) interface{} {
 func (a *ConfigurationController) GetData(k *knot.WebContext) interface{} {
 	k.Config.OutputType = knot.OutputJson
 
-	filename := wd + "data\\Config\\config.json"
+	filename := wd + "data/Config/config.json"
 	ci := &dbox.ConnectionInfo{filename, "", "", "", nil}
 	c, e := dbox.NewConnection("json", ci)
 	defer c.Close()

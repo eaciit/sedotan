@@ -1,77 +1,5 @@
 [
   {
-    "calltype": "GET",
-    "datasettings": [
-      {
-        "columnsettings": [
-          {
-            "alias": "Code",
-            "index": 0,
-            "selector": "td:nth-child(1)"
-          },
-          {
-            "alias": "ListingDate",
-            "index": 0,
-            "selector": "td:nth-child(2)"
-          },
-          {
-            "alias": "ExpirationDate",
-            "index": 0,
-            "selector": "td:nth-child(3)"
-          }
-        ],
-        "connectioninfo": {
-          "collection": "shfegold",
-          "database": "valegrab",
-          "host": "localhost:27017"
-        },
-        "desttype": "mongo",
-        "name": "GoldTab01",
-        "rowselector": "#tab_conbox li:nth-child(1) .sjtable .listshuju tbody tr"
-      },
-      {
-        "columnsettings": [
-          {
-            "alias": "Code",
-            "index": 0,
-            "selector": "td:nth-child(1)"
-          },
-          {
-            "alias": "LongSpeculation",
-            "index": 0,
-            "selector": "td:nth-child(2)"
-          },
-          {
-            "alias": "ShortSpeculation",
-            "index": 0,
-            "selector": "td:nth-child(3)"
-          }
-        ],
-        "connectioninfo": {
-          "host": ":D:\\testing\\data\\vale\\Data_Grab.csv",
-          "settings": {
-            "delimiter": ",",
-            "useheader": true
-          }
-        },
-        "desttype": "csv",
-        "name": "GoldTab02",
-        "rowselector": "#tab_conbox li:nth-child(2) .sjtable .listshuju tbody tr"
-      }
-    ],
-    "grabinterval": 20,
-    "intervaltype": "seconds",
-    "logconf": {
-      "filename": "LOG-GRABSHFE",
-      "filepattern": "20060102",
-      "logpath": "D:\\testing\\data\\vale\\log"
-    },
-    "nameid": "goldshfecom",
-    "sourcetype": "SourceType_Http",
-    "timeoutinterval": 5,
-    "url": "http://www.shfe.com.cn/en/products/Gold/"
-  },
-  {
     "calltype": "POST",
     "datasettings": [
       {
@@ -167,7 +95,7 @@
     ],
     "grabconf": {
       "data": {
-        "Pu00231_Input.trade_date": 20151214,
+        "Pu00231_Input.trade_date": 2.0151214e+07,
         "Pu00231_Input.trade_type": 0,
         "Pu00231_Input.variety": "i",
         "Submit": "Go",
@@ -337,5 +265,86 @@
     },
     "timeoutinterval": 5,
     "url": "http://www.dce.com.cn/PublicWeb/MainServlet"
+  },
+  {
+    "calltype": "GET",
+    "datasettings": [
+      {
+        "columnsettings": [
+          {
+            "alias": "Code",
+            "index": 0,
+            "selector": "td:nth-child(1)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "ListingDate",
+            "index": 0,
+            "selector": "td:nth-child(2)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "ExpirationDate",
+            "index": 0,
+            "selector": "td:nth-child(3)",
+            "valuetype": "string"
+          }
+        ],
+        "connectioninfo": {
+          "host": "/Users/arfianbagus/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/localhost:27017.csv",
+          "settings": {
+            "delimiter": ",",
+            "useheader": true
+          }
+        },
+        "desttype": "csv",
+        "name": "GoldTab01",
+        "rowselector": "#tab_conbox li:nth-child(1) .sjtable .listshuju tbody tr"
+      },
+      {
+        "columnsettings": [
+          {
+            "alias": "Code",
+            "index": 0,
+            "selector": "td:nth-child(1)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "LongSpeculation",
+            "index": 0,
+            "selector": "td:nth-child(2)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "ShortSpeculation",
+            "index": 0,
+            "selector": "td:nth-child(3)",
+            "valuetype": "string"
+          }
+        ],
+        "connectioninfo": {
+          "host": "/Users/arfianbagus/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/\\data\\vale\\Data_Grab.csv",
+          "settings": {
+            "delimiter": ",",
+            "useheader": true
+          }
+        },
+        "desttype": "csv",
+        "name": "GoldTab02",
+        "rowselector": "#tab_conbox li:nth-child(2) .sjtable .listshuju tbody tr"
+      }
+    ],
+    "grabinterval": 20,
+    "intervaltype": "seconds",
+    "logconf": {
+      "filename": "LOG-SHFE",
+      "filepattern": "20060102",
+      "logpath": "/Users/arfianbagus/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Log/"
+    },
+    "nameid": "goldshfecom",
+    "sourcetype": "SourceType_Http",
+    "temp": "",
+    "timeoutinterval": 5,
+    "url": "http://www.shfe.com.cn/en/products/Gold/"
   }
 ]
