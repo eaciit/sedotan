@@ -8,6 +8,7 @@ import (
 	_ "github.com/eaciit/dbox/dbc/csv"
 	"github.com/eaciit/toolkit"
 	"os"
+	f "path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -20,7 +21,7 @@ type HistoryModule struct {
 }
 
 var (
-	filepath = wd + "data\\History\\"
+	filepath = wd + f.Join("data", "History") + string(os.PathSeparator)
 )
 
 func NewHistory(nameid string) *HistoryModule {
@@ -35,6 +36,7 @@ func NewHistory(nameid string) *HistoryModule {
 
 func (h *HistoryModule) OpenHistory() interface{} {
 	var config = map[string]interface{}{"useheader": true, "delimiter": ",", "dateformat": "MM-dd-YYYY"}
+	fmt.Println("======", h.filepathName)
 	ci := &dbox.ConnectionInfo{h.filepathName, "", "", "", config}
 	c, e := dbox.NewConnection("csv", ci)
 	if e != nil {
@@ -64,7 +66,11 @@ func (h *HistoryModule) OpenHistory() interface{} {
 	var history = []interface{}{} //toolkit.M{}
 	for i, v := range ds {
 		// layout := "2006/01/02 15:04:05"
-		castDate, _ := time.Parse(time.RFC3339, v.Get("grabdate").(string))
+		castDate := time.Now()
+		if v.Has("grabdata") {
+			castDate, _ = time.Parse(time.RFC3339, v.Get("grabdate").(string))
+		}
+
 		h.humanDate = cast.Date2String(castDate, "YYYY/MM/dd HH:mm:ss")
 		h.rowgrabbed, _ = strconv.ParseFloat(v.Get("rowgrabbed").(string), 64)
 		h.rowsaved, _ = strconv.ParseFloat(v.Get("rowsaved").(string), 64)
@@ -90,9 +96,11 @@ func (h *HistoryModule) GetLog(datas []interface{}, date string) interface{} {
 	for _, v := range datas {
 		vMap, _ := toolkit.ToM(v)
 
+		logConf := vMap["logconf"].(map[string]interface{})
 		dateNow := time.Now()
-		dateNowFormat := dateNow.Format(vMap["logconf"].(map[string]interface{})["filepattern"].(string))
-		h.logPath = fmt.Sprintf("%s\\%s-%s", vMap["logconf"].(map[string]interface{})["logpath"], vMap["logconf"].(map[string]interface{})["filename"], dateNowFormat)
+		dateNowFormat := dateNow.Format(logConf["filepattern"].(string))
+		fileName := fmt.Sprintf("%s-%s", logConf["filename"], dateNowFormat)
+		h.logPath = f.Join(logConf["logpath"].(string), fileName)
 	}
 
 	file, err := os.Open(h.logPath)
