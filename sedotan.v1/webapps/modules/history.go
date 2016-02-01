@@ -20,15 +20,11 @@ type HistoryModule struct {
 	rowgrabbed, rowsaved          float64
 }
 
-var (
-	filepath = wd + f.Join("data", "History") + string(os.PathSeparator)
-)
-
 func NewHistory(nameid string) *HistoryModule {
 	h := new(HistoryModule)
 
 	dateNow := cast.Date2String(time.Now(), "YYYYMM") //time.Now()
-	path := filepath + nameid + "-" + dateNow + ".csv"
+	path := HistoryPath + nameid + "-" + dateNow + ".csv"
 	h.filepathName = path
 	h.nameid = nameid
 	return h
@@ -36,7 +32,7 @@ func NewHistory(nameid string) *HistoryModule {
 
 func (h *HistoryModule) OpenHistory() interface{} {
 	var config = map[string]interface{}{"useheader": true, "delimiter": ",", "dateformat": "MM-dd-YYYY"}
-	fmt.Println("======", h.filepathName)
+
 	ci := &dbox.ConnectionInfo{h.filepathName, "", "", "", config}
 	c, e := dbox.NewConnection("csv", ci)
 	if e != nil {

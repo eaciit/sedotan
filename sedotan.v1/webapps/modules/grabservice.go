@@ -29,14 +29,10 @@ type StatService struct {
 }
 
 var (
-	wd = func() string {
-		d, _ := os.Getwd()
-		return d + "/../"
-	}()
+	wd = func(dir string, err error) string { return dir + "/../" }(os.Getwd())
 
-	filename       = wd + f.Join("data", "Config", "config_backup.json")
-	historyPath    = wd + f.Join("data", "history") + string(os.PathSeparator)
-	historyRecPath = wd + f.Join("data", "HistoryRec") + string(os.PathSeparator)
+	HistoryPath    = wd + f.Join("data", "History") + string(os.PathSeparator)
+	HistoryRecPath = wd + f.Join("data", "HistoryRec") + string(os.PathSeparator)
 	grabs          *sdt.GrabService
 	grabber        *sdt.Grabber
 )
@@ -282,8 +278,8 @@ func GrabHtmlConfig(data toolkit.M) (*sdt.GrabService, error) {
 		xGrabService.DestDbox[dataToMap["name"].(string)] = &tempDestInfo
 
 		//=History===========================================================
-		xGrabService.HistoryPath = historyPath       //"E:\\data\\vale\\history\\"
-		xGrabService.HistoryRecPath = historyRecPath //"E:\\data\\vale\\historyrec\\"
+		xGrabService.HistoryPath = HistoryPath       //"E:\\data\\vale\\history\\"
+		xGrabService.HistoryRecPath = HistoryRecPath //"E:\\data\\vale\\historyrec\\"
 		//===================================================================
 	}
 
@@ -419,8 +415,8 @@ func GrabDocConfig(data toolkit.M) (*sdt.GrabService, error) {
 
 		GrabService.DestDbox[dataToMap["name"].(string)] = &tempDestInfo
 		//=History===========================================================
-		GrabService.HistoryPath = historyPath       //"E:\\data\\vale\\history\\"
-		GrabService.HistoryRecPath = historyRecPath //"E:\\data\\vale\\historyrec\\"
+		GrabService.HistoryPath = HistoryPath       //"E:\\data\\vale\\history\\"
+		GrabService.HistoryRecPath = HistoryRecPath //"E:\\data\\vale\\historyrec\\"
 		//===================================================================
 	}
 
