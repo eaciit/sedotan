@@ -11,6 +11,7 @@ import (
 	sdt "github.com/eaciit/sedotan/sedotan.v1"
 	"github.com/eaciit/toolkit"
 	"os"
+	f "path/filepath"
 	"reflect"
 	"strconv"
 	// "strings"
@@ -33,9 +34,9 @@ var (
 		return d + "/../"
 	}()
 
-	filename       = wd + "data\\Config\\config_backup.json"
-	historyPath    = wd + "data\\history\\"
-	historyRecPath = wd + "data\\HistoryRec\\"
+	filename       = wd + f.Join("data", "Config", "config_backup.json")
+	historyPath    = wd + f.Join("data", "history") + string(os.PathSeparator)
+	historyRecPath = wd + f.Join("data", "HistoryRec") + string(os.PathSeparator)
 	grabs          *sdt.GrabService
 	grabber        *sdt.Grabber
 )
@@ -87,8 +88,8 @@ func GrabHtmlConfig(data toolkit.M) (*sdt.GrabService, error) {
 
 	xGrabService.SourceType = sdt.SourceType_HttpHtml
 
-	grabintervalToInt := toolkit.ToInt(data["grabinterval"], "10")
-	timeintervalToInt := toolkit.ToInt(data["timeoutinterval"], "10")
+	grabintervalToInt := toolkit.ToInt(data["grabinterval"], toolkit.RoundingAuto)
+	timeintervalToInt := toolkit.ToInt(data["timeoutinterval"], toolkit.RoundingAuto)
 	if data["intervaltype"].(string) == "seconds" {
 		gi = time.Duration(grabintervalToInt) * time.Second
 		ti = time.Duration(timeintervalToInt) * time.Second
@@ -116,7 +117,7 @@ func GrabHtmlConfig(data toolkit.M) (*sdt.GrabService, error) {
 			}
 			for key, subGrabDataConf := range grabDataConf {
 				if reflect.ValueOf(subGrabDataConf).Kind() == reflect.Float64 {
-					i := toolkit.ToInt(subGrabDataConf, "10")
+					i := toolkit.ToInt(subGrabDataConf, toolkit.RoundingAuto)
 					toString := strconv.Itoa(i)
 					dataurl[key] = toString
 				} else {
@@ -180,7 +181,7 @@ func GrabHtmlConfig(data toolkit.M) (*sdt.GrabService, error) {
 			if e != nil {
 				return nil, e
 			}
-			i := toolkit.ToInt(columnToMap["index"], "10")
+			i := toolkit.ToInt(columnToMap["index"], toolkit.RoundingAuto)
 			tempDataSetting.Column(i, &sdt.GrabColumn{Alias: columnToMap["alias"].(string), Selector: columnToMap["selector"].(string)})
 		}
 
@@ -297,8 +298,8 @@ func GrabDocConfig(data toolkit.M) (*sdt.GrabService, error) {
 	GrabService.Name = data["nameid"].(string) //"iopriceindices"
 	GrabService.SourceType = sdt.SourceType_DocExcel
 
-	grabintervalToInt := toolkit.ToInt(data["grabinterval"], "10")
-	timeintervalToInt := toolkit.ToInt(data["timeoutinterval"], "10")
+	grabintervalToInt := toolkit.ToInt(data["grabinterval"], toolkit.RoundingAuto)
+	timeintervalToInt := toolkit.ToInt(data["timeoutinterval"], toolkit.RoundingAuto)
 	if data["intervaltype"].(string) == "seconds" {
 		gi = time.Duration(grabintervalToInt) * time.Second
 		ti = time.Duration(timeintervalToInt) * time.Second
