@@ -72,8 +72,8 @@ func (h *HistoryModule) OpenHistory() interface{} {
 		}
 
 		h.humanDate = cast.Date2String(castDate, "YYYY/MM/dd HH:mm:ss")
-		h.rowgrabbed, _ = strconv.ParseFloat(v.Get("rowgrabbed").(string), 64)
-		h.rowsaved, _ = strconv.ParseFloat(v.Get("rowsaved").(string), 64)
+		h.rowgrabbed, _ = strconv.ParseFloat(fmt.Sprintf("%v", v.Get("rowgrabbed")), 64)
+		h.rowsaved, _ = strconv.ParseFloat(fmt.Sprintf("%v", v.Get("rowgrabbed")), 64)
 
 		var addToMap = toolkit.M{}
 		addToMap.Set("id", i+1)
