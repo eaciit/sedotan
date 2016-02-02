@@ -1,21 +1,27 @@
 package controllers
 
 import (
-	// "fmt"
 	"github.com/eaciit/dbox"
 	_ "github.com/eaciit/dbox/dbc/json"
 	"github.com/eaciit/knot/knot.v1"
 	"github.com/eaciit/sedotan/sedotan.v1/webapps/modules"
 	"github.com/eaciit/toolkit"
+	"os"
+	f "path/filepath"
 	"reflect"
 	"strings"
 )
 
 var (
-	filename = wd + "data\\Config\\config.json"
+	filename = wd + f.Join("data", "Config", "config.json")
 )
 
 type DashboardController struct {
+}
+
+func (a *DashboardController) PrepareHistoryPath() {
+	modules.HistoryPath = wd + f.Join("data", "History") + string(os.PathSeparator)
+	modules.HistoryRecPath = wd + f.Join("data", "HistoryRec") + string(os.PathSeparator)
 }
 
 func (a *DashboardController) Default(k *knot.WebContext) interface{} {
@@ -70,6 +76,8 @@ func (a *DashboardController) Griddashboard(k *knot.WebContext) interface{} {
 func (a *DashboardController) Startservice(k *knot.WebContext) interface{} {
 	k.Config.OutputType = knot.OutputJson
 
+	a.PrepareHistoryPath()
+
 	t := struct {
 		NameId string
 	}{}
@@ -90,6 +98,8 @@ func (a *DashboardController) Startservice(k *knot.WebContext) interface{} {
 func (a *DashboardController) Stopservice(k *knot.WebContext) interface{} {
 	k.Config.OutputType = knot.OutputJson
 
+	a.PrepareHistoryPath()
+
 	t := struct {
 		NameId string
 	}{}
@@ -109,6 +119,9 @@ func (a *DashboardController) Stopservice(k *knot.WebContext) interface{} {
 
 func (a *DashboardController) Stat(k *knot.WebContext) interface{} {
 	k.Config.OutputType = knot.OutputJson
+
+	a.PrepareHistoryPath()
+
 	t := struct {
 		NameId   string
 		BtnClick string
@@ -155,6 +168,9 @@ func Getquery(nameid string) ([]interface{}, error) {
 
 func (a *DashboardController) Gethistory(k *knot.WebContext) interface{} {
 	k.Config.OutputType = knot.OutputJson
+
+	a.PrepareHistoryPath()
+
 	t := struct {
 		NameId string
 	}{}
@@ -177,6 +193,9 @@ func (a *DashboardController) Gethistory(k *knot.WebContext) interface{} {
 
 func (a *DashboardController) Getlog(k *knot.WebContext) interface{} {
 	k.Config.OutputType = knot.OutputJson
+
+	a.PrepareHistoryPath()
+
 	t := struct {
 		Date   string
 		NameId string
