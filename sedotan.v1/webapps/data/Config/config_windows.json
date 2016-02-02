@@ -1,0 +1,350 @@
+[
+  {
+    "calltype": "POST",
+    "datasettings": [
+      {
+        "columnsettings": [
+          {
+            "alias": "Contract",
+            "index": 0,
+            "selector": "td:nth-child(1)"
+          },
+          {
+            "alias": "Open",
+            "index": 0,
+            "selector": "td:nth-child(2)"
+          },
+          {
+            "alias": "High",
+            "index": 0,
+            "selector": "td:nth-child(3)"
+          },
+          {
+            "alias": "Low",
+            "index": 0,
+            "selector": "td:nth-child(4)"
+          },
+          {
+            "alias": "Close",
+            "index": 0,
+            "selector": "td:nth-child(5)"
+          },
+          {
+            "alias": "Prev Settle",
+            "index": 0,
+            "selector": "td:nth-child(6)"
+          },
+          {
+            "alias": "Prev Settle",
+            "index": 0,
+            "selector": "td:nth-child(7)"
+          },
+          {
+            "alias": "Settle",
+            "index": 0,
+            "selector": "td:nth-child(8)"
+          },
+          {
+            "alias": "Chg",
+            "index": 0,
+            "selector": "td:nth-child(9)"
+          },
+          {
+            "alias": "Volume",
+            "index": 0,
+            "selector": "td:nth-child(10)"
+          },
+          {
+            "alias": "OI",
+            "index": 0,
+            "selector": "td:nth-child(11)"
+          },
+          {
+            "alias": "OI Chg",
+            "index": 0,
+            "selector": "td:nth-child(12)"
+          },
+          {
+            "alias": "Turnover",
+            "index": 0,
+            "selector": "td:nth-child(13)"
+          }
+        ],
+        "connectioninfo": {
+          "collection": "irondcecom",
+          "database": "valegrab",
+          "host": "localhost:27017"
+        },
+        "desttype": "mongo",
+        "name": "GoldTab01",
+        "rowdeletecond": {
+          "$or": [
+            {
+              "Contract": "Contract"
+            },
+            {
+              "Contract": "Iron Ore Subtotal"
+            },
+            {
+              "Contract": "Total"
+            }
+          ]
+        },
+        "rowselector": "table .table tbody tr"
+      }
+    ],
+    "grabconf": {
+      "data": {
+        "Pu00231_Input.trade_date": 2.0151214e+07,
+        "Pu00231_Input.trade_type": 0,
+        "Pu00231_Input.variety": "i",
+        "Submit": "Go",
+        "action": "Pu00231_result"
+      }
+    },
+    "grabinterval": 20,
+    "intervaltype": "seconds",
+    "logconf": {
+      "filename": "LOG-GRABDCE",
+      "filepattern": "20060102",
+      "logpath": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Log\\"
+    },
+    "nameid": "irondcecomcn",
+    "sourcetype": "SourceType_Http",
+    "timeoutinterval": 5,
+    "url": "http://www.dce.com.cn/PublicWeb/MainServlet"
+  },
+  {
+    "calltype": "GET",
+    "datasettings": [
+      {
+        "columnsettings": [
+          {
+            "alias": "Code",
+            "index": 0,
+            "selector": "td:nth-child(1)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "LongSpeculation",
+            "index": 0,
+            "selector": "td:nth-child(2)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "ShortSpeculation",
+            "index": 0,
+            "selector": "td:nth-child(3)",
+            "valuetype": "string"
+          }
+        ],
+        "connectioninfo": {
+          "host": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Output\\Data_Grab.csv",
+          "settings": {
+            "delimiter": ",",
+            "useheader": true
+          }
+        },
+        "desttype": "csv",
+        "name": "Test",
+        "rowselector": "#tab_conbox li:nth-child(1) .sjtable .listshuju tbody tr"
+      }
+    ],
+    "grabinterval": 20,
+    "intervaltype": "seconds",
+    "logconf": {
+      "filename": "LOG-SHFE",
+      "filepattern": "20060102",
+      "logpath": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Log\\"
+    },
+    "nameid": "Test",
+    "sourcetype": "SourceType_Http",
+    "temp": "",
+    "timeoutinterval": 5,
+    "url": "http://www.shfe.com.cn/en/products/Gold/"
+  },
+  {
+    "calltype": "POST",
+    "datasettings": [
+      {
+        "columnsettings": [
+          {
+            "alias": "Contract",
+            "index": 0,
+            "selector": "td:nth-child(1)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "Open",
+            "index": 0,
+            "selector": "td:nth-child(2)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "High",
+            "index": 0,
+            "selector": "td:nth-child(3)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "Low",
+            "index": 0,
+            "selector": "td:nth-child(4)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "Close",
+            "index": 0,
+            "selector": "td:nth-child(5)",
+            "valuetype": "string"
+          }
+        ],
+        "connectioninfo": {
+          "host": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Output\\DataTest_POST.csv",
+          "settings": {
+            "delimiter": ",",
+            "useheader": true
+          }
+        },
+        "desttype": "csv",
+        "name": "GoldTab01",
+        "rowselector": "table .table tbody tr"
+      }
+    ],
+    "grabconf": {
+      "data": {
+        "Pu00231_Input.trade_date": "Date2String(time.Now(),'YYYYMMDD')",
+        "Pu00231_Input.trade_type": "0",
+        "Pu00231_Input.variety": "i",
+        "Submit": "Go",
+        "action": "Pu00231_result"
+      }
+    },
+    "grabinterval": 20,
+    "intervaltype": "seconds",
+    "logconf": {
+      "filename": "LOG-DCE",
+      "filepattern": "20060102",
+      "logpath": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Log\\"
+    },
+    "nameid": "Test Post",
+    "sourcetype": "SourceType_Http",
+    "temp": {
+      "parameter": [
+        {
+          "format": "YYYYMMDD",
+          "key": "Pu00231_Input.trade_date",
+          "pattern": "time.Now()",
+          "value": "20151214"
+        },
+        {
+          "format": "",
+          "key": "Pu00231_Input.trade_type",
+          "pattern": "",
+          "value": "0"
+        },
+        {
+          "format": "",
+          "key": "Pu00231_Input.variety",
+          "pattern": "",
+          "value": "i"
+        },
+        {
+          "format": "",
+          "key": "Submit",
+          "pattern": "",
+          "value": "Go"
+        },
+        {
+          "format": "",
+          "key": "action",
+          "pattern": "",
+          "value": "Pu00231_result"
+        }
+      ]
+    },
+    "timeoutinterval": 5,
+    "url": "http://www.dce.com.cn/PublicWeb/MainServlet"
+  },
+  {
+    "calltype": "GET",
+    "datasettings": [
+      {
+        "columnsettings": [
+          {
+            "alias": "Code",
+            "index": 0,
+            "selector": "td:nth-child(1)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "ListingDate",
+            "index": 0,
+            "selector": "td:nth-child(2)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "ExpirationDate",
+            "index": 0,
+            "selector": "td:nth-child(3)",
+            "valuetype": "string"
+          }
+        ],
+        "connectioninfo": {
+          "host": "/Users/arfianbagus/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/localhost:27017.csv",
+          "settings": {
+            "delimiter": ",",
+            "useheader": true
+          }
+        },
+        "desttype": "csv",
+        "name": "GoldTab01",
+        "rowselector": "#tab_conbox li:nth-child(1) .sjtable .listshuju tbody tr"
+      },
+      {
+        "columnsettings": [
+          {
+            "alias": "Code",
+            "index": 0,
+            "selector": "td:nth-child(1)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "LongSpeculation",
+            "index": 0,
+            "selector": "td:nth-child(2)",
+            "valuetype": "string"
+          },
+          {
+            "alias": "ShortSpeculation",
+            "index": 0,
+            "selector": "td:nth-child(3)",
+            "valuetype": "string"
+          }
+        ],
+        "connectioninfo": {
+          "host": "/Users/arfianbagus/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/\\data\\vale\\Data_Grab.csv",
+          "settings": {
+            "delimiter": ",",
+            "useheader": true
+          }
+        },
+        "desttype": "csv",
+        "name": "GoldTab02",
+        "rowselector": "#tab_conbox li:nth-child(2) .sjtable .listshuju tbody tr"
+      }
+    ],
+    "grabinterval": 20,
+    "intervaltype": "seconds",
+    "logconf": {
+      "filename": "LOG-SHFE",
+      "filepattern": "20060102",
+      "logpath": "/Users/arfianbagus/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Log/"
+    },
+    "nameid": "goldshfecom",
+    "sourcetype": "SourceType_Http",
+    "temp": "",
+    "timeoutinterval": 5,
+    "url": "http://www.shfe.com.cn/en/products/Gold/"
+  }
+]
