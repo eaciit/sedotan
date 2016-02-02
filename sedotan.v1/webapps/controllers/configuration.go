@@ -29,8 +29,8 @@ func (a *ConfigurationController) Default(k *knot.WebContext) interface{} {
 	data := tk.M{}
 	d, _ := os.Getwd()
 	d = strings.Replace(strings.Replace(d, "\\cli", "", -1), "/cli", "", -1)
-	data.Set("data_dir", d+fmt.Sprintf("%v%s%v", os.PathSeparator, filepath.Join("data", "Output"), os.PathSeparator))
-	data.Set("log_dir", d+fmt.Sprintf("%v%s%v", os.PathSeparator, filepath.Join("data", "Log"), os.PathSeparator))
+	data.Set("data_dir", d+tk.PathSeparator+filepath.Join("data", "Output")+tk.PathSeparator)
+	data.Set("log_dir", d+tk.PathSeparator+filepath.Join("data", "Log")+tk.PathSeparator)
 	return data
 }
 

@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/eaciit/dbox"
 	_ "github.com/eaciit/dbox/dbc/json"
 	"github.com/eaciit/knot/knot.v1"
@@ -14,15 +13,15 @@ import (
 )
 
 var (
-	filename = wd + "data/Config/config.json"
+	filename = wd + f.Join("data", "Config", "config.json")
 )
 
 type DashboardController struct {
 }
 
 func (a *DashboardController) PrepareHistoryPath() {
-	modules.HistoryPath = wd + f.Join("data", "history") + string(os.PathSeparator)
-	modules.HistoryRecPath = wd + f.Join("data", "historyrec") + string(os.PathSeparator)
+	modules.HistoryPath = wd + f.Join("data", "History") + string(os.PathSeparator)
+	modules.HistoryRecPath = wd + f.Join("data", "HistoryRec") + string(os.PathSeparator)
 }
 
 func (a *DashboardController) Default(k *knot.WebContext) interface{} {
@@ -87,7 +86,7 @@ func (a *DashboardController) Startservice(k *knot.WebContext) interface{} {
 		return e.Error()
 	}
 	ds, _ := Getquery(t.NameId)
-	fmt.Println(ds)
+	// fmt.Println(ds)
 	er, isRun := modules.Process(ds)
 	if er != nil {
 		return er.Error()
