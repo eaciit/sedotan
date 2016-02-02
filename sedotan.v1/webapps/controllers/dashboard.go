@@ -21,8 +21,8 @@ type DashboardController struct {
 }
 
 func (a *DashboardController) PrepareHistoryPath() {
-	modules.HistoryPath = wd + f.Join("data", "History") + string(os.PathSeparator)
-	modules.HistoryRecPath = wd + f.Join("data", "HistoryRec") + string(os.PathSeparator)
+	modules.HistoryPath = wd + f.Join("data", "history") + string(os.PathSeparator)
+	modules.HistoryRecPath = wd + f.Join("data", "historyrec") + string(os.PathSeparator)
 }
 
 func (a *DashboardController) Default(k *knot.WebContext) interface{} {
