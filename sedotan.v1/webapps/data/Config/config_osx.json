@@ -107,7 +107,7 @@
     "logconf": {
       "filename": "LOG-GRABDCE",
       "filepattern": "20060102",
-      "logpath": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Log\\"
+      "logpath": "/Users/novalagung/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Log/"
     },
     "nameid": "irondcecomcn",
     "sourcetype": "SourceType_Http",
@@ -139,7 +139,7 @@
           }
         ],
         "connectioninfo": {
-          "host": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Output\\Data_Grab.csv",
+          "host": "/Users/novalagung/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/Data_Grab.csv",
           "settings": {
             "delimiter": ",",
             "useheader": true
@@ -155,7 +155,7 @@
     "logconf": {
       "filename": "LOG-SHFE",
       "filepattern": "20060102",
-      "logpath": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Log\\"
+      "logpath": "/Users/novalagung/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Log/"
     },
     "nameid": "Test",
     "sourcetype": "SourceType_Http",
@@ -200,7 +200,7 @@
           }
         ],
         "connectioninfo": {
-          "host": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Output\\DataTest_POST.csv",
+          "host": "/Users/novalagung/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/DataTest_POST.csv",
           "settings": {
             "delimiter": ",",
             "useheader": true
@@ -225,7 +225,7 @@
     "logconf": {
       "filename": "LOG-DCE",
       "filepattern": "20060102",
-      "logpath": "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\Log\\"
+      "logpath": "/Users/novalagung/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Log/"
     },
     "nameid": "Test Post",
     "sourcetype": "SourceType_Http",
@@ -291,7 +291,7 @@
           }
         ],
         "connectioninfo": {
-          "host": "/Users/arfianbagus/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/localhost:27017.csv",
+          "host": "/Users/novalagung/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/localhost:27017.csv",
           "settings": {
             "delimiter": ",",
             "useheader": true
@@ -323,7 +323,7 @@
           }
         ],
         "connectioninfo": {
-          "host": "/Users/arfianbagus/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/\\data\\vale\\Data_Grab.csv",
+          "host": "/Users/novalagung/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Output/Data_Grab.csv",
           "settings": {
             "delimiter": ",",
             "useheader": true
@@ -339,7 +339,7 @@
     "logconf": {
       "filename": "LOG-SHFE",
       "filepattern": "20060102",
-      "logpath": "/Users/arfianbagus/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Log/"
+      "logpath": "/Users/novalagung/Documents/go/src/github.com/eaciit/sedotan/sedotan.v1/webapps/data/Log/"
     },
     "nameid": "goldshfecom",
     "sourcetype": "SourceType_Http",

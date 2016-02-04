@@ -67,8 +67,8 @@ func NewGrabService() *GrabService {
 	g.ServiceRunningStat = false
 
 	dir, _ := os.Getwd()
-	g.HistoryPath = strings.Replace(dir, " ", "\\ ", -1)
-	g.HistoryRecPath = strings.Replace(dir, " ", "\\ ", -1)
+	g.HistoryPath = strings.Replace(dir, " ", toolkit.PathSeparator+" ", -1)
+	g.HistoryRecPath = strings.Replace(dir, " ", toolkit.PathSeparator+" ", -1)
 	return g
 }
 
