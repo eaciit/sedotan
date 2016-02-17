@@ -113,7 +113,7 @@
     "logconf": {
         "filename": "LOG-testCSV",
         "filepattern": "20060102",
-        "logpath": "/Users/novalagung/Documents/go/src/github.com/eaciit/colony-manager/config/webgrabber/log/"
+        "logpath": "/Users/novalagung/Documents/go/src/github.com/eaciit/sedotan/sedotan.v2/test/log/"
     },
     "nameid": "testCSV",
     "sourcetype": "SourceType_Http",
