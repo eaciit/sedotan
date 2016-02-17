@@ -23,7 +23,6 @@ func TestBuild(t *testing.T) {
 	cmd = exec.Command("go", "build", "../cli")
 	cmd.Run()
 	cmd.Wait()
-
 }
 
 func TestRunCommand(t *testing.T) {
