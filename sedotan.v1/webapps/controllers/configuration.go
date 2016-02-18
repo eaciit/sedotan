@@ -9,6 +9,7 @@ import (
 	_ "github.com/eaciit/dbox/dbc/json"
 	tk "github.com/eaciit/toolkit"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -27,9 +28,9 @@ func (a *ConfigurationController) Default(k *knot.WebContext) interface{} {
 	k.Config.OutputType = knot.OutputTemplate
 	data := tk.M{}
 	d, _ := os.Getwd()
-	d = strings.Replace(d, "\\cli", "", -1)
-	data.Set("data_dir", d+"\\data\\Output\\")
-	data.Set("log_dir", d+"\\data\\Log\\")
+	d = strings.Replace(strings.Replace(d, "\\cli", "", -1), "/cli", "", -1)
+	data.Set("data_dir", d+tk.PathSeparator+filepath.Join("data", "Output")+tk.PathSeparator)
+	data.Set("log_dir", d+tk.PathSeparator+filepath.Join("data", "Log")+tk.PathSeparator)
 	return data
 }
 
@@ -69,7 +70,7 @@ func (a *ConfigurationController) Save(k *knot.WebContext) interface{} {
 		fmt.Println("Found : ", e)
 	}
 
-	filename = wd + "data\\Config\\config.json"
+	filename = wd + filepath.Join("data", "Config", "config.json")
 	ci := &dbox.ConnectionInfo{filename, "", "", "", nil}
 	c, e := dbox.NewConnection("json", ci)
 	defer c.Close()
@@ -100,7 +101,7 @@ func (a *ConfigurationController) Delete(k *knot.WebContext) interface{} {
 	e := k.GetPayload(&d)
 	k.Config.OutputType = knot.OutputJson
 
-	filename = wd + "data\\Config\\config.json"
+	filename = wd + filepath.Join("data", "Config", "config.json")
 	ci := &dbox.ConnectionInfo{filename, "", "", "", nil}
 	c, e := dbox.NewConnection("json", ci)
 	defer c.Close()
@@ -132,7 +133,7 @@ func (a *ConfigurationController) TestingDBOX(k *knot.WebContext) interface{} {
 	dataurl["Submit"] = "Go"
 	dataurl["action"] = "Pu00231_result"
 
-	filename := wd + "data\\temp.json"
+	filename := wd + filepath.Join("data", "temp.json")
 	// filename = "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\cli/../data\\temp.json"
 	// filename = filename[0:len(filename)-3] +
 	// filename = "C:\\Gopath\\src\\github.com\\eaciit\\sedotan\\sedotan.v1\\webapps\\data\\temp.json"
@@ -160,7 +161,7 @@ func (a *ConfigurationController) TestingDBOX(k *knot.WebContext) interface{} {
 func (a *ConfigurationController) GetData(k *knot.WebContext) interface{} {
 	k.Config.OutputType = knot.OutputJson
 
-	filename := wd + "data\\Config\\config.json"
+	filename := wd + filepath.Join("data", "Config", "config.json")
 	ci := &dbox.ConnectionInfo{filename, "", "", "", nil}
 	c, e := dbox.NewConnection("json", ci)
 	defer c.Close()

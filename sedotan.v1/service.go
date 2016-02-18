@@ -9,6 +9,7 @@ import (
 	_ "github.com/eaciit/dbox/dbc/json"
 	_ "github.com/eaciit/dbox/dbc/mongo"
 	"github.com/eaciit/toolkit"
+	"io/ioutil"
 	"os"
 	"strings"
 	"time"
@@ -67,8 +68,8 @@ func NewGrabService() *GrabService {
 	g.ServiceRunningStat = false
 
 	dir, _ := os.Getwd()
-	g.HistoryPath = strings.Replace(dir, " ", "\\ ", -1)
-	g.HistoryRecPath = strings.Replace(dir, " ", "\\ ", -1)
+	g.HistoryPath = strings.Replace(dir, " ", toolkit.PathSeparator+" ", -1)
+	g.HistoryRecPath = strings.Replace(dir, " ", toolkit.PathSeparator+" ", -1)
 	return g
 }
 
@@ -151,6 +152,23 @@ func (g *GrabService) execService() {
 						g.Log.AddLog(g.ErrorNotes, "ERROR")
 					}
 
+					// cannot insert data into output file, not sure why
+					// solution: if the file is empty, then it's need to be deleted first
+					if g.DestDbox[key].Desttype == "csv" {
+						outputCSVpath := g.DestDbox[key].IConnection.Info().Host
+						if toolkit.IsFileExist(outputCSVpath) {
+							outputCSVcontentBytes, e := ioutil.ReadFile(outputCSVpath)
+							if e != nil {
+								g.ErrorNotes = fmt.Sprintf("[%s-%s] Connect to destination failed [%s-%s]:%s", g.Name, key, g.DestDbox[key].Desttype, g.DestDbox[key].IConnection.Info().Host, e)
+								g.Log.AddLog(g.ErrorNotes, "ERROR")
+							}
+
+							if strings.TrimSpace(string(outputCSVcontentBytes)) == "" {
+								os.Remove(outputCSVpath)
+							}
+						}
+					}
+
 					e = g.DestDbox[key].IConnection.Connect()
 					if e != nil {
 						g.ErrorNotes = fmt.Sprintf("[%s-%s] Connect to destination failed [%s-%s]:%s", g.Name, key, g.DestDbox[key].Desttype, g.DestDbox[key].IConnection.Info().Host, e)
@@ -163,6 +181,11 @@ func (g *GrabService) execService() {
 					} else {
 						q = g.DestDbox[key].IConnection.NewQuery().SetConfig("multiexec", true).From(g.DestDbox[key].Collection).Save()
 					}
+
+					if g.DestDbox[key].Desttype == "csv" {
+						q = q.Insert()
+					}
+
 					xN := 0
 					iN := 0
 					for _, doc := range docs {
