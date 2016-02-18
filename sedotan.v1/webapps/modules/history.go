@@ -62,11 +62,7 @@ func (h *HistoryModule) OpenHistory() interface{} {
 	var history = []interface{}{} //toolkit.M{}
 	for i, v := range ds {
 		// layout := "2006/01/02 15:04:05"
-		castDate := time.Now()
-		if v.Has("grabdata") {
-			castDate, _ = time.Parse(time.RFC3339, v.Get("grabdate").(string))
-		}
-
+		castDate, _ := time.Parse(time.RFC3339, v.Get("grabdate").(string))
 		h.humanDate = cast.Date2String(castDate, "YYYY/MM/dd HH:mm:ss")
 		h.rowgrabbed, _ = strconv.ParseFloat(fmt.Sprintf("%v", v.Get("rowgrabbed")), 64)
 		h.rowsaved, _ = strconv.ParseFloat(fmt.Sprintf("%v", v.Get("rowgrabbed")), 64)
