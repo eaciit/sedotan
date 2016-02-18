@@ -11,24 +11,18 @@ var (
 	cmd      *exec.Cmd
 )
 
-func deleteBuildedApp() {
+func TestBuild(t *testing.T) {
+	cmd = exec.Command("go", "build", "../sedotanwd")
+	cmd.Run()
+	cmd.Wait()
+
 	cmd = exec.Command("rm", "-rf", "cli")
 	cmd.Run()
 	cmd.Wait()
 }
 
-func TestBuild(t *testing.T) {
-	deleteBuildedApp()
-
-	cmd = exec.Command("go", "build", "../cli")
-	cmd.Run()
-	cmd.Wait()
-}
-
 func TestRunCommand(t *testing.T) {
-	cmd = exec.Command("go", "run", "../cli/main.go", `-config="config.json"`, "-debug=true")
+	cmd = exec.Command("go", "run", "../sedotanwd/main.go", `-config="config.json"`, "-debug=true")
 	cmd.Run()
 	cmd.Wait()
-
-	deleteBuildedApp()
 }
