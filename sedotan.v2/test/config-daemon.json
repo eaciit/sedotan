@@ -1,0 +1,131 @@
+[
+  {
+    "_id": "irondcecomcn",
+    "sourcetype": "SourceType_HttpHtml",
+    "grabconf": 
+      {
+        "url": "http://www.dce.com.cn/PublicWeb/MainServlet",
+        "calltype": "POST",
+        "formvalues":
+          {
+            "Pu00231_Input.trade_date": "20160105",
+            "Pu00231_Input.variety": "i",
+            "Pu00231_Input.trade_type": "0",
+            "Submit": "Go",
+            "action": "Pu00231_result"
+          }
+      },
+    "intervalconf": 
+      {
+        "starttime":"2016-02-22 00-00-00",
+        "intervaltype": "seconds",
+        "grabinterval": 10,
+        "timeoutinterval": 5,
+        "cronconf" : ""
+      },
+    "logconf": 
+      {
+        "logpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\log",
+        "filename": "LOG-GRABDCE",
+        "filepattern": "YYYYMMdd"
+      },
+    "histconf": 
+      {
+        "histpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "recpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "filename": "HIST-GRABDCE-%s",
+        "filepattern": "YYYYMMdd"
+      },
+    "datasettings": 
+      [
+        {
+          "name": "Iron01",
+          "rowselector": "table .table tbody tr",
+          "columnsettings": 
+            [
+              {
+                "index": 0,
+                "alias": "Contract",
+                "selector": "td:nth-child(1)"
+              },
+              {
+                "index": 0,
+                "alias": "Open",
+                "selector": "td:nth-child(2)"
+              },
+              {
+                "index": 0,
+                "alias": "High",
+                "selector": "td:nth-child(3)"
+              },
+              {
+                "index": 0,
+                "alias": "Low",
+                "selector": "td:nth-child(4)"
+              },
+              {
+                "index": 0,
+                "alias": "Close",
+                "selector": "td:nth-child(5)"
+              },
+              {
+                "index": 0,
+                "alias": "Prev Settle",
+                "selector": "td:nth-child(6)"
+              },
+              {
+                "index": 0,
+                "alias": "Settle",
+                "selector": "td:nth-child(7)"
+              },
+              {
+                "index": 0,
+                "alias": "Chg",
+                "selector": "td:nth-child(8)"
+              },
+              {
+                "index": 0,
+                "alias": "Volume",
+                "selector": "td:nth-child(9)"
+              },
+              {
+                "index": 0,
+                "alias": "OI",
+                "selector": "td:nth-child(10)"
+              },
+              {
+                "index": 0,
+                "alias": "OI Chg",
+                "selector": "td:nth-child(11)"
+              },
+              {
+                "index": 0,
+                "alias": "Turnover",
+                "selector": "td:nth-child(12)"
+              }
+            ],
+          "rowdeletecond":
+            { 
+              "$or":
+                [
+                  {"Contract": "Contract"},
+                  {"Contract": "Iron Ore Subtotal"},
+                  {"Contract": "Total"}
+                ]
+            },
+          "desttype": "mongo",
+          "connectioninfo": 
+            {
+              "host": "localhost:27017",
+              "database": "valegrab",
+              "collection": "irondcecom",
+              "settings":
+                {
+                  "timeout": 1
+                }
+            }
+        }
+      ],
+    "running": true
+  }
+]

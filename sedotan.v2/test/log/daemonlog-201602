@@ -1,0 +1,817 @@
+INFO 2016/02/23 15:43:50 Start daemon grabbing, config path : E:\goproject\src\github.com\eaciit\sedotan\sedotan.v2\test\config-daemon.json
+INFO 2016/02/23 15:43:51 Run daemon
+INFO 2016/02/23 15:43:51 Fetch config grabbing started
+INFO 2016/02/23 15:43:51 Get data snapshot
+INFO 2016/02/23 15:43:51 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:43:51 Check config for id : irondcecomcn
+INFO 2016/02/23 15:43:51 Start grabbing for id : irondcecomcn
+INFO 2016/02/23 15:43:52 Run daemon
+INFO 2016/02/23 15:43:52 Fetch config grabbing started
+INFO 2016/02/23 15:43:52 Get data snapshot
+INFO 2016/02/23 15:43:52 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:43:52 Check config for id : irondcecomcn
+INFO 2016/02/23 15:43:52 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:43:53 Run daemon
+INFO 2016/02/23 15:43:53 Fetch config grabbing started
+INFO 2016/02/23 15:43:53 Get data snapshot
+INFO 2016/02/23 15:43:53 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:43:53 Check config for id : irondcecomcn
+INFO 2016/02/23 15:43:53 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:43:54 Run daemon
+INFO 2016/02/23 15:43:54 Fetch config grabbing started
+INFO 2016/02/23 15:43:54 Get data snapshot
+INFO 2016/02/23 15:43:54 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:43:54 Check config for id : irondcecomcn
+INFO 2016/02/23 15:43:54 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:43:55 Run daemon
+INFO 2016/02/23 15:43:55 Fetch config grabbing started
+INFO 2016/02/23 15:43:55 Get data snapshot
+INFO 2016/02/23 15:43:55 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:43:55 Check config for id : irondcecomcn
+INFO 2016/02/23 15:43:55 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:43:56 Run daemon
+INFO 2016/02/23 15:43:56 Fetch config grabbing started
+INFO 2016/02/23 15:43:56 Get data snapshot
+INFO 2016/02/23 15:43:56 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:43:56 Check config for id : irondcecomcn
+INFO 2016/02/23 15:43:56 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:43:57 Run daemon
+INFO 2016/02/23 15:43:57 Fetch config grabbing started
+INFO 2016/02/23 15:43:57 Get data snapshot
+INFO 2016/02/23 15:43:57 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:43:57 Check config for id : irondcecomcn
+INFO 2016/02/23 15:43:57 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:43:58 Run daemon
+INFO 2016/02/23 15:43:58 Fetch config grabbing started
+INFO 2016/02/23 15:43:58 Get data snapshot
+INFO 2016/02/23 15:43:58 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:43:58 Check config for id : irondcecomcn
+INFO 2016/02/23 15:43:58 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:43:59 Run daemon
+INFO 2016/02/23 15:43:59 Fetch config grabbing started
+INFO 2016/02/23 15:43:59 Get data snapshot
+INFO 2016/02/23 15:43:59 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:43:59 Check config for id : irondcecomcn
+INFO 2016/02/23 15:43:59 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:00 Run daemon
+INFO 2016/02/23 15:44:00 Fetch config grabbing started
+INFO 2016/02/23 15:44:00 Get data snapshot
+INFO 2016/02/23 15:44:00 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:00 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:00 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:01 Run daemon
+INFO 2016/02/23 15:44:01 Fetch config grabbing started
+INFO 2016/02/23 15:44:01 Get data snapshot
+INFO 2016/02/23 15:44:01 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:01 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:01 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:02 Run daemon
+INFO 2016/02/23 15:44:02 Fetch config grabbing started
+INFO 2016/02/23 15:44:02 Get data snapshot
+INFO 2016/02/23 15:44:02 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:02 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:02 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:03 Run daemon
+INFO 2016/02/23 15:44:03 Fetch config grabbing started
+INFO 2016/02/23 15:44:03 Get data snapshot
+INFO 2016/02/23 15:44:03 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:03 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:03 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:04 Run daemon
+INFO 2016/02/23 15:44:04 Fetch config grabbing started
+INFO 2016/02/23 15:44:04 Get data snapshot
+INFO 2016/02/23 15:44:04 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:04 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:04 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:05 Run daemon
+INFO 2016/02/23 15:44:05 Fetch config grabbing started
+INFO 2016/02/23 15:44:05 Get data snapshot
+INFO 2016/02/23 15:44:05 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:05 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:05 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:06 Run daemon
+INFO 2016/02/23 15:44:06 Fetch config grabbing started
+INFO 2016/02/23 15:44:06 Get data snapshot
+INFO 2016/02/23 15:44:06 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:06 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:06 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:07 Run daemon
+INFO 2016/02/23 15:44:07 Fetch config grabbing started
+INFO 2016/02/23 15:44:07 Get data snapshot
+INFO 2016/02/23 15:44:07 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:07 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:08 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:09 Run daemon
+INFO 2016/02/23 15:44:09 Fetch config grabbing started
+INFO 2016/02/23 15:44:09 Get data snapshot
+INFO 2016/02/23 15:44:09 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:09 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:09 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:10 Run daemon
+INFO 2016/02/23 15:44:10 Fetch config grabbing started
+INFO 2016/02/23 15:44:10 Get data snapshot
+INFO 2016/02/23 15:44:10 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:10 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:10 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:11 Run daemon
+INFO 2016/02/23 15:44:11 Fetch config grabbing started
+INFO 2016/02/23 15:44:11 Get data snapshot
+INFO 2016/02/23 15:44:11 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:11 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:11 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:12 Run daemon
+INFO 2016/02/23 15:44:12 Fetch config grabbing started
+INFO 2016/02/23 15:44:12 Get data snapshot
+INFO 2016/02/23 15:44:12 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:12 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:12 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:13 Run daemon
+INFO 2016/02/23 15:44:13 Fetch config grabbing started
+INFO 2016/02/23 15:44:13 Get data snapshot
+INFO 2016/02/23 15:44:13 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:13 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:13 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:14 Run daemon
+INFO 2016/02/23 15:44:14 Fetch config grabbing started
+INFO 2016/02/23 15:44:14 Get data snapshot
+INFO 2016/02/23 15:44:14 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:14 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:14 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:15 Run daemon
+INFO 2016/02/23 15:44:15 Fetch config grabbing started
+INFO 2016/02/23 15:44:15 Get data snapshot
+INFO 2016/02/23 15:44:15 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:15 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:15 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:16 Run daemon
+INFO 2016/02/23 15:44:16 Fetch config grabbing started
+INFO 2016/02/23 15:44:16 Get data snapshot
+INFO 2016/02/23 15:44:16 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:16 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:16 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:17 Run daemon
+INFO 2016/02/23 15:44:17 Fetch config grabbing started
+INFO 2016/02/23 15:44:17 Get data snapshot
+INFO 2016/02/23 15:44:17 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:17 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:17 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:18 Run daemon
+INFO 2016/02/23 15:44:18 Fetch config grabbing started
+INFO 2016/02/23 15:44:18 Get data snapshot
+INFO 2016/02/23 15:44:18 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:18 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:18 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:19 Run daemon
+INFO 2016/02/23 15:44:19 Fetch config grabbing started
+INFO 2016/02/23 15:44:19 Get data snapshot
+INFO 2016/02/23 15:44:19 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:19 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:19 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:20 Run daemon
+INFO 2016/02/23 15:44:20 Fetch config grabbing started
+INFO 2016/02/23 15:44:20 Get data snapshot
+INFO 2016/02/23 15:44:20 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:20 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:20 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:21 Run daemon
+INFO 2016/02/23 15:44:21 Fetch config grabbing started
+INFO 2016/02/23 15:44:21 Get data snapshot
+INFO 2016/02/23 15:44:21 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:21 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:21 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:22 Run daemon
+INFO 2016/02/23 15:44:22 Fetch config grabbing started
+INFO 2016/02/23 15:44:22 Get data snapshot
+INFO 2016/02/23 15:44:22 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:22 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:22 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:23 Run daemon
+INFO 2016/02/23 15:44:23 Fetch config grabbing started
+INFO 2016/02/23 15:44:23 Get data snapshot
+INFO 2016/02/23 15:44:23 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:23 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:23 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:24 Run daemon
+INFO 2016/02/23 15:44:24 Fetch config grabbing started
+INFO 2016/02/23 15:44:24 Get data snapshot
+INFO 2016/02/23 15:44:24 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:24 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:24 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:25 Run daemon
+INFO 2016/02/23 15:44:25 Fetch config grabbing started
+INFO 2016/02/23 15:44:25 Get data snapshot
+INFO 2016/02/23 15:44:25 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:25 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:25 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:26 Run daemon
+INFO 2016/02/23 15:44:26 Fetch config grabbing started
+INFO 2016/02/23 15:44:26 Get data snapshot
+INFO 2016/02/23 15:44:26 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:26 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:26 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:27 Run daemon
+INFO 2016/02/23 15:44:27 Fetch config grabbing started
+INFO 2016/02/23 15:44:27 Get data snapshot
+INFO 2016/02/23 15:44:27 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:27 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:27 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:28 Run daemon
+INFO 2016/02/23 15:44:28 Fetch config grabbing started
+INFO 2016/02/23 15:44:28 Get data snapshot
+INFO 2016/02/23 15:44:28 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:28 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:28 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:29 Run daemon
+INFO 2016/02/23 15:44:29 Fetch config grabbing started
+INFO 2016/02/23 15:44:29 Get data snapshot
+INFO 2016/02/23 15:44:29 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:29 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:29 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:30 Run daemon
+INFO 2016/02/23 15:44:30 Fetch config grabbing started
+INFO 2016/02/23 15:44:30 Get data snapshot
+INFO 2016/02/23 15:44:30 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:30 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:30 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:31 Run daemon
+INFO 2016/02/23 15:44:31 Fetch config grabbing started
+INFO 2016/02/23 15:44:31 Get data snapshot
+INFO 2016/02/23 15:44:31 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:31 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:31 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:32 Run daemon
+INFO 2016/02/23 15:44:32 Fetch config grabbing started
+INFO 2016/02/23 15:44:32 Get data snapshot
+INFO 2016/02/23 15:44:32 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:32 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:32 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:33 Run daemon
+INFO 2016/02/23 15:44:33 Fetch config grabbing started
+INFO 2016/02/23 15:44:33 Get data snapshot
+INFO 2016/02/23 15:44:33 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:33 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:33 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:34 Run daemon
+INFO 2016/02/23 15:44:34 Fetch config grabbing started
+INFO 2016/02/23 15:44:34 Get data snapshot
+INFO 2016/02/23 15:44:34 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:34 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:34 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:35 Run daemon
+INFO 2016/02/23 15:44:35 Fetch config grabbing started
+INFO 2016/02/23 15:44:35 Get data snapshot
+INFO 2016/02/23 15:44:35 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:35 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:36 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:37 Run daemon
+INFO 2016/02/23 15:44:37 Fetch config grabbing started
+INFO 2016/02/23 15:44:37 Get data snapshot
+INFO 2016/02/23 15:44:37 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:37 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:37 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:38 Run daemon
+INFO 2016/02/23 15:44:38 Fetch config grabbing started
+INFO 2016/02/23 15:44:38 Get data snapshot
+INFO 2016/02/23 15:44:38 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:38 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:38 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:39 Run daemon
+INFO 2016/02/23 15:44:39 Fetch config grabbing started
+INFO 2016/02/23 15:44:39 Get data snapshot
+INFO 2016/02/23 15:44:39 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:39 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:39 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:40 Run daemon
+INFO 2016/02/23 15:44:40 Fetch config grabbing started
+INFO 2016/02/23 15:44:40 Get data snapshot
+INFO 2016/02/23 15:44:40 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:40 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:40 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:41 Run daemon
+INFO 2016/02/23 15:44:41 Fetch config grabbing started
+INFO 2016/02/23 15:44:41 Get data snapshot
+INFO 2016/02/23 15:44:41 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:41 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:41 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:42 Run daemon
+INFO 2016/02/23 15:44:42 Fetch config grabbing started
+INFO 2016/02/23 15:44:42 Get data snapshot
+INFO 2016/02/23 15:44:42 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:42 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:42 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:43 Run daemon
+INFO 2016/02/23 15:44:43 Fetch config grabbing started
+INFO 2016/02/23 15:44:43 Get data snapshot
+INFO 2016/02/23 15:44:43 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:43 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:43 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:44 Run daemon
+INFO 2016/02/23 15:44:44 Fetch config grabbing started
+INFO 2016/02/23 15:44:44 Get data snapshot
+INFO 2016/02/23 15:44:44 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:44 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:44 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:45 Run daemon
+INFO 2016/02/23 15:44:45 Fetch config grabbing started
+INFO 2016/02/23 15:44:45 Get data snapshot
+INFO 2016/02/23 15:44:45 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:45 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:45 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:46 Run daemon
+INFO 2016/02/23 15:44:46 Fetch config grabbing started
+INFO 2016/02/23 15:44:46 Get data snapshot
+INFO 2016/02/23 15:44:46 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:46 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:46 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:47 Run daemon
+INFO 2016/02/23 15:44:47 Fetch config grabbing started
+INFO 2016/02/23 15:44:47 Get data snapshot
+INFO 2016/02/23 15:44:47 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:47 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:47 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:48 Run daemon
+INFO 2016/02/23 15:44:48 Fetch config grabbing started
+INFO 2016/02/23 15:44:48 Get data snapshot
+INFO 2016/02/23 15:44:48 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:48 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:48 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:49 Run daemon
+INFO 2016/02/23 15:44:49 Fetch config grabbing started
+INFO 2016/02/23 15:44:49 Get data snapshot
+INFO 2016/02/23 15:44:49 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:49 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:49 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:50 Run daemon
+INFO 2016/02/23 15:44:50 Fetch config grabbing started
+INFO 2016/02/23 15:44:50 Get data snapshot
+INFO 2016/02/23 15:44:50 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:50 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:50 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:51 Run daemon
+INFO 2016/02/23 15:44:51 Fetch config grabbing started
+INFO 2016/02/23 15:44:51 Get data snapshot
+INFO 2016/02/23 15:44:51 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:51 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:51 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:52 Run daemon
+INFO 2016/02/23 15:44:52 Fetch config grabbing started
+INFO 2016/02/23 15:44:52 Get data snapshot
+INFO 2016/02/23 15:44:52 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:52 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:52 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:53 Run daemon
+INFO 2016/02/23 15:44:53 Fetch config grabbing started
+INFO 2016/02/23 15:44:53 Get data snapshot
+INFO 2016/02/23 15:44:53 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:53 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:53 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:54 Run daemon
+INFO 2016/02/23 15:44:54 Fetch config grabbing started
+INFO 2016/02/23 15:44:54 Get data snapshot
+INFO 2016/02/23 15:44:54 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:54 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:54 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:55 Run daemon
+INFO 2016/02/23 15:44:55 Fetch config grabbing started
+INFO 2016/02/23 15:44:55 Get data snapshot
+INFO 2016/02/23 15:44:55 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:55 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:55 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:56 Run daemon
+INFO 2016/02/23 15:44:56 Fetch config grabbing started
+INFO 2016/02/23 15:44:56 Get data snapshot
+INFO 2016/02/23 15:44:56 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:56 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:56 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:57 Run daemon
+INFO 2016/02/23 15:44:57 Fetch config grabbing started
+INFO 2016/02/23 15:44:57 Get data snapshot
+INFO 2016/02/23 15:44:57 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:57 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:57 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:58 Run daemon
+INFO 2016/02/23 15:44:58 Fetch config grabbing started
+INFO 2016/02/23 15:44:58 Get data snapshot
+INFO 2016/02/23 15:44:58 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:58 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:58 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:44:59 Run daemon
+INFO 2016/02/23 15:44:59 Fetch config grabbing started
+INFO 2016/02/23 15:44:59 Get data snapshot
+INFO 2016/02/23 15:44:59 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:44:59 Check config for id : irondcecomcn
+INFO 2016/02/23 15:44:59 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:00 Run daemon
+INFO 2016/02/23 15:45:00 Fetch config grabbing started
+INFO 2016/02/23 15:45:00 Get data snapshot
+INFO 2016/02/23 15:45:00 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:00 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:00 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:01 Run daemon
+INFO 2016/02/23 15:45:01 Fetch config grabbing started
+INFO 2016/02/23 15:45:01 Get data snapshot
+INFO 2016/02/23 15:45:01 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:01 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:01 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:02 Run daemon
+INFO 2016/02/23 15:45:02 Fetch config grabbing started
+INFO 2016/02/23 15:45:02 Get data snapshot
+INFO 2016/02/23 15:45:02 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:02 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:02 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:03 Run daemon
+INFO 2016/02/23 15:45:03 Fetch config grabbing started
+INFO 2016/02/23 15:45:03 Get data snapshot
+INFO 2016/02/23 15:45:03 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:03 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:03 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:04 Run daemon
+INFO 2016/02/23 15:45:04 Fetch config grabbing started
+INFO 2016/02/23 15:45:04 Get data snapshot
+INFO 2016/02/23 15:45:04 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:04 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:04 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:05 Run daemon
+INFO 2016/02/23 15:45:05 Fetch config grabbing started
+INFO 2016/02/23 15:45:05 Get data snapshot
+INFO 2016/02/23 15:45:05 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:05 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:05 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:06 Run daemon
+INFO 2016/02/23 15:45:06 Fetch config grabbing started
+INFO 2016/02/23 15:45:06 Get data snapshot
+INFO 2016/02/23 15:45:06 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:06 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:06 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:07 Run daemon
+INFO 2016/02/23 15:45:07 Fetch config grabbing started
+INFO 2016/02/23 15:45:07 Get data snapshot
+INFO 2016/02/23 15:45:07 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:07 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:07 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:08 Run daemon
+INFO 2016/02/23 15:45:08 Fetch config grabbing started
+INFO 2016/02/23 15:45:09 Get data snapshot
+INFO 2016/02/23 15:45:09 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:09 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:09 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:10 Run daemon
+INFO 2016/02/23 15:45:10 Fetch config grabbing started
+INFO 2016/02/23 15:45:10 Get data snapshot
+INFO 2016/02/23 15:45:10 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:10 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:10 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:11 Run daemon
+INFO 2016/02/23 15:45:11 Fetch config grabbing started
+INFO 2016/02/23 15:45:11 Get data snapshot
+INFO 2016/02/23 15:45:11 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:11 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:11 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:12 Run daemon
+INFO 2016/02/23 15:45:12 Fetch config grabbing started
+INFO 2016/02/23 15:45:12 Get data snapshot
+INFO 2016/02/23 15:45:12 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:12 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:12 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:13 Run daemon
+INFO 2016/02/23 15:45:13 Fetch config grabbing started
+INFO 2016/02/23 15:45:13 Get data snapshot
+INFO 2016/02/23 15:45:13 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:13 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:13 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:14 Run daemon
+INFO 2016/02/23 15:45:14 Fetch config grabbing started
+INFO 2016/02/23 15:45:14 Get data snapshot
+INFO 2016/02/23 15:45:14 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:14 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:14 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:15 Run daemon
+INFO 2016/02/23 15:45:15 Fetch config grabbing started
+INFO 2016/02/23 15:45:15 Get data snapshot
+INFO 2016/02/23 15:45:15 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:15 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:15 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:16 Run daemon
+INFO 2016/02/23 15:45:16 Fetch config grabbing started
+INFO 2016/02/23 15:45:16 Get data snapshot
+INFO 2016/02/23 15:45:16 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:16 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:16 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:17 Run daemon
+INFO 2016/02/23 15:45:17 Fetch config grabbing started
+INFO 2016/02/23 15:45:17 Get data snapshot
+INFO 2016/02/23 15:45:17 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:17 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:17 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:18 Run daemon
+INFO 2016/02/23 15:45:18 Fetch config grabbing started
+INFO 2016/02/23 15:45:18 Get data snapshot
+INFO 2016/02/23 15:45:18 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:18 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:18 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:19 Run daemon
+INFO 2016/02/23 15:45:19 Fetch config grabbing started
+INFO 2016/02/23 15:45:19 Get data snapshot
+INFO 2016/02/23 15:45:19 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:19 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:19 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:20 Run daemon
+INFO 2016/02/23 15:45:20 Fetch config grabbing started
+INFO 2016/02/23 15:45:20 Get data snapshot
+INFO 2016/02/23 15:45:20 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:20 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:20 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:21 Run daemon
+INFO 2016/02/23 15:45:21 Fetch config grabbing started
+INFO 2016/02/23 15:45:21 Get data snapshot
+INFO 2016/02/23 15:45:21 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:21 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:21 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:22 Run daemon
+INFO 2016/02/23 15:45:22 Fetch config grabbing started
+INFO 2016/02/23 15:45:22 Get data snapshot
+INFO 2016/02/23 15:45:22 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:22 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:22 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:23 Run daemon
+INFO 2016/02/23 15:45:23 Fetch config grabbing started
+INFO 2016/02/23 15:45:23 Get data snapshot
+INFO 2016/02/23 15:45:23 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:23 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:23 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:24 Run daemon
+INFO 2016/02/23 15:45:24 Fetch config grabbing started
+INFO 2016/02/23 15:45:24 Get data snapshot
+INFO 2016/02/23 15:45:24 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:24 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:24 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:25 Run daemon
+INFO 2016/02/23 15:45:25 Fetch config grabbing started
+INFO 2016/02/23 15:45:25 Get data snapshot
+INFO 2016/02/23 15:45:25 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:25 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:25 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:26 Run daemon
+INFO 2016/02/23 15:45:26 Fetch config grabbing started
+INFO 2016/02/23 15:45:26 Get data snapshot
+INFO 2016/02/23 15:45:26 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:26 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:26 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:27 Run daemon
+INFO 2016/02/23 15:45:27 Fetch config grabbing started
+INFO 2016/02/23 15:45:27 Get data snapshot
+INFO 2016/02/23 15:45:27 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:27 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:27 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:28 Run daemon
+INFO 2016/02/23 15:45:28 Fetch config grabbing started
+INFO 2016/02/23 15:45:28 Get data snapshot
+INFO 2016/02/23 15:45:28 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:28 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:28 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:29 Run daemon
+INFO 2016/02/23 15:45:29 Fetch config grabbing started
+INFO 2016/02/23 15:45:29 Get data snapshot
+INFO 2016/02/23 15:45:29 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:29 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:29 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:30 Run daemon
+INFO 2016/02/23 15:45:30 Fetch config grabbing started
+INFO 2016/02/23 15:45:30 Get data snapshot
+INFO 2016/02/23 15:45:30 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:30 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:30 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:31 Run daemon
+INFO 2016/02/23 15:45:31 Fetch config grabbing started
+INFO 2016/02/23 15:45:31 Get data snapshot
+INFO 2016/02/23 15:45:31 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:31 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:31 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:32 Run daemon
+INFO 2016/02/23 15:45:32 Fetch config grabbing started
+INFO 2016/02/23 15:45:32 Get data snapshot
+INFO 2016/02/23 15:45:32 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:32 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:32 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:33 Run daemon
+INFO 2016/02/23 15:45:33 Fetch config grabbing started
+INFO 2016/02/23 15:45:33 Get data snapshot
+INFO 2016/02/23 15:45:33 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:33 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:33 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:34 Run daemon
+INFO 2016/02/23 15:45:34 Fetch config grabbing started
+INFO 2016/02/23 15:45:34 Get data snapshot
+INFO 2016/02/23 15:45:34 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:34 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:34 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:35 Run daemon
+INFO 2016/02/23 15:45:35 Fetch config grabbing started
+INFO 2016/02/23 15:45:35 Get data snapshot
+INFO 2016/02/23 15:45:35 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:35 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:35 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:36 Run daemon
+INFO 2016/02/23 15:45:36 Fetch config grabbing started
+INFO 2016/02/23 15:45:36 Get data snapshot
+INFO 2016/02/23 15:45:36 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:36 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:36 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:37 Run daemon
+INFO 2016/02/23 15:45:37 Fetch config grabbing started
+INFO 2016/02/23 15:45:37 Get data snapshot
+INFO 2016/02/23 15:45:37 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:37 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:37 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:39 Run daemon
+INFO 2016/02/23 15:45:39 Fetch config grabbing started
+INFO 2016/02/23 15:45:39 Get data snapshot
+INFO 2016/02/23 15:45:39 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:39 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:39 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:40 Run daemon
+INFO 2016/02/23 15:45:40 Fetch config grabbing started
+INFO 2016/02/23 15:45:40 Get data snapshot
+INFO 2016/02/23 15:45:40 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:40 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:40 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:41 Run daemon
+INFO 2016/02/23 15:45:41 Fetch config grabbing started
+INFO 2016/02/23 15:45:41 Get data snapshot
+INFO 2016/02/23 15:45:41 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:41 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:41 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:42 Run daemon
+INFO 2016/02/23 15:45:42 Fetch config grabbing started
+INFO 2016/02/23 15:45:42 Get data snapshot
+INFO 2016/02/23 15:45:42 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:42 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:42 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:43 Run daemon
+INFO 2016/02/23 15:45:43 Fetch config grabbing started
+INFO 2016/02/23 15:45:43 Get data snapshot
+INFO 2016/02/23 15:45:43 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:43 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:43 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:44 Run daemon
+INFO 2016/02/23 15:45:44 Fetch config grabbing started
+INFO 2016/02/23 15:45:44 Get data snapshot
+INFO 2016/02/23 15:45:44 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:44 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:44 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:45 Run daemon
+INFO 2016/02/23 15:45:45 Fetch config grabbing started
+INFO 2016/02/23 15:45:45 Get data snapshot
+INFO 2016/02/23 15:45:45 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:45 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:45 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:46 Run daemon
+INFO 2016/02/23 15:45:46 Fetch config grabbing started
+INFO 2016/02/23 15:45:46 Get data snapshot
+INFO 2016/02/23 15:45:46 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:46 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:46 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:47 Run daemon
+INFO 2016/02/23 15:45:47 Fetch config grabbing started
+INFO 2016/02/23 15:45:47 Get data snapshot
+INFO 2016/02/23 15:45:47 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:47 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:47 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:48 Run daemon
+INFO 2016/02/23 15:45:48 Fetch config grabbing started
+INFO 2016/02/23 15:45:48 Get data snapshot
+INFO 2016/02/23 15:45:48 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:48 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:48 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:49 Run daemon
+INFO 2016/02/23 15:45:49 Fetch config grabbing started
+INFO 2016/02/23 15:45:49 Get data snapshot
+INFO 2016/02/23 15:45:49 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:49 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:49 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:50 Run daemon
+INFO 2016/02/23 15:45:50 Fetch config grabbing started
+INFO 2016/02/23 15:45:50 Get data snapshot
+INFO 2016/02/23 15:45:50 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:50 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:50 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:51 Run daemon
+INFO 2016/02/23 15:45:51 Fetch config grabbing started
+INFO 2016/02/23 15:45:51 Get data snapshot
+INFO 2016/02/23 15:45:51 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:51 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:51 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:52 Run daemon
+INFO 2016/02/23 15:45:52 Fetch config grabbing started
+INFO 2016/02/23 15:45:52 Get data snapshot
+INFO 2016/02/23 15:45:52 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:52 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:52 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:53 Run daemon
+INFO 2016/02/23 15:45:53 Fetch config grabbing started
+INFO 2016/02/23 15:45:53 Get data snapshot
+INFO 2016/02/23 15:45:53 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:53 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:53 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:54 Run daemon
+INFO 2016/02/23 15:45:54 Fetch config grabbing started
+INFO 2016/02/23 15:45:54 Get data snapshot
+INFO 2016/02/23 15:45:54 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:54 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:54 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:55 Run daemon
+INFO 2016/02/23 15:45:55 Fetch config grabbing started
+INFO 2016/02/23 15:45:55 Get data snapshot
+INFO 2016/02/23 15:45:55 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:55 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:55 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:56 Run daemon
+INFO 2016/02/23 15:45:56 Fetch config grabbing started
+INFO 2016/02/23 15:45:56 Get data snapshot
+INFO 2016/02/23 15:45:56 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:56 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:56 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:57 Run daemon
+INFO 2016/02/23 15:45:57 Fetch config grabbing started
+INFO 2016/02/23 15:45:57 Get data snapshot
+INFO 2016/02/23 15:45:57 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:57 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:57 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:58 Run daemon
+INFO 2016/02/23 15:45:58 Fetch config grabbing started
+INFO 2016/02/23 15:45:58 Get data snapshot
+INFO 2016/02/23 15:45:58 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:58 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:58 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:45:59 Run daemon
+INFO 2016/02/23 15:45:59 Fetch config grabbing started
+INFO 2016/02/23 15:45:59 Get data snapshot
+INFO 2016/02/23 15:45:59 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:45:59 Check config for id : irondcecomcn
+INFO 2016/02/23 15:45:59 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:00 Run daemon
+INFO 2016/02/23 15:46:00 Fetch config grabbing started
+INFO 2016/02/23 15:46:00 Get data snapshot
+INFO 2016/02/23 15:46:00 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:00 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:00 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:01 Run daemon
+INFO 2016/02/23 15:46:01 Fetch config grabbing started
+INFO 2016/02/23 15:46:01 Get data snapshot
+INFO 2016/02/23 15:46:01 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:01 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:01 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:02 Run daemon
+INFO 2016/02/23 15:46:02 Fetch config grabbing started
+INFO 2016/02/23 15:46:02 Get data snapshot
+INFO 2016/02/23 15:46:02 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:02 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:02 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:03 Run daemon
+INFO 2016/02/23 15:46:03 Fetch config grabbing started
+INFO 2016/02/23 15:46:03 Get data snapshot
+INFO 2016/02/23 15:46:03 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:03 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:03 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:04 Run daemon
+INFO 2016/02/23 15:46:04 Fetch config grabbing started
+INFO 2016/02/23 15:46:04 Get data snapshot
+INFO 2016/02/23 15:46:04 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:04 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:04 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:05 Run daemon
+INFO 2016/02/23 15:46:05 Fetch config grabbing started
+INFO 2016/02/23 15:46:05 Get data snapshot
+INFO 2016/02/23 15:46:06 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:06 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:06 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:07 Run daemon
+INFO 2016/02/23 15:46:07 Fetch config grabbing started
+INFO 2016/02/23 15:46:07 Get data snapshot
+INFO 2016/02/23 15:46:07 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:07 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:07 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:08 Run daemon
+INFO 2016/02/23 15:46:08 Fetch config grabbing started
+INFO 2016/02/23 15:46:08 Get data snapshot
+INFO 2016/02/23 15:46:08 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:08 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:08 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:09 Run daemon
+INFO 2016/02/23 15:46:09 Fetch config grabbing started
+INFO 2016/02/23 15:46:09 Get data snapshot
+INFO 2016/02/23 15:46:09 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:09 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:09 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:10 Run daemon
+INFO 2016/02/23 15:46:10 Fetch config grabbing started
+INFO 2016/02/23 15:46:10 Get data snapshot
+INFO 2016/02/23 15:46:10 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:10 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:10 Skip grabbing for id : irondcecomcn
+INFO 2016/02/23 15:46:11 Run daemon
+INFO 2016/02/23 15:46:11 Fetch config grabbing started
+INFO 2016/02/23 15:46:11 Get data snapshot
+INFO 2016/02/23 15:46:11 Ready to start grabbing, found 1 valid config and 1 active config
+INFO 2016/02/23 15:46:11 Check config for id : irondcecomcn
+INFO 2016/02/23 15:46:11 Skip grabbing for id : irondcecomcn

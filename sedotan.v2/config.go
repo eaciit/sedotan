@@ -138,9 +138,7 @@ func SaveData(config toolkit.M, data toolkit.M) error {
 				doc["_id"] = toolkit.GenerateRandomString("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnpqrstuvwxyz", 32)
 			}
 
-			e = q.Exec(toolkit.M{
-				"data": doc,
-			})
+			e = q.Exec(toolkit.M{"data": doc})
 
 			if destInfo.Desttype == "mongo" {
 				delete(doc, "_id")

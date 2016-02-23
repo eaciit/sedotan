@@ -36,7 +36,6 @@ func fetchConfig(_id string) {
 		err = json.Unmarshal(bytes, &result)
 		sedotan.CheckError(err)
 	}
-
 	switch toolkit.TypeName(result) {
 	case "[]interface {}":
 		isFound := false
@@ -64,14 +63,16 @@ func fetchConfig(_id string) {
 }
 
 func main() {
+
 	flagConfigPath := flag.String("config", "", "config file")
 	flagDebugMode := flag.Bool("debug", false, "debug mode")
 	flagID := flag.String("id", "", "_id of the config (if array)")
 
 	flag.Parse()
-	configPath = *flagConfigPath
+	tconfigPath := *flagConfigPath
 	debugMode = *flagDebugMode
 
+	configPath = strings.Replace(tconfigPath, `"`, "", -1)
 	if configPath == "" {
 		sedotan.CheckError(errors.New("-config cannot be empty"))
 	}
