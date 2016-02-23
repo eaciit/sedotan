@@ -45,10 +45,8 @@ type Config struct {
 }
 
 type DataSetting struct {
-	RowSelector string
-	FilterCond  toolkit.M
-	// RowDeleteCond  toolkit.M
-	// RowIncludeCond toolkit.M
+	RowSelector    string
+	FilterCond     toolkit.M
 	ColumnSettings []*GrabColumn
 }
 
