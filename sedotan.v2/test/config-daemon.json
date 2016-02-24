@@ -13,7 +13,8 @@
             "Pu00231_Input.trade_type": "0",
             "Submit": "Go",
             "action": "Pu00231_result"
-          }
+          },
+        "timeout": 60
       },
     "intervalconf": 
       {
@@ -33,13 +34,13 @@
       {
         "histpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
         "recpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
-        "filename": "HIST-GRABDCE-%s",
+        "filename": "HIST-GRABDCE",
         "filepattern": "YYYYMMdd"
       },
     "datasettings": 
       [
         {
-          "name": "Iron01",
+          "_id": "Iron01",
           "rowselector": "table .table tbody tr",
           "columnsettings": 
             [
@@ -104,7 +105,7 @@
                 "selector": "td:nth-child(12)"
               }
             ],
-          "rowdeletecond":
+          "filtercond":
             { 
               "$or":
                 [
