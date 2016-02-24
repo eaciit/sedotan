@@ -42,6 +42,7 @@ type Snapshot struct {
 	Errorfound     int
 	Lastgrabstatus string //[success|failed]
 	Grabstatus     string //[running|done]
+	Note           string
 }
 
 func init() {
@@ -267,7 +268,8 @@ func checkistimerun(id string, intervalconf toolkit.M) (cond bool) {
 		Rowgrabbed:     0,
 		Errorfound:     0,
 		Lastgrabstatus: "",
-		Grabstatus:     "running"}
+		Grabstatus:     "running",
+		Note:           ""}
 
 	strintervalconf := intervalconf.Get("starttime", "").(string)
 	intervalstart := sedotan.StringToDate(strintervalconf)
