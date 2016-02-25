@@ -124,6 +124,7 @@ func fetchConfig() (err error) {
 		return
 	}
 
+	Log.AddLog("Start fetch grabconf", "INFO")
 	if !config.Has("grabconf") {
 		err = errors.New(fmt.Sprintf("Fetch Config, grabconf not found error"))
 		return
@@ -166,9 +167,12 @@ func fetchConfig() (err error) {
 	grabconfig.LoginUrl = toolkit.ToString(tconfgrab.Get("loginurl", ""))
 	grabconfig.LogoutUrl = toolkit.ToString(tconfgrab.Get("logouturl", ""))
 
-	wGrabber = sedotan.NewGrabber("", "", &grabconfig)
+	Log.AddLog(fmt.Sprintf("Done fetch grabconf : %v", toolkit.JsonString(grabconfig)), "INFO")
 
-	if !tconfgrab.Has("datasettings") || !(toolkit.TypeName(tconfgrab["datasettings"]) == "[]interface {}") {
+	wGrabber = sedotan.NewGrabber(grabconfig.URL, grabconfig.CallType, &grabconfig)
+
+	Log.AddLog("Start fetch datasettings", "INFO")
+	if !config.Has("datasettings") || !(toolkit.TypeName(config["datasettings"]) == "[]interface {}") {
 		err = errors.New("Fetch Config, datasettings is not found or have wrong format")
 		return
 	}
@@ -176,7 +180,7 @@ func fetchConfig() (err error) {
 	wGrabber.DataSettings = make(map[string]*sedotan.DataSetting)
 	destDboxs = make(map[string]*DestInfo)
 
-	for i, xVal := range tconfgrab["datasettings"].([]interface{}) {
+	for i, xVal := range config["datasettings"].([]interface{}) {
 		err = nil
 		tDataSetting := sedotan.DataSetting{}
 		tDestDbox := DestInfo{}
@@ -275,7 +279,8 @@ func fetchConfig() (err error) {
 		return
 	}
 
-	histConf, err := toolkit.ToM(config.Get("histconf", nil))
+	Log.AddLog("Start fetch histconf", "INFO")
+	histConf, err = toolkit.ToM(config.Get("histconf", nil))
 	if err != nil || len(histConf) == 0 || !histConf.Has("histpath") || !histConf.Has("recpath") || !histConf.Has("filename") || !histConf.Has("filepattern") {
 		err = errors.New("Fetch Config, history configuration is not found or have wrong format")
 		return
@@ -303,14 +308,14 @@ func prepareconnection(driver string, host string, database string, username str
 func getsnapshot() (err error) {
 	err = nil
 
-	config := toolkit.M{"newfile": true, "useheader": true, "delimiter": ","}
+	config := toolkit.M{"useheader": true, "delimiter": ","}
 	conn, err := prepareconnection("csv", snapshot, "", "", "", config)
 	if err != nil {
 		sedotan.CheckError(errors.New(fmt.Sprintf("Fatal error on get snapshot : %v", err.Error())))
 	}
 	defer conn.Close()
 
-	csr, err := conn.NewQuery().Where(dbox.Eq("_id", _id)).Cursor(nil)
+	csr, err := conn.NewQuery().Where(dbox.Eq("Id", _id)).Cursor(nil)
 	if err != nil {
 		sedotan.CheckError(errors.New(fmt.Sprintf("Fatal error on get snapshot : %v", err.Error())))
 		return
@@ -321,7 +326,7 @@ func getsnapshot() (err error) {
 		return
 	}
 	defer csr.Close()
-
+	// aa := toolkit.M{}
 	err = csr.Fetch(&snapshotdata, 1, false)
 	if err != nil {
 		sedotan.CheckError(errors.New(fmt.Sprintf("Fatal error on get snapshot : %v", err.Error())))
@@ -356,7 +361,7 @@ func savehistory(dt toolkit.M) (err error) {
 		return
 	}
 
-	err = conn.NewQuery().SetConfig("multiexec", true).Save().Exec(toolkit.M{}.Set("data", dt))
+	err = conn.NewQuery().SetConfig("multiexec", true).Insert().Exec(toolkit.M{}.Set("data", dt))
 
 	conn.Close()
 
@@ -374,7 +379,7 @@ func saverechistory(key string, dts []toolkit.M) (fullfilename string, err error
 		return
 	}
 
-	q := conn.NewQuery().SetConfig("multiexec", true).Save()
+	q := conn.NewQuery().SetConfig("multiexec", true).Insert()
 	for _, dt := range dts {
 		err = q.Exec(toolkit.M{}.Set("data", dt))
 	}
@@ -392,7 +397,7 @@ func savedatagrab() (err error) {
 		dt := toolkit.M{}.Set("datasettingname", key).Set("grabdate", thistime).Set("rowgrabbed", 0).
 			Set("rowsaved", 0).Set("note", note).Set("grabstatus", "fail").Set("recfile", "")
 
-		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] start save data : %s", key), "INFO")
+		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] start save data", key), "INFO")
 		docs := []toolkit.M{}
 		err = wGrabber.ResultFromHtml(key, &docs)
 		if err != nil {
@@ -460,7 +465,7 @@ func savedatagrab() (err error) {
 			Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to save history : %s", key), "ERROR")
 		}
 		snapshotdata.Rowgrabbed += iN
-		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Finish save data : %s", key), "INFO")
+		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Finish save data", key), "INFO")
 	}
 	return
 }
@@ -514,7 +519,7 @@ func main() {
 		sedotan.CheckError(errors.New("-config cannot be empty"))
 	}
 
-	snapshot := strings.Replace(tsnapshot, `"`, "", -1)
+	snapshot = strings.Replace(tsnapshot, `"`, "", -1)
 	if snapshot == "" {
 		sedotan.CheckError(errors.New("-snapshot cannot be empty"))
 	}
@@ -527,28 +532,33 @@ func main() {
 	err = getConfig()
 	checkfatalerror(err)
 
-	logconf := config.Get("logconf", toolkit.M{}).(toolkit.M)
+	logconf, _ := toolkit.ToM(config.Get("logconf", toolkit.M{}))
 	if !logconf.Has("logpath") || !logconf.Has("filename") || !logconf.Has("filepattern") {
 		checkfatalerror(errors.New(fmt.Sprintf("config log is not complete")))
 	}
 
 	Log, err = toolkit.NewLog(false, true, logconf["logpath"].(string), (logconf["filename"].(string) + "-%s"), logconf["filepattern"].(string))
 	checkfatalerror(err)
-	Log.AddLog("Starting grab data", "INFO")
+	Log.AddLog("Starting web grab data", "INFO")
 
 	Log.AddLog("Start fetch the config", "INFO")
 	err = fetchConfig()
 	checkexiterror(err)
+	Log.AddLog(fmt.Sprintf("Data grabber created : %v", toolkit.JsonString(wGrabber)), "INFO")
 	Log.AddLog("Fetch the config success", "INFO")
 
-	Log.AddLog("Start grab the data", "INFO")
+	Log.AddLog("Get the data", "INFO")
 	err = wGrabber.Grab(nil)
-	checkexiterror(errors.New(fmt.Sprintf("Grab Failed : ", err.Error())))
+	if err != nil {
+		checkexiterror(errors.New(fmt.Sprintf("Grab Failed : %v", err.Error())))
+	}
 	Log.AddLog("Get data grab success", "INFO")
 
 	Log.AddLog("Start save data grab", "INFO")
 	err = savedatagrab()
-	checkexiterror(errors.New(fmt.Sprintf("Save data finish with error")))
+	if err != nil {
+		checkexiterror(errors.New(fmt.Sprintf("Save data finish with error : %v", err.Error())))
+	}
 	Log.AddLog("Save data grab success", "INFO")
 
 	snapshotdata.Note = ""
@@ -556,7 +566,9 @@ func main() {
 	snapshotdata.Grabstatus = "done"
 
 	err = savesnapshot()
-	checkexiterror(errors.New(fmt.Sprintf("Save snapshot error")))
+	if err != nil {
+		checkexiterror(errors.New(fmt.Sprintf("Save snapshot error : %v", err.Error())))
+	}
 
 	Log.AddLog("Finish grab data", "INFO")
 }

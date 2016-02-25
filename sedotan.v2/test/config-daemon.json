@@ -20,7 +20,7 @@
       {
         "starttime":"2016-02-22 00-00-00",
         "intervaltype": "seconds",
-        "grabinterval": 10,
+        "grabinterval": 20,
         "timeoutinterval": 5,
         "cronconf" : ""
       },
@@ -122,7 +122,7 @@
               "collection": "irondcecom",
               "settings":
                 {
-                  "timeout": 1
+                  "timeout": 3
                 }
             }
         }
