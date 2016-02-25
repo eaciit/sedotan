@@ -1,0 +1,3 @@
+datasettingname,grabdate,grabstatus,rowgrabbed,rowsaved,note,recfile
+GoldTab01,2016-02-25T14:45:28.5744972+07:00,SUCCESS,15,15,,E:\goproject\src\github.com\eaciit\sedotan\sedotan.v1\webapps\cli/../data\HistoryRec\irondcecomcn.GoldTab01-20160225144533.csv
+GoldTab01,2016-02-25T14:45:53.2039529+07:00,SUCCESS,30,15,,E:\goproject\src\github.com\eaciit\sedotan\sedotan.v1\webapps\cli/../data\HistoryRec\irondcecomcn.GoldTab01-20160225144553.csv
