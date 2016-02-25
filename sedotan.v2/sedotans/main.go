@@ -21,8 +21,7 @@ import (
 type SourceTypeEnum int
 
 const (
-	SourceType_HttpHtml SourceTypeEnum = iota
-	SourceType_HttpJson
+	SourceType_DocExcel SourceTypeEnum = iota
 )
 
 var (
@@ -35,7 +34,7 @@ var (
 
 	histConf   toolkit.M
 	SourceType SourceTypeEnum
-	wGrabber   *sedotan.Grabber
+	sGrabber   *sedotan.GetDatabase
 	destDboxs  map[string]*DestInfo
 	Log        *toolkit.LogEngine
 )
@@ -115,10 +114,8 @@ func getConfig() (err error) {
 func fetchConfig() (err error) {
 
 	switch toolkit.ToString(config.Get("sourcetype", "")) {
-	case "SourceType_HttpHtml":
-		SourceType = SourceType_HttpHtml
-	case "SourceType_HttpJson":
-		SourceType = SourceType_HttpJson
+	case "SourceType_DocExcel":
+		SourceType = SourceType_DocExcel
 	default:
 		err = errors.New(fmt.Sprintf("Fetch Config, Source type is not defined : %v", config.Get("sourcetype", "")))
 		return
@@ -137,39 +134,34 @@ func fetchConfig() (err error) {
 		return
 	}
 
-	grabconfig := sedotan.Config{}
-	if tconfgrab.Has("formvalues") {
-		tfromvalues := toolkit.M{}
-		tfromvalues, err = toolkit.ToM(tconfgrab["formvalues"])
-		if err != nil {
-			err = errors.New(fmt.Sprintf("Fetch Config, formvalues found error : %v", err.Error()))
-			return
-		}
-		grabconfig.SetFormValues(tfromvalues)
-	}
-
-	if tconfgrab.Has("loginvalues") {
-		grabconfig.LoginValues, err = toolkit.ToM(tconfgrab["loginvalues"])
-	}
-
-	if err != nil {
-		err = errors.New(fmt.Sprintf("Fetch Config, loginvalues found error : %v", err.Error()))
+	if !tconfgrab.Has("doctype") {
+		err = errors.New("Fetch Config, doctype not found")
 		return
 	}
 
-	grabconfig.URL = toolkit.ToString(tconfgrab.Get("url", ""))
-	grabconfig.CallType = toolkit.ToString(tconfgrab.Get("calltype", ""))
+	ci := dbox.ConnectionInfo{}
+	mapconninfo := toolkit.M{}
 
-	grabconfig.AuthType = toolkit.ToString(tconfgrab.Get("authtype", ""))
-	grabconfig.AuthUserId = toolkit.ToString(tconfgrab.Get("authuserid", ""))
-	grabconfig.AuthPassword = toolkit.ToString(tconfgrab.Get("authpassword", ""))
+	mapconninfo, err = toolkit.ToM(tconfgrab.Get("connectioninfo", nil))
+	if err != nil {
+		err = errors.New(fmt.Sprintf("Fetch Config, load connectioninfo found error : %v", err.Error()))
+		return
+	}
 
-	grabconfig.LoginUrl = toolkit.ToString(tconfgrab.Get("loginurl", ""))
-	grabconfig.LogoutUrl = toolkit.ToString(tconfgrab.Get("logouturl", ""))
+	ci.Host = toolkit.ToString(mapconninfo.Get("host", ""))
+	ci.Database = toolkit.ToString(mapconninfo.Get("database", ""))
+	ci.UserName = toolkit.ToString(mapconninfo.Get("userName", ""))
+	ci.Password = toolkit.ToString(mapconninfo.Get("password", ""))
+	ci.Settings, err = toolkit.ToM(mapconninfo.Get("settings", nil))
+	if err != nil {
+		err = errors.New(fmt.Sprintf("Fetch Config, load connectioninfo.settings found error : %v", err.Error()))
+		return
+	}
 
-	Log.AddLog(fmt.Sprintf("Done fetch grabconf : %v", toolkit.JsonString(grabconfig)), "INFO")
-
-	wGrabber = sedotan.NewGrabber(grabconfig.URL, grabconfig.CallType, &grabconfig)
+	sGrabber, err = sedotan.NewGetDatabase(ci.Host, toolkit.ToString(tconfgrab.Get("doctype", "")), &ci)
+	if err != nil {
+		err = errors.New(fmt.Sprintf("Fetch Config, create new get database found error : %v", err.Error()))
+	}
 
 	Log.AddLog("Start fetch datasettings", "INFO")
 	if !config.Has("datasettings") || !(toolkit.TypeName(config["datasettings"]) == "[]interface {}") {
@@ -177,12 +169,12 @@ func fetchConfig() (err error) {
 		return
 	}
 
-	wGrabber.DataSettings = make(map[string]*sedotan.DataSetting)
+	sGrabber.CollectionSettings = make(map[string]*sedotan.CollectionSetting)
 	destDboxs = make(map[string]*DestInfo)
 
 	for i, xVal := range config["datasettings"].([]interface{}) {
 		err = nil
-		tDataSetting := sedotan.DataSetting{}
+		tCollectionSetting := sedotan.CollectionSetting{}
 		tDestDbox := DestInfo{}
 
 		mVal := toolkit.M{}
@@ -197,7 +189,7 @@ func fetchConfig() (err error) {
 			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d] Data Setting Id is not found", i), "ERROR")
 			continue
 		}
-		tDataSetting.RowSelector = toolkit.ToString(mVal.Get("rowselector", ""))
+		tCollectionSetting.Collection = toolkit.ToString(mVal.Get("rowselector", ""))
 
 		// Fetch columnsettings
 		if !mVal.Has("columnsettings") || !(toolkit.TypeName(mVal["columnsettings"]) == "[]interface {}") {
@@ -205,7 +197,7 @@ func fetchConfig() (err error) {
 			continue
 		}
 
-		tDataSetting.ColumnSettings = make([]*sedotan.GrabColumn, 0, 0)
+		tCollectionSetting.SelectColumn = make([]*sedotan.GrabColumn, 0, 0)
 		for xi, Valcs := range mVal["columnsettings"].([]interface{}) {
 			mValcs := toolkit.M{}
 			mValcs, err = toolkit.ToM(Valcs)
@@ -220,8 +212,8 @@ func fetchConfig() (err error) {
 			tgrabcolumn.ValueType = toolkit.ToString(mValcs.Get("valuetype", ""))
 			tgrabcolumn.AttrName = toolkit.ToString(mValcs.Get("attrname", ""))
 
-			tindex := toolkit.ToInt(mValcs.Get("index", 0), toolkit.RoundingAuto)
-			tDataSetting.Column(tindex, &tgrabcolumn)
+			// tindex := toolkit.ToInt(mValcs.Get("index", 0), toolkit.RoundingAuto)
+			tCollectionSetting.SelectColumn = append(tCollectionSetting.SelectColumn, &tgrabcolumn)
 		}
 
 		//Fetch Filter Condition
@@ -231,7 +223,7 @@ func fetchConfig() (err error) {
 			if err != nil {
 				Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : filter cond is incorrect, %v", i, t_id, err.Error()), "ERROR")
 			} else {
-				tDataSetting.SetFilterCond(tfiltercond)
+				tCollectionSetting.SetFilterCond(tfiltercond)
 			}
 		}
 
@@ -264,12 +256,12 @@ func fetchConfig() (err error) {
 		tDestDbox.IConnection.Close()
 
 		destDboxs[t_id] = &tDestDbox
-		wGrabber.DataSettings[t_id] = &tDataSetting
+		sGrabber.CollectionSettings[t_id] = &tCollectionSetting
 
 	}
 	err = nil
 
-	if len(destDboxs) == 0 || len(wGrabber.DataSettings) == 0 {
+	if len(destDboxs) == 0 || len(sGrabber.CollectionSettings) == 0 {
 		err = errors.New("Fetch Config, datasettings is not found or have wrong format")
 		return
 	}
@@ -390,7 +382,7 @@ func saverechistory(key string, dts []toolkit.M) (fullfilename string, err error
 }
 
 func savedatagrab() (err error) {
-	for key, _ := range wGrabber.Config.DataSettings {
+	for key, _ := range sGrabber.CollectionSettings {
 
 		err = nil
 		note := ""
@@ -399,7 +391,7 @@ func savedatagrab() (err error) {
 
 		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] start save data", key), "INFO")
 		docs := []toolkit.M{}
-		err = wGrabber.ResultFromHtml(key, &docs)
+		err = sGrabber.ResultFromDatabase(key, &docs)
 		if err != nil {
 			note = fmt.Sprintf("[savedatagrab.%s] Unable to get data : %s", key, err.Error())
 			Log.AddLog(note, "ERROR")
@@ -544,15 +536,15 @@ func main() {
 	Log.AddLog("Start fetch the config", "INFO")
 	err = fetchConfig()
 	checkexiterror(err)
-	Log.AddLog(fmt.Sprintf("Data grabber created : %v", toolkit.JsonString(wGrabber)), "INFO")
+	Log.AddLog(fmt.Sprintf("Data grabber created : %v", toolkit.JsonString(sGrabber)), "INFO")
 	Log.AddLog("Fetch the config success", "INFO")
 
-	Log.AddLog("Get the data", "INFO")
-	err = wGrabber.Grab(nil)
-	if err != nil {
-		checkexiterror(errors.New(fmt.Sprintf("Grab Failed : %v", err.Error())))
-	}
-	Log.AddLog("Get data grab success", "INFO")
+	// Log.AddLog("Get the data", "INFO")
+	// err = sGrabber.Grab(nil)
+	// if err != nil {
+	// 	checkexiterror(errors.New(fmt.Sprintf("Grab Failed : %v", err.Error())))
+	// }
+	// Log.AddLog("Get data grab success", "INFO")
 
 	Log.AddLog("Start save data grab", "INFO")
 	err = savedatagrab()

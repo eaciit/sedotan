@@ -1,2 +1,3 @@
 Id,Starttime,Endtime,Grabcount,Rowgrabbed,Errorfound,Lastgrabstatus,Grabstatus,Note
 irondcecomcn,2016-02-25 04-32-45,,6,45,0,success,running,
+iopriceindices,2016-02-25 04-32-45,,0,1116,0,success,done,
