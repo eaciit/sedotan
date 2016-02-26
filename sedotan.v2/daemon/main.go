@@ -16,12 +16,13 @@ import (
 	// "sync"
 	// "runtime"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"time"
 )
 
 var (
-	starttime   time.Time
 	configPath  string
 	config      []toolkit.M
 	snapshot    []Snapshot
@@ -43,10 +44,6 @@ type Snapshot struct {
 	Lastgrabstatus string //[success|failed]
 	Grabstatus     string //[running|done]
 	Note           string
-}
-
-func init() {
-	starttime = time.Now().UTC()
 }
 
 func initiate() {
@@ -282,19 +279,20 @@ func checkistimerun(id string, intervalconf toolkit.M) (cond bool) {
 		mtkdata = mapsnapshot[id]
 	}
 	// strmtkdatastarttime := mtkdata.Get("starttime", "").(string)
-	mtkstarttime := sedotan.StringToDate(mtkdata.Starttime)
+	mtkendtime := sedotan.StringToDate(mtkdata.Endtime)
 	if mtkdata.Lastgrabstatus == "failed" {
 		grabinterval = toolkit.ToInt(intervalconf.Get("timeoutinterval", 0), toolkit.RoundingAuto)
 	}
 
-	minutetime := sedotan.DateMinutePress(thistime)
+	minutetime := sedotan.DateMinutePress(thistime) //review this and the usage and parsing in cron
 
 	if strintervalconf != "" && intervalstart.Before(thistime) {
 		_, fcond := mapsnapshot[id]
+
 		switch {
 		case !fcond:
 			cond = true
-		case intervalstart.After(mtkstarttime):
+		case (!mtkendtime.IsZero() && intervalstart.After(mtkendtime)):
 			cond = true
 		case intervalconf.Get("grabinterval", 0).(float64) > 0:
 			var durationgrab time.Duration
@@ -307,9 +305,9 @@ func checkistimerun(id string, intervalconf toolkit.M) (cond bool) {
 			case "hours":
 				durationgrab = time.Hour * time.Duration(grabinterval)
 			}
-			nextgrab := mtkstarttime.Add(durationgrab)
+			nextgrab := mtkendtime.Add(durationgrab)
 
-			if nextgrab.Before(thistime) {
+			if nextgrab.Before(thistime) { //review timeout
 				cond = true
 				tempss.Grabcount = mtkdata.Grabcount + 1
 				tempss.Rowgrabbed = mtkdata.Rowgrabbed
@@ -440,6 +438,7 @@ func main() {
 
 		daemoninterval := 1 * time.Second
 		<-time.After(daemoninterval)
+		thistime = sedotan.TimeNow()
 
 		Log.AddLog(fmt.Sprintf("Run daemon"), "INFO")
 		initiate()
@@ -489,16 +488,56 @@ func main() {
 					continue
 				}
 				// run grabbing
-				go func(id string, etype string) {
+				go func(id string, etype string, thistime time.Time) {
 					etype = strings.ToLower(etype)
+					var cmd *exec.Cmd
+					aCommand := make([]string, 0, 0)
+
+					Log.AddLog("Debug Point - 01", "INFO")
+
+					if runtime.GOOS == "windows" {
+						aCommand = append(aCommand, "/C")
+					}
+
 					// Check Type [SourceType_HttpHtml|SourceType_HttpJson|SourceType_DocExcel]
 					switch {
 					case strings.Contains(etype, "http"):
-						//Do Get Web
+						if runtime.GOOS == "windows" {
+							aCommand = append(aCommand, "sedotanw.exe")
+							// cmd = exec.Command("cmd", "/C", "..\\sedotanw\\sedotanw.exe", `-config="`+configPath+`"`, `-snapshot="`+snapshotpath+`"`, `-id="`+eid+`"`)
+						} else {
+							aCommand = append(aCommand, "../sedotanw/sedotanw")
+							// cmd = exec.Command("sudo", "../sedotanw/sedotanw", `-config="`+configPath+`"`, `-snapshot="`+snapshotpath+`"`, `-id="`+eid+`"`)
+						}
 					case strings.Contains(etype, "doc"):
-						//Do Get Database
+						if runtime.GOOS == "windows" {
+							aCommand = append(aCommand, "sedotans.exe")
+							// cmd = exec.Command("cmd", "/C", "..\\sedotans\\sedotans.exe", `-config="`+configPath+`"`, `-snapshot="`+snapshotpath+`"`, `-id="`+eid+`"`)
+						} else {
+							aCommand = append(aCommand, "..\\sedotanw\\sedotans")
+							// cmd = exec.Command("sudo", "../sedotans/sedotans", `-config="`+configPath+`"`, `-snapshot="`+snapshotpath+`"`, `-id="`+eid+`"`)
+						}
 					}
-				}(eid, etype)
+
+					aCommand = append(aCommand, `-config="`+configPath+`"`)
+					aCommand = append(aCommand, `-snapshot="`+snapshotpath+`"`)
+					aCommand = append(aCommand, `-id="`+eid+`"`)
+
+					if runtime.GOOS == "windows" {
+						cmd = exec.Command("cmd", aCommand...)
+					} else {
+						cmd = exec.Command("sudo", aCommand...)
+					}
+
+					Log.AddLog("Debug Point - 02", "INFO")
+
+					Log.AddLog(fmt.Sprintf("[%v] run at %v, run : %v", eid, sedotan.DateToString(thistime), cmd.Args), "INFO")
+					byteoutput, err := cmd.CombinedOutput()
+					if err != nil {
+						Log.AddLog(fmt.Sprintf("[%v] run at %v, found error : %v", eid, sedotan.DateToString(thistime), err.Error()), "ERROR")
+					}
+					Log.AddLog(fmt.Sprintf("[%v] run at %v, done with message : %v", eid, sedotan.DateToString(thistime), string(byteoutput)), "INFO")
+				}(eid, etype, thistime)
 			} else {
 				Log.AddLog(fmt.Sprintf("Skip grabbing for id : %v", eid), "INFO")
 			}

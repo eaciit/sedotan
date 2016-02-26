@@ -22,6 +22,9 @@ func CheckError(err error) {
 }
 
 func DateToString(tm time.Time) string {
+	if tm.IsZero() {
+		tm = TimeNow()
+	}
 	return toolkit.Date2String(tm, dateformat)
 }
 

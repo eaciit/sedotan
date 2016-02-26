@@ -335,6 +335,7 @@ func savesnapshot() (err error) {
 		return
 	}
 
+	snapshotdata.Endtime = sedotan.DateToString(sedotan.TimeNow())
 	err = conn.NewQuery().SetConfig("multiexec", true).Save().Exec(toolkit.M{}.Set("data", snapshotdata))
 
 	conn.Close()
