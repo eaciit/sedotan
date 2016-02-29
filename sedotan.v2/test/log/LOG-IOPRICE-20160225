@@ -1,0 +1,12 @@
+INFO 2016/02/25 17:09:01 Starting web grab data
+INFO 2016/02/25 17:09:01 Start fetch the config
+INFO 2016/02/25 17:09:01 Start fetch grabconf
+INFO 2016/02/25 17:09:01 Start fetch datasettings
+INFO 2016/02/25 17:09:01 Start fetch histconf
+INFO 2016/02/25 17:09:01 Data grabber created : {"Host":"E:\\data\\sample\\IO Price Indices.xlsm","Database":"","UserName":"","Password":"","Settings":null,"CollectionSettings":{"histiopriceindices":{"Collection":"HIST","SelectColumn":[{"Alias":"Date","Selector":"1","ValueType":"","AttrName":""},{"Alias":"Platts 62% Fe IODEX","Selector":"2","ValueType":"","AttrName":""},{"Alias":"Platts 65% Fe","Selector":"4","ValueType":"","AttrName":""},{"Alias":"TSI 62% Fe","Selector":"15","ValueType":"","AttrName":""},{"Alias":"TSI 65% Fe","Selector":"16","ValueType":"","AttrName":""},{"Alias":"TSI 62% Fe LOW ALUMINA","Selector":"17","ValueType":"","AttrName":""},{"Alias":"MB 62% Fe","Selector":"26","ValueType":"","AttrName":""},{"Alias":"MB 65% Fe","Selector":"29","ValueType":"","AttrName":""}],"FilterCond":{"$and":[{"1":{"$ne":""}}]}}},"LastExecuted":"0001-01-01T00:00:00Z","Response":null}
+INFO 2016/02/25 17:09:01 Fetch the config success
+INFO 2016/02/25 17:09:01 Start save data grab
+INFO 2016/02/25 17:09:01 [savedatagrab.histiopriceindices] start save data
+INFO 2016/02/25 17:09:09 [savedatagrab.histiopriceindices] Finish save data
+INFO 2016/02/25 17:09:09 Save data grab success
+INFO 2016/02/25 17:09:09 Finish grab data

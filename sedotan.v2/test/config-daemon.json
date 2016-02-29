@@ -1,0 +1,231 @@
+[
+  {
+    "_id": "irondcecomcn",
+    "sourcetype": "SourceType_HttpHtml",
+    "grabconf": 
+      {
+        "url": "http://www.dce.com.cn/PublicWeb/MainServlet",
+        "calltype": "POST",
+        "formvalues":
+          {
+            "Pu00231_Input.trade_date": "20160105",
+            "Pu00231_Input.variety": "i",
+            "Pu00231_Input.trade_type": "0",
+            "Submit": "Go",
+            "action": "Pu00231_result"
+          },
+        "timeout": 60
+      },
+    "intervalconf": 
+      {
+        "starttime":"2016-02-26 00-00-00",
+        "intervaltype": "seconds",
+        "grabinterval": 25,
+        "timeoutinterval": 5,
+        "cronconf" : ""
+      },
+    "logconf": 
+      {
+        "logpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\log",
+        "filename": "LOG-GRABDCE",
+        "filepattern": "YYYYMMdd"
+      },
+    "histconf": 
+      {
+        "histpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "recpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "filename": "HIST-GRABDCE",
+        "filepattern": "YYYYMMdd"
+      },
+    "datasettings": 
+      [
+        {
+          "_id": "Iron01",
+          "rowselector": "table .table tbody tr",
+          "columnsettings": 
+            [
+              {
+                "index": 0,
+                "alias": "Contract",
+                "selector": "td:nth-child(1)"
+              },
+              {
+                "index": 0,
+                "alias": "Open",
+                "selector": "td:nth-child(2)"
+              },
+              {
+                "index": 0,
+                "alias": "High",
+                "selector": "td:nth-child(3)"
+              },
+              {
+                "index": 0,
+                "alias": "Low",
+                "selector": "td:nth-child(4)"
+              },
+              {
+                "index": 0,
+                "alias": "Close",
+                "selector": "td:nth-child(5)"
+              },
+              {
+                "index": 0,
+                "alias": "Prev Settle",
+                "selector": "td:nth-child(6)"
+              },
+              {
+                "index": 0,
+                "alias": "Settle",
+                "selector": "td:nth-child(7)"
+              },
+              {
+                "index": 0,
+                "alias": "Chg",
+                "selector": "td:nth-child(8)"
+              },
+              {
+                "index": 0,
+                "alias": "Volume",
+                "selector": "td:nth-child(9)"
+              },
+              {
+                "index": 0,
+                "alias": "OI",
+                "selector": "td:nth-child(10)"
+              },
+              {
+                "index": 0,
+                "alias": "OI Chg",
+                "selector": "td:nth-child(11)"
+              },
+              {
+                "index": 0,
+                "alias": "Turnover",
+                "selector": "td:nth-child(12)"
+              }
+            ],
+          "filtercond":
+            { 
+              "$or":
+                [
+                  {"Contract": "Contract"},
+                  {"Contract": "Iron Ore Subtotal"},
+                  {"Contract": "Total"}
+                ]
+            },
+          "desttype": "mongo",
+          "connectioninfo": 
+            {
+              "host": "localhost:27017",
+              "database": "valegrab",
+              "collection": "irondcecom",
+              "settings":
+                {
+                  "timeout": 3
+                }
+            }
+        }
+      ],
+    "running": true
+  },
+  {
+    "_id": "iopriceindices",
+    "sourcetype": "SourceType_DocExcel",
+    "grabconf":  
+      {
+        "doctype": "xlsx",
+        "connectioninfo": 
+          {
+            "host": "E:\\data\\sample\\IO Price Indices.xlsm"
+          },
+        "timeout": 60
+      },
+    "intervalconf": 
+      {
+        "starttime":"2016-02-26 00-00-00",
+        "intervaltype": "seconds",
+        "grabinterval": 25,
+        "timeoutinterval": 5,
+        "cronconf" : ""
+      },
+    "logconf": 
+      {
+        "logpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\log",
+        "filename": "LOG-IOPRICE",
+        "filepattern": "YYYYMMdd"
+      },
+    "histconf": 
+      {
+        "histpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "recpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "filename": "HIST-IOPRICE",
+        "filepattern": "YYYYMMdd"
+      },
+    "datasettings": 
+      [
+        {
+          "_id": "histiopriceindices",
+          "rowselector": "HIST",
+          "columnsettings": 
+            [
+              {
+                "alias": "Date",
+                "selector": "1"
+              },
+              {
+                "alias": "Platts 62% Fe IODEX",
+                "selector": "2"
+              },
+              {
+                "alias": "Platts 65% Fe",
+                "selector": "4"
+              },
+              {
+                "alias": "TSI 62% Fe",
+                "selector": "15"
+              },
+              {
+                "alias": "TSI 65% Fe",
+                "selector": "16"
+              },
+              {
+                "alias": "TSI 62% Fe LOW ALUMINA",
+                "selector": "17"
+              },
+              {
+                "alias": "MB 62% Fe",
+                "selector": "26"
+              },
+              {
+                "alias": "MB 65% Fe",
+                "selector": "29"
+              }
+            ],
+          "filtercond":
+            { 
+              "$and":
+                [
+                  {"1": 
+                    { 
+                      "$ne": ""
+                    }
+                  }
+                ]
+            },
+          "desttype": "mongo",
+          "connectioninfo": 
+            {
+              "host": "localhost:27017",
+              "database": "valegrab",
+              "collection": "iopriceindices",
+              "settings":
+                {
+                  "timeout": 1
+                }
+            }
+        }
+      ],
+    "running": false
+  }
+]

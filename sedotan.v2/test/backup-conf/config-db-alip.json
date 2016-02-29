@@ -1,0 +1,87 @@
+[
+  {
+    "nameid": "iopriceindices",
+    "grabconf": 
+      {
+        "doctype": "xlsx",
+        "connectioninfo": 
+          {
+            "host": "E:\\data\\sample\\IO Price Indices.xlsm"
+          }
+      },
+    "intervaltype": "seconds",
+    "grabinterval": 3000,
+    "timeoutinterval": 5,
+    "sourcetype": "SourceType_DocExcel",
+    "logconf": 
+      {
+        "logpath": "E:\\data\\vale\\log",
+        "filename": "LOG-IOPRICE-%s",
+        "filepattern": "20060102"
+      },
+    "datasettings": 
+      [
+        {
+          "name": "histiopriceindices",
+          "rowselector": "HIST",
+          "columnsettings": 
+            [
+              {
+                "alias": "Date",
+                "selector": "1"
+              },
+              {
+                "alias": "Platts 62% Fe IODEX",
+                "selector": "2"
+              },
+              {
+                "alias": "Platts 65% Fe",
+                "selector": "4"
+              },
+              {
+                "alias": "TSI 62% Fe",
+                "selector": "15"
+              },
+              {
+                "alias": "TSI 65% Fe",
+                "selector": "16"
+              },
+              {
+                "alias": "TSI 62% Fe LOW ALUMINA",
+                "selector": "17"
+              },
+              {
+                "alias": "MB 62% Fe",
+                "selector": "26"
+              },
+              {
+                "alias": "MB 65% Fe",
+                "selector": "29"
+              }
+            ],
+          "filtercond":
+            { 
+              "$and":
+                [
+                  {"1": 
+                    { 
+                      "$ne": ""
+                    }
+                  }
+                ]
+            },
+          "desttype": "mongo",
+          "connectioninfo": 
+            {
+              "host": "localhost:27017",
+              "database": "valegrab",
+              "collection": "iopriceindices",
+              "settings":
+                {
+                  "timeout": 1
+                }
+            }
+        }
+      ]
+  }
+]
