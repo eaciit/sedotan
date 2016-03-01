@@ -23,6 +23,10 @@ import (
 )
 
 var (
+	// AppBasePath  string = func(dir string, err error) string { return dir }(os.Getwd())
+	EC_APP_PATH  string = os.Getenv("EC_APP_PATH")
+	EC_DATA_PATH string = os.Getenv("EC_DATA_PATH")
+
 	configPath  string
 	config      []toolkit.M
 	snapshot    []Snapshot
@@ -204,6 +208,7 @@ func prepareConnectionSnapshot(filepathsnapshot string) (dbox.IConnection, error
 }
 
 func getDataSnapShot(filepathsnapshot string) (err error) {
+
 	conn, err := prepareConnectionSnapshot(filepathsnapshot)
 	if err != nil {
 		err = errors.New(fmt.Sprintf("snapshot connection failed : %v", err.Error()))
@@ -256,8 +261,9 @@ func savesnapshot(id, filepathsnapshot string) (err error) {
 }
 
 //Check Time run and record to snapshot
-func checkistimerun(id string, intervalconf toolkit.M) (cond bool) {
+func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond bool) {
 	cond = false
+	var mtkstarttime, mtkendtime time.Time
 	tempss := Snapshot{Id: id,
 		Starttime:      sedotan.DateToString(thistime),
 		Endtime:        "",
@@ -270,21 +276,34 @@ func checkistimerun(id string, intervalconf toolkit.M) (cond bool) {
 
 	strintervalconf := intervalconf.Get("starttime", "").(string)
 	intervalstart := sedotan.StringToDate(strintervalconf)
-	strcronconf := intervalconf.Get("cronconf", "").(string)
+	mapcronconf, _ := toolkit.ToM(intervalconf.Get("cronconf", nil))
 	strintervaltype := intervalconf.Get("intervaltype", "").(string)
 	grabinterval := toolkit.ToInt(intervalconf.Get("grabinterval", 0), toolkit.RoundingAuto)
 
 	mtkdata := Snapshot{}
+
 	if _, f := mapsnapshot[id]; f {
 		mtkdata = mapsnapshot[id]
+
+		//for data timeout
+		mtkstarttime = sedotan.StringToDate(mtkdata.Starttime)
+		mtkendtime = sedotan.StringToDate(mtkdata.Endtime)
+
+		timeoutint := toolkit.ToInt(grabconf.Get("timeout", 0), toolkit.RoundingAuto)
+		timeoutsec := time.Second * time.Duration(timeoutint)
+		if mtkendtime.IsZero() && thistime.After(mtkstarttime.Add(timeoutsec)) && timeoutint > 0 {
+			mtkdata.Endtime = sedotan.DateToString(mtkstarttime.Add(timeoutsec))
+			mtkendtime = sedotan.StringToDate(mtkdata.Endtime)
+			mtkdata.Lastgrabstatus = "failed"
+			mtkdata.Grabstatus = "done"
+		}
 	}
-	// strmtkdatastarttime := mtkdata.Get("starttime", "").(string)
-	mtkendtime := sedotan.StringToDate(mtkdata.Endtime)
+
 	if mtkdata.Lastgrabstatus == "failed" {
 		grabinterval = toolkit.ToInt(intervalconf.Get("timeoutinterval", 0), toolkit.RoundingAuto)
 	}
 
-	minutetime := sedotan.DateMinutePress(thistime) //review this and the usage and parsing in cron
+	secondtime := sedotan.DateSecondPress(thistime) //review this and the usage and parsing in cron
 
 	if strintervalconf != "" && intervalstart.Before(thistime) {
 		_, fcond := mapsnapshot[id]
@@ -292,7 +311,8 @@ func checkistimerun(id string, intervalconf toolkit.M) (cond bool) {
 		switch {
 		case !fcond:
 			cond = true
-		case (!mtkendtime.IsZero() && intervalstart.After(mtkendtime)):
+			// case ((!mtkendtime.IsZero() && intervalstart.After(mtkendtime)) || intervalstart.After(mtkendtime)):
+		case intervalstart.After(mtkstarttime):
 			cond = true
 		case intervalconf.Get("grabinterval", 0).(float64) > 0:
 			var durationgrab time.Duration
@@ -307,7 +327,7 @@ func checkistimerun(id string, intervalconf toolkit.M) (cond bool) {
 			}
 			nextgrab := mtkendtime.Add(durationgrab)
 
-			if nextgrab.Before(thistime) { //review timeout
+			if nextgrab.Before(thistime) && !mtkendtime.IsZero() { //review timeout
 				cond = true
 				tempss.Grabcount = mtkdata.Grabcount + 1
 				tempss.Rowgrabbed = mtkdata.Rowgrabbed
@@ -317,49 +337,39 @@ func checkistimerun(id string, intervalconf toolkit.M) (cond bool) {
 		}
 	}
 
-	if strcronconf != "" {
+	if len(mapcronconf) > 0 {
 		//min hour dayofmonth month dayofweek
-		strsplit := strings.Split(strcronconf, " ")
 		cond = true
+		arrstr := [6]string{"second", "min", "hour", "dayofmonth", "month", "dayofweek"}
+		for _, str := range arrstr {
+			sval := toolkit.ToString(mapcronconf.Get(str, ""))
+			ival := toolkit.ToInt(sval, toolkit.RoundingAuto)
 
-		for i, vtime := range strsplit {
-			ivtime := toolkit.ToInt(vtime, toolkit.RoundingAuto)
-			switch i {
-			case 0:
-				if vtime == "*" || thistime.Minute() == ivtime {
-					cond = cond && true
-				} else {
-					cond = false
-				}
-			case 1:
-				if vtime == "*" || thistime.Hour() == ivtime {
-					cond = cond && true
-				} else {
-					cond = false
-				}
-			case 2:
-				if vtime == "*" || thistime.Day() == ivtime {
-					cond = cond && true
-				} else {
-					cond = false
-				}
-			case 3:
-				if vtime == "*" || toolkit.ToInt(thistime.Month(), toolkit.RoundingAuto) == ivtime {
-					cond = cond && true
-				} else {
-					cond = false
-				}
-			case 4:
-				if vtime == "*" || toolkit.ToInt(thistime.Weekday(), toolkit.RoundingAuto) == ivtime {
-					cond = cond && true
-				} else {
-					cond = false
-				}
+			var valcom int
+			switch str {
+			case "second":
+				valcom = thistime.Second()
+			case "min":
+				valcom = thistime.Minute()
+			case "hour":
+				valcom = thistime.Hour()
+			case "dayofmonth":
+				valcom = thistime.Day()
+			case "month":
+				valcom = toolkit.ToInt(thistime.Month(), toolkit.RoundingAuto)
+			case "dayofweek":
+				valcom = toolkit.ToInt(thistime.Weekday(), toolkit.RoundingAuto)
+			}
+
+			if sval != "*" && valcom != ival {
+				cond = false
+			} else {
+				cond = cond && true
 			}
 		}
 
 		if mtkdata.Starttime != "" {
-			cond = cond && minutetime.After(sedotan.StringToDate(mtkdata.Starttime))
+			cond = cond && secondtime.After(sedotan.StringToDate(mtkdata.Starttime))
 		}
 
 		if cond {
@@ -377,15 +387,25 @@ func checkistimerun(id string, intervalconf toolkit.M) (cond bool) {
 	return
 }
 
-func checkisonprocess(id string, intervalconf toolkit.M) (cond bool) {
+func checkisonprocess(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond bool) {
 	cond = false
 	if _, f := mapsnapshot[id]; !f {
 		return
 	}
 
 	mtkdata := mapsnapshot[id]
-	if mtkdata.Grabstatus == "running" && intervalconf.Get("cronconf", "").(string) == "" {
+	mapcron, _ := toolkit.ToM(intervalconf["cronconf"])
+	if mtkdata.Grabstatus == "running" && len(mapcron) <= 0 {
 		cond = true
+	}
+
+	mtkstarttime := sedotan.StringToDate(mtkdata.Starttime)
+
+	timeoutint := toolkit.ToInt(grabconf.Get("timeout", 0), toolkit.RoundingAuto)
+	timeoutsec := time.Second * time.Duration(timeoutint)
+
+	if cond && (thistime.After(mtkstarttime.Add(timeoutsec)) && timeoutint > 0) {
+		cond = false
 	}
 
 	return
@@ -395,17 +415,17 @@ func main() {
 	// runtime.GOMAXPROCS(runtime.NumCPU())
 	var err error
 
-	flagConfigPath := flag.String("config", "", "config file")
+	flagConfig := flag.String("config", "", "config file")
 	flagDebugMode := flag.Bool("debug", false, "debug mode")
 	flagLogPath := flag.String("logpath", "", "log path")
 
 	flag.Parse()
-	tconfigPath := toolkit.ToString(*flagConfigPath)
+	tconfig := toolkit.ToString(*flagConfig)
 	tlogPath := toolkit.ToString(*flagLogPath)
 	debugMode = *flagDebugMode
 
-	configPath = strings.Replace(tconfigPath, `"`, "", -1)
-	if tconfigPath == "" {
+	configPath = strings.Replace(tconfig, `"`, "", -1)
+	if tconfig == "" {
 		sedotan.CheckError(errors.New("-config cannot be empty"))
 	}
 
@@ -468,17 +488,16 @@ func main() {
 			eid := econfig.Get("_id", "").(string)
 			Log.AddLog(fmt.Sprintf("Check config for id : %v", eid), "INFO")
 			intervalconf, _ := toolkit.ToM(econfig["intervalconf"])
+			grabconf, _ := toolkit.ToM(econfig["grabconf"])
 
-			var isonprocess bool = checkisonprocess(eid, intervalconf)
+			var isonprocess bool = checkisonprocess(eid, intervalconf, grabconf)
 			var isconfrun bool = econfig.Get("running", false).(bool) //check config status run/stop (isconfrun)
-			var istimerun bool = checkistimerun(eid, intervalconf)
+			var istimerun bool = checkistimerun(eid, intervalconf, grabconf)
 
-			egrabconf, _ := toolkit.ToM(econfig["grabconf"]) // check error in check config function
-			etype := egrabconf.Get("sourcetype", "").(string)
-
+			etype := econfig.Get("sourcetype", "").(string)
 			//check grab status onprocess/done/na/error -> conf file / snapshot file ? (isonprocess)
 			//check interval+time start/corn schedulling and check last running for interval(istimerun)
-			fmt.Printf("!%v && %v && %v \n", isonprocess, isconfrun, istimerun)
+			// fmt.Printf("!%v && %v && %v \n", isonprocess, isconfrun, istimerun)
 			if !isonprocess && isconfrun && istimerun {
 				Log.AddLog(fmt.Sprintf("Start grabbing for id : %v", eid), "INFO")
 				// save data snapshot using dbox save
@@ -493,31 +512,27 @@ func main() {
 					var cmd *exec.Cmd
 					aCommand := make([]string, 0, 0)
 
-					Log.AddLog("Debug Point - 01", "INFO")
-
 					if runtime.GOOS == "windows" {
 						aCommand = append(aCommand, "/C")
 					}
 
+					apppath := ""
 					// Check Type [SourceType_HttpHtml|SourceType_HttpJson|SourceType_DocExcel]
 					switch {
 					case strings.Contains(etype, "http"):
 						if runtime.GOOS == "windows" {
-							aCommand = append(aCommand, "sedotanw.exe")
-							// cmd = exec.Command("cmd", "/C", "..\\sedotanw\\sedotanw.exe", `-config="`+configPath+`"`, `-snapshot="`+snapshotpath+`"`, `-id="`+eid+`"`)
+							apppath = filepath.Join(EC_APP_PATH, "cli", "sedotanw.exe")
 						} else {
-							aCommand = append(aCommand, "../sedotanw/sedotanw")
-							// cmd = exec.Command("sudo", "../sedotanw/sedotanw", `-config="`+configPath+`"`, `-snapshot="`+snapshotpath+`"`, `-id="`+eid+`"`)
+							apppath = filepath.Join(EC_APP_PATH, "cli", "sedotanw")
 						}
 					case strings.Contains(etype, "doc"):
 						if runtime.GOOS == "windows" {
-							aCommand = append(aCommand, "sedotans.exe")
-							// cmd = exec.Command("cmd", "/C", "..\\sedotans\\sedotans.exe", `-config="`+configPath+`"`, `-snapshot="`+snapshotpath+`"`, `-id="`+eid+`"`)
+							apppath = filepath.Join(EC_APP_PATH, "cli", "sedotans.exe")
 						} else {
-							aCommand = append(aCommand, "..\\sedotanw\\sedotans")
-							// cmd = exec.Command("sudo", "../sedotans/sedotans", `-config="`+configPath+`"`, `-snapshot="`+snapshotpath+`"`, `-id="`+eid+`"`)
+							apppath = filepath.Join(EC_APP_PATH, "cli", "sedotans")
 						}
 					}
+					aCommand = append(aCommand, apppath)
 
 					aCommand = append(aCommand, `-config="`+configPath+`"`)
 					aCommand = append(aCommand, `-snapshot="`+snapshotpath+`"`)
@@ -528,8 +543,6 @@ func main() {
 					} else {
 						cmd = exec.Command("sudo", aCommand...)
 					}
-
-					Log.AddLog("Debug Point - 02", "INFO")
 
 					Log.AddLog(fmt.Sprintf("[%v] run at %v, run : %v", eid, sedotan.DateToString(thistime), cmd.Args), "INFO")
 					byteoutput, err := cmd.CombinedOutput()

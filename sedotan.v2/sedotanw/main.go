@@ -13,6 +13,7 @@ import (
 	"github.com/eaciit/toolkit"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -38,6 +39,9 @@ var (
 	wGrabber   *sedotan.Grabber
 	destDboxs  map[string]*DestInfo
 	Log        *toolkit.LogEngine
+
+	EC_APP_PATH  string = os.Getenv("EC_APP_PATH")
+	EC_DATA_PATH string = os.Getenv("EC_DATA_PATH")
 )
 
 type DestInfo struct {
@@ -355,6 +359,9 @@ func savehistory(dt toolkit.M) (err error) {
 	err = nil
 	filename := fmt.Sprintf("%s-%s.csv", toolkit.ToString(histConf.Get("filename", "")), toolkit.Date2String(sedotan.TimeNow(), toolkit.ToString(histConf.Get("filepattern", ""))))
 	fullfilename := filepath.Join(toolkit.ToString(histConf.Get("histpath", "")), filename)
+	if EC_DATA_PATH != "" {
+		fullfilename = filepath.Join(EC_DATA_PATH, "webgrabber", "history", filename)
+	}
 
 	cconfig := toolkit.M{"newfile": true, "useheader": true, "delimiter": ","}
 	conn, err := prepareconnection("csv", fullfilename, "", "", "", cconfig)
@@ -373,6 +380,9 @@ func saverechistory(key string, dts []toolkit.M) (fullfilename string, err error
 	err = nil
 	filename := fmt.Sprintf("%s.%s-%s.csv", _id, key, toolkit.Date2String(sedotan.TimeNow(), "YYYYMMddHHmmss"))
 	fullfilename = filepath.Join(toolkit.ToString(histConf.Get("recpath", "")), filename)
+	if EC_DATA_PATH != "" {
+		fullfilename = filepath.Join(EC_DATA_PATH, "webgrabber", "historyrec", filename)
+	}
 
 	cconfig := toolkit.M{"newfile": true, "useheader": true, "delimiter": ","}
 	conn, err := prepareconnection("csv", fullfilename, "", "", "", cconfig)
@@ -538,7 +548,12 @@ func main() {
 		checkfatalerror(errors.New(fmt.Sprintf("config log is not complete")))
 	}
 
-	Log, err = toolkit.NewLog(false, true, logconf["logpath"].(string), (logconf["filename"].(string) + "-%s"), logconf["filepattern"].(string))
+	logpath := logconf["logpath"].(string)
+	if EC_DATA_PATH != "" {
+		logpath = filepath.Join(EC_DATA_PATH, "webgrabber", "log")
+	}
+
+	Log, err = toolkit.NewLog(false, true, logpath, (logconf["filename"].(string) + "-%s"), logconf["filepattern"].(string))
 	checkfatalerror(err)
 	Log.AddLog("Starting web grab data", "INFO")
 

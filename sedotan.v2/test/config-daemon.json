@@ -22,7 +22,7 @@
         "intervaltype": "seconds",
         "grabinterval": 25,
         "timeoutinterval": 5,
-        "cronconf" : ""
+        "cronconf" : "* "
       },
     "logconf": 
       {

@@ -36,6 +36,10 @@ func DateMinutePress(tm time.Time) time.Time {
 	return toolkit.String2Date(toolkit.Date2String(tm, "YYYY-MM-dd HH-mm"), "YYYY-MM-dd HH-mm").UTC()
 }
 
+func DateSecondPress(tm time.Time) time.Time {
+	return toolkit.String2Date(toolkit.Date2String(tm, dateformat), dateformat).UTC()
+}
+
 func TimeNow() time.Time {
 	return time.Now().UTC()
 }
