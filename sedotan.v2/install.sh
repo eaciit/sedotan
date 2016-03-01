@@ -12,7 +12,9 @@ go build -o $EC_APP_PATH/cli/sedotans
 echo "sedotans installed on $EC_APP_PATH/cli"
 
 cd ../sedotanw
-go build -o $EC_APP_PATH/cli/sedotan
+go build -o $EC_APP_PATH/cli/sedotanw
 echo "sedotanw installed on $EC_APP_PATH/cli"
 
+cp ../test/log/daemonsnapshot.csv $EC_DATA_PATH/daemon/
+echo "daemonsnapshot.csv copied to $EC_DATA_PATH/daemon"
 cd ../
