@@ -541,7 +541,7 @@ func main() {
 					if runtime.GOOS == "windows" {
 						cmd = exec.Command("cmd", aCommand...)
 					} else {
-						cmd = exec.Command("sudo", aCommand...)
+						cmd = exec.Command(aCommand[0], aCommand[1:]...)
 					}
 
 					Log.AddLog(fmt.Sprintf("[%v] run at %v, run : %v", eid, sedotan.DateToString(thistime), cmd.Args), "INFO")
