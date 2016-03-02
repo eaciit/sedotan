@@ -513,6 +513,7 @@ func main() {
 					aCommand := make([]string, 0, 0)
 
 					if runtime.GOOS == "windows" {
+						aCommand = append(aCommand, "cmd")
 						aCommand = append(aCommand, "/C")
 					}
 
@@ -533,16 +534,11 @@ func main() {
 						}
 					}
 					aCommand = append(aCommand, apppath)
-
 					aCommand = append(aCommand, `-config="`+configPath+`"`)
 					aCommand = append(aCommand, `-snapshot="`+snapshotpath+`"`)
 					aCommand = append(aCommand, `-id="`+eid+`"`)
 
-					if runtime.GOOS == "windows" {
-						cmd = exec.Command("cmd", aCommand...)
-					} else {
-						cmd = exec.Command(aCommand[0], aCommand[1:]...)
-					}
+					cmd = exec.Command(aCommand[0], aCommand[1:]...)
 
 					Log.AddLog(fmt.Sprintf("[%v] run at %v, run : %v", eid, sedotan.DateToString(thistime), cmd.Args), "INFO")
 					byteoutput, err := cmd.CombinedOutput()
