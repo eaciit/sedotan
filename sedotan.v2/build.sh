@@ -4,8 +4,8 @@ if [ -z "$EC_APP_PATH" ]; then
 fi
 
 cd daemon
-go build -o $EC_APP_PATH/daemon/sedotand
-echo "sedotand installed on $EC_APP_PATH/daemon"
+go build -o $EC_APP_PATH/cli/sedotand
+echo "sedotand installed on $EC_APP_PATH/cli"
 
 cd ../sedotans
 go build -o $EC_APP_PATH/cli/sedotans
