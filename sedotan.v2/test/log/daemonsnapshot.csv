@@ -1,2 +1,2 @@
-Id,Starttime,Endtime,Grabcount,Rowgrabbed,Errorfound,Lastgrabstatus,Grabstatus,Note
-irondcecomcn,2016-02-26 04-24-48,,0,0,0,,running,
+Id,Starttime,Laststartgrab,Lastupdate,Grabcount,Rowgrabbed,Errorfound,Lastgrabstatus,Grabstatus,Cgtotal,Cgprocess,Note,Pid
+iopriceindices,2016-03-04 07-56-58,2016-03-04 08-50-41,2016-03-04 08-50-51,4,5585,0,success,done,0,1117,,692
