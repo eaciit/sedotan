@@ -41,13 +41,17 @@ var (
 type Snapshot struct {
 	Id             string
 	Starttime      string
-	Endtime        string
+	Laststartgrab  string
+	Lastupdate     string
 	Grabcount      int
 	Rowgrabbed     int
 	Errorfound     int
 	Lastgrabstatus string //[success|failed]
 	Grabstatus     string //[running|done]
+	Cgtotal        int
+	Cgprocess      int
 	Note           string
+	Pid            int
 }
 
 func initiate() {
@@ -263,16 +267,22 @@ func savesnapshot(id, filepathsnapshot string) (err error) {
 //Check Time run and record to snapshot
 func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond bool) {
 	cond = false
-	var mtkstarttime, mtkendtime time.Time
+	var mtklaststarttime, mtklastupdate time.Time
 	tempss := Snapshot{Id: id,
-		Starttime:      sedotan.DateToString(thistime),
-		Endtime:        "",
+		Starttime:      "",
+		Laststartgrab:  "",
+		Lastupdate:     "",
 		Grabcount:      0,
 		Rowgrabbed:     0,
 		Errorfound:     0,
 		Lastgrabstatus: "",
 		Grabstatus:     "running",
-		Note:           ""}
+		Cgtotal:        0,
+		Cgprocess:      0,
+		Note:           "",
+		Pid:            0}
+	// 	Lastgrabstatus string //[success|failed]
+	// 	Grabstatus     string //[running|done]
 
 	strintervalconf := intervalconf.Get("starttime", "").(string)
 	intervalstart := sedotan.StringToDate(strintervalconf)
@@ -284,18 +294,28 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 
 	if _, f := mapsnapshot[id]; f {
 		mtkdata = mapsnapshot[id]
-
+		tempss.Starttime = mtkdata.Starttime
 		//for data timeout
-		mtkstarttime = sedotan.StringToDate(mtkdata.Starttime)
-		mtkendtime = sedotan.StringToDate(mtkdata.Endtime)
+		mtklaststarttime = sedotan.StringToDate(mtkdata.Laststartgrab)
+		mtklastupdate = sedotan.StringToDate(mtkdata.Lastupdate)
 
 		timeoutint := toolkit.ToInt(grabconf.Get("timeout", 0), toolkit.RoundingAuto)
 		timeoutsec := time.Second * time.Duration(timeoutint)
-		if mtkendtime.IsZero() && thistime.After(mtkstarttime.Add(timeoutsec)) && timeoutint > 0 {
-			mtkdata.Endtime = sedotan.DateToString(mtkstarttime.Add(timeoutsec))
-			mtkendtime = sedotan.StringToDate(mtkdata.Endtime)
+		if mtkdata.Grabstatus == "running" && thistime.After(mtklaststarttime.Add(timeoutsec)) && timeoutint > 0 {
+			mtkdata.Lastupdate = sedotan.DateToString(mtklaststarttime.Add(timeoutsec))
+			mtklastupdate = sedotan.StringToDate(mtkdata.Lastupdate)
 			mtkdata.Lastgrabstatus = "failed"
 			mtkdata.Grabstatus = "done"
+		}
+
+		// set initial - found a long time ago snapshot
+		if intervalstart.After(sedotan.StringToDate(mtkdata.Starttime)) {
+			tempss.Starttime = sedotan.DateToString(thistime)
+
+			mtkdata.Grabcount = 0
+			mtkdata.Rowgrabbed = 0
+			mtkdata.Errorfound = 0
+			mtkdata.Lastgrabstatus = ""
 		}
 	}
 
@@ -303,16 +323,13 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 		grabinterval = toolkit.ToInt(intervalconf.Get("timeoutinterval", 0), toolkit.RoundingAuto)
 	}
 
-	secondtime := sedotan.DateSecondPress(thistime) //review this and the usage and parsing in cron
+	minutetime := sedotan.DateMinutePress(thistime) //review this and the usage and parsing in cron
 
 	if strintervalconf != "" && intervalstart.Before(thistime) {
 		_, fcond := mapsnapshot[id]
 
 		switch {
-		case !fcond:
-			cond = true
-			// case ((!mtkendtime.IsZero() && intervalstart.After(mtkendtime)) || intervalstart.After(mtkendtime)):
-		case intervalstart.After(mtkstarttime):
+		case !fcond || intervalstart.After(sedotan.StringToDate(mtkdata.Starttime)):
 			cond = true
 		case intervalconf.Get("grabinterval", 0).(float64) > 0:
 			var durationgrab time.Duration
@@ -325,9 +342,9 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 			case "hours":
 				durationgrab = time.Hour * time.Duration(grabinterval)
 			}
-			nextgrab := mtkendtime.Add(durationgrab)
+			nextgrab := mtklastupdate.Add(durationgrab)
 
-			if nextgrab.Before(thistime) && !mtkendtime.IsZero() { //review timeout
+			if nextgrab.Before(thistime) && !mtklastupdate.IsZero() {
 				cond = true
 				tempss.Grabcount = mtkdata.Grabcount + 1
 				tempss.Rowgrabbed = mtkdata.Rowgrabbed
@@ -340,15 +357,16 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 	if len(mapcronconf) > 0 {
 		//min hour dayofmonth month dayofweek
 		cond = true
-		arrstr := [6]string{"second", "min", "hour", "dayofmonth", "month", "dayofweek"}
+		arrstr := [6]string{"min", "hour", "dayofmonth", "month", "dayofweek"}
+		// arrstr := [6]string{"month", "dayofmonth", "dayofweek", "hour", "min", "second"}
 		for _, str := range arrstr {
 			sval := toolkit.ToString(mapcronconf.Get(str, ""))
 			ival := toolkit.ToInt(sval, toolkit.RoundingAuto)
 
 			var valcom int
 			switch str {
-			case "second":
-				valcom = thistime.Second()
+			// case "second":
+			// 	valcom = thistime.Second()
 			case "min":
 				valcom = thistime.Minute()
 			case "hour":
@@ -368,8 +386,8 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 			}
 		}
 
-		if mtkdata.Starttime != "" {
-			cond = cond && secondtime.After(sedotan.StringToDate(mtkdata.Starttime))
+		if mtkdata.Laststartgrab != "" {
+			cond = cond && minutetime.After(sedotan.StringToDate(mtkdata.Laststartgrab))
 		}
 
 		if cond {
@@ -497,10 +515,19 @@ func main() {
 			etype := econfig.Get("sourcetype", "").(string)
 			//check grab status onprocess/done/na/error -> conf file / snapshot file ? (isonprocess)
 			//check interval+time start/corn schedulling and check last running for interval(istimerun)
-			// fmt.Printf("!%v && %v && %v \n", isonprocess, isconfrun, istimerun)
+			//fmt.Printf("!%v && %v && %v \n", isonprocess, isconfrun, istimerun)
 			if !isonprocess && isconfrun && istimerun {
 				Log.AddLog(fmt.Sprintf("Start grabbing for id : %v", eid), "INFO")
+
 				// save data snapshot using dbox save
+				tsnapshot := mapsnapshot[eid]
+				tsnapshot.Laststartgrab = sedotan.DateToString(thistime)
+				tsnapshot.Pid = toolkit.RandInt(1000) + 1
+				tsnapshot.Cgtotal = 0
+				tsnapshot.Cgprocess = 0
+
+				mapsnapshot[eid] = tsnapshot
+
 				err = savesnapshot(eid, snapshotpath)
 				if err != nil {
 					Log.AddLog(fmt.Sprintf("Save snapshot id : %v, error found : %v", eid, err), "INFO")
@@ -537,6 +564,7 @@ func main() {
 					aCommand = append(aCommand, `-config="`+configPath+`"`)
 					aCommand = append(aCommand, `-snapshot="`+snapshotpath+`"`)
 					aCommand = append(aCommand, `-id="`+eid+`"`)
+					aCommand = append(aCommand, `-pid=`+toolkit.ToString(mapsnapshot[eid].Pid))
 
 					cmd = exec.Command(aCommand[0], aCommand[1:]...)
 

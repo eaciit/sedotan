@@ -12,10 +12,12 @@ import (
 	"github.com/eaciit/sedotan/sedotan.v2"
 	"github.com/eaciit/toolkit"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -27,17 +29,22 @@ const (
 
 var (
 	_id          string
+	pid          int
 	configpath   string
 	snapshot     string
 	snapshotdata Snapshot
 	config       toolkit.M
 	thistime     time.Time
 
-	histConf   toolkit.M
-	SourceType SourceTypeEnum
-	sGrabber   *sedotan.GetDatabase
-	destDboxs  map[string]*DestInfo
-	Log        *toolkit.LogEngine
+	histConf        toolkit.M
+	SourceType      SourceTypeEnum
+	sGrabber        *sedotan.GetDatabase
+	destDboxs       map[string]*DestInfo
+	mapRecHistory   map[string]string
+	historyFileName string
+	Log             *toolkit.LogEngine
+
+	mutex = &sync.Mutex{}
 
 	EC_APP_PATH  string = os.Getenv("EC_APP_PATH")
 	EC_DATA_PATH string = os.Getenv("EC_DATA_PATH")
@@ -52,13 +59,17 @@ type DestInfo struct {
 type Snapshot struct {
 	Id             string
 	Starttime      string
-	Endtime        string
+	Laststartgrab  string
+	Lastupdate     string
 	Grabcount      int
 	Rowgrabbed     int
 	Errorfound     int
 	Lastgrabstatus string //[success|failed]
 	Grabstatus     string //[running|done]
+	Cgtotal        int
+	Cgprocess      int
 	Note           string
+	Pid            int
 }
 
 func init() {
@@ -188,36 +199,37 @@ func fetchConfig() (err error) {
 			continue
 		}
 
-		t_id := toolkit.ToString(mVal.Get("_id", ""))
-		if t_id == "" {
+		tnameid := toolkit.ToString(mVal.Get("nameid", ""))
+		if tnameid == "" {
 			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d] Data Setting Id is not found", i), "ERROR")
 			continue
 		}
-		tCollectionSetting.Collection = toolkit.ToString(mVal.Get("rowselector", ""))
+		tCollectionSetting.Collection = toolkit.ToString(mVal.Get("collection", ""))
 
-		// Fetch columnsettings
-		if !mVal.Has("columnsettings") || !(toolkit.TypeName(mVal["columnsettings"]) == "[]interface {}") {
-			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : columnsettings is not found or incorrect", i, t_id), "ERROR")
+		// Fetch mapssettings
+		if !mVal.Has("mapssettings") || !(toolkit.TypeName(mVal["mapssettings"]) == "[]interface {}") {
+			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : mapssettings is not found or incorrect", i, tnameid), "ERROR")
 			continue
 		}
 
-		tCollectionSetting.SelectColumn = make([]*sedotan.GrabColumn, 0, 0)
-		for xi, Valcs := range mVal["columnsettings"].([]interface{}) {
+		tCollectionSetting.MapsColumns = make([]*sedotan.MapColumn, 0, 0)
+		for xi, Valcs := range mVal["mapssettings"].([]interface{}) {
 			mValcs := toolkit.M{}
 			mValcs, err = toolkit.ToM(Valcs)
 			if err != nil {
-				Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v.%v] Found : columnsettings is not found or incorrect", i, t_id, xi), "ERROR")
+				Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v.%v] Found : mapssettings is not found or incorrect", i, tnameid, xi), "ERROR")
 				continue
 			}
 
-			tgrabcolumn := sedotan.GrabColumn{}
-			tgrabcolumn.Alias = toolkit.ToString(mValcs.Get("alias", ""))
-			tgrabcolumn.Selector = toolkit.ToString(mValcs.Get("selector", ""))
-			tgrabcolumn.ValueType = toolkit.ToString(mValcs.Get("valuetype", ""))
-			tgrabcolumn.AttrName = toolkit.ToString(mValcs.Get("attrname", ""))
+			tgrabcolumn := sedotan.MapColumn{}
+
+			tgrabcolumn.Source = toolkit.ToString(mValcs.Get("source", ""))
+			tgrabcolumn.SType = toolkit.ToString(mValcs.Get("sourcetype", ""))
+			tgrabcolumn.Destination = toolkit.ToString(mValcs.Get("destination", ""))
+			tgrabcolumn.DType = toolkit.ToString(mValcs.Get("destinationtype", ""))
 
 			// tindex := toolkit.ToInt(mValcs.Get("index", 0), toolkit.RoundingAuto)
-			tCollectionSetting.SelectColumn = append(tCollectionSetting.SelectColumn, &tgrabcolumn)
+			tCollectionSetting.MapsColumns = append(tCollectionSetting.MapsColumns, &tgrabcolumn)
 		}
 
 		//Fetch Filter Condition
@@ -225,7 +237,7 @@ func fetchConfig() (err error) {
 			tfiltercond := toolkit.M{}
 			tfiltercond, err = toolkit.ToM(mVal.Get("filtercond", toolkit.M{}))
 			if err != nil {
-				Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : filter cond is incorrect, %v", i, t_id, err.Error()), "ERROR")
+				Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : filter cond is incorrect, %v", i, tnameid, err.Error()), "ERROR")
 			} else {
 				tCollectionSetting.SetFilterCond(tfiltercond)
 			}
@@ -235,7 +247,7 @@ func fetchConfig() (err error) {
 		tConnInfo := toolkit.M{}
 		tConnInfo, err = toolkit.ToM(mVal.Get("connectioninfo", toolkit.M{}))
 		if err != nil {
-			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : %v", i, t_id, err.Error()), "ERROR")
+			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : %v", i, tnameid, err.Error()), "ERROR")
 			continue
 		}
 		tDestDbox.desttype = toolkit.ToString(mVal.Get("desttype", ""))
@@ -248,19 +260,19 @@ func fetchConfig() (err error) {
 		tSettings := toolkit.M{}
 		tSettings, err = toolkit.ToM(tConnInfo.Get("settings", nil))
 		if err != nil {
-			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Connection Setting Found : %v", i, t_id, err.Error()), "ERROR")
+			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Connection Setting Found : %v", i, tnameid, err.Error()), "ERROR")
 			continue
 		}
 
 		tDestDbox.IConnection, err = prepareconnection(tDestDbox.desttype, tHost, tDatabase, tUserName, tPassword, tSettings)
 		if err != nil {
-			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Create connection found : %v", i, t_id, err.Error()), "ERROR")
+			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Create connection found : %v", i, tnameid, err.Error()), "ERROR")
 			continue
 		}
 		tDestDbox.IConnection.Close()
 
-		destDboxs[t_id] = &tDestDbox
-		sGrabber.CollectionSettings[t_id] = &tCollectionSetting
+		destDboxs[tnameid] = &tDestDbox
+		sGrabber.CollectionSettings[tnameid] = &tCollectionSetting
 
 	}
 	err = nil
@@ -339,7 +351,7 @@ func savesnapshot() (err error) {
 		return
 	}
 
-	snapshotdata.Endtime = sedotan.DateToString(sedotan.TimeNow())
+	snapshotdata.Lastupdate = sedotan.DateToString(sedotan.TimeNow())
 	err = conn.NewQuery().SetConfig("multiexec", true).Save().Exec(toolkit.M{}.Set("data", snapshotdata))
 
 	conn.Close()
@@ -347,12 +359,35 @@ func savesnapshot() (err error) {
 	return
 }
 
+func updatesnapshot(iN int, key string) (err error) {
+	mutex.Lock()
+	err = getsnapshot()
+	if err != nil {
+		note := fmt.Sprintf("[savedatagrab.%s] Unable to get last snapshot :%s", key, err.Error())
+		Log.AddLog(note, "ERROR")
+	}
+
+	if pid == snapshotdata.Pid {
+		snapshotdata.Cgprocess += iN
+		snapshotdata.Rowgrabbed += iN
+		err = savesnapshot()
+	}
+
+	if err != nil {
+		note := fmt.Sprintf("[savedatagrab.%s] Unable to update process in snapshot : %s", key, err.Error())
+		Log.AddLog(note, "ERROR")
+	}
+	mutex.Unlock()
+
+	return
+}
+
 func savehistory(dt toolkit.M) (err error) {
 	err = nil
-	filename := fmt.Sprintf("%s-%s.csv", toolkit.ToString(histConf.Get("filename", "")), toolkit.Date2String(sedotan.TimeNow(), toolkit.ToString(histConf.Get("filepattern", ""))))
-	fullfilename := filepath.Join(toolkit.ToString(histConf.Get("histpath", "")), filename)
+	// filename := fmt.Sprintf("%s-%s.csv", toolkit.ToString(histConf.Get("filename", "")), toolkit.Date2String(sedotan.TimeNow(), toolkit.ToString(histConf.Get("filepattern", ""))))
+	fullfilename := filepath.Join(toolkit.ToString(histConf.Get("histpath", "")), historyFileName)
 	if EC_DATA_PATH != "" {
-		fullfilename = filepath.Join(EC_DATA_PATH, "datagrabber", "history", filename)
+		fullfilename = filepath.Join(EC_DATA_PATH, "datagrabber", "history", historyFileName)
 	}
 
 	cconfig := toolkit.M{"newfile": true, "useheader": true, "delimiter": ","}
@@ -368,14 +403,13 @@ func savehistory(dt toolkit.M) (err error) {
 	return
 }
 
-func saverechistory(key string, dts []toolkit.M) (fullfilename string, err error) {
+func saverechistory(key string, dt toolkit.M) (err error) {
 	err = nil
-	filename := fmt.Sprintf("%s.%s-%s.csv", _id, key, toolkit.Date2String(sedotan.TimeNow(), "YYYYMMddHHmmss"))
-	fullfilename = filepath.Join(toolkit.ToString(histConf.Get("recpath", "")), filename)
+	fullfilename := filepath.Join(toolkit.ToString(histConf.Get("recpath", "")), mapRecHistory[key])
 	if EC_DATA_PATH != "" {
-		fullfilename = filepath.Join(EC_DATA_PATH, "datagrabber", "historyrec", filename)
+		fullfilename = filepath.Join(EC_DATA_PATH, "datagrabber", "historyrec", mapRecHistory[key])
 	}
-
+	// fmt.Println(fullfilename, " - Key - ", key, " - filename - ", mapRecHistory)
 	cconfig := toolkit.M{"newfile": true, "useheader": true, "delimiter": ","}
 	conn, err := prepareconnection("csv", fullfilename, "", "", "", cconfig)
 	if err != nil {
@@ -383,42 +417,63 @@ func saverechistory(key string, dts []toolkit.M) (fullfilename string, err error
 	}
 
 	q := conn.NewQuery().SetConfig("multiexec", true).Insert()
-	for _, dt := range dts {
-		err = q.Exec(toolkit.M{}.Set("data", dt))
-	}
+	// for _, dt := range dts {
+	err = q.Exec(toolkit.M{}.Set("data", dt))
+	// }
 
 	conn.Close()
 
 	return
 }
 
-func savedatagrab() (err error) {
-	for key, _ := range sGrabber.CollectionSettings {
+func errlogsavehistory(note string, dt toolkit.M) {
+	Log.AddLog(note, "ERROR")
+	dt = dt.Set("note", note)
+	_ = savehistory(dt)
+	return
+}
 
+func savedatagrab() (err error) {
+	var wg, wgstream sync.WaitGroup
+	// if len(sGrabber.CollectionSettings) > 0 {
+	// 	wg.Add(len(sGrabber.CollectionSettings))
+	// }
+
+	mapRecHistory = make(map[string]string, 0)
+	historyFileName = fmt.Sprintf("%s-%s.csv", toolkit.ToString(histConf.Get("filename", "")), toolkit.Date2String(sedotan.TimeNow(), toolkit.ToString(histConf.Get("filepattern", ""))))
+
+	for key, _ := range sGrabber.CollectionSettings {
+		//set history name
+		mapRecHistory[key] = fmt.Sprintf("%s.%s-%s.csv", _id, key, toolkit.Date2String(sedotan.TimeNow(), "YYYYMMddHHmmss"))
+		//================
 		err = nil
 		note := ""
 		dt := toolkit.M{}.Set("datasettingname", key).Set("grabdate", thistime).Set("rowgrabbed", 0).
-			Set("rowsaved", 0).Set("note", note).Set("grabstatus", "fail").Set("recfile", "")
+			Set("rowsaved", 0).Set("note", note).Set("grabstatus", "fail").Set("recfile", mapRecHistory[key])
 
 		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] start save data", key), "INFO")
-		docs := []toolkit.M{}
-		err = sGrabber.ResultFromDatabase(key, &docs)
+		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] prepare data source", key), "INFO")
+		iQ, err := sGrabber.GetQuery(key)
 		if err != nil {
-			note = fmt.Sprintf("[savedatagrab.%s] Unable to get data : %s", key, err.Error())
-			Log.AddLog(note, "ERROR")
-			dt = dt.Set("note", note)
-			_ = savehistory(dt)
+			note = fmt.Sprintf("[savedatagrab.%s] Unable to get query data : %s", key, err.Error())
+			errlogsavehistory(note, dt)
 			continue
 		}
 
-		dt = dt.Set("rowgrabbed", len(docs))
+		defer sGrabber.CloseConn()
+		csr, err := iQ.Cursor(nil)
+		if err != nil || csr == nil {
+			note = fmt.Sprintf("[savedatagrab.%s] Unable to create cursor or cursor nil to get data : %s", key, err.Error())
+			errlogsavehistory(note, dt)
+			continue
+		}
 
+		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] prepare data souce done", key), "INFO")
+		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] prepare destination save", key), "INFO")
 		err = destDboxs[key].IConnection.Connect()
 		if err != nil {
 			note = fmt.Sprintf("[savedatagrab.%s] Unable to connect [%s-%s]:%s", key, destDboxs[key].desttype, destDboxs[key].IConnection.Info().Host, err.Error())
-			Log.AddLog(note, "ERROR")
-			dt = dt.Set("note", note)
-			_ = savehistory(dt)
+			errlogsavehistory(note, dt)
 			continue
 		}
 
@@ -426,51 +481,224 @@ func savedatagrab() (err error) {
 		if destDboxs[key].collection != "" {
 			q = q.From(destDboxs[key].collection)
 		}
+		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] prepare destination save done", key), "INFO")
 
-		iN := 0
-		for _, doc := range docs {
-			if destDboxs[key].desttype == "mongo" {
-				doc["_id"] = toolkit.GenerateRandomString("", 32)
-			}
-
-			err = q.Exec(toolkit.M{
-				"data": doc,
-			})
-
-			if err != nil {
-				note = "Error in insert data"
-				Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to insert [%s-%s]:%s", key, destDboxs[key].desttype, destDboxs[key].IConnection.Info().Host, err.Error()), "ERROR")
-				continue
-			} else {
-				iN += 1
-			}
+		//Update Total Process
+		mutex.Lock()
+		err = getsnapshot()
+		if err != nil {
+			note = fmt.Sprintf("[savedatagrab.%s] Unable to get last snapshot :%s", key, err.Error())
+			Log.AddLog(note, "ERROR")
 		}
 
-		dt = dt.Set("rowsaved", iN)
+		if pid == snapshotdata.Pid {
+			snapshotdata.Cgtotal += csr.Count()
+			err = savesnapshot()
+		}
 
-		filerec, err := saverechistory(key, docs)
 		if err != nil {
-			if note != "" {
-				note = note + ";" + fmt.Sprintf("[savedatagrab.%s] Unable to save rec history : %s", key, err.Error())
-			} else {
-				note = fmt.Sprintf("[savedatagrab.%s] Unable to save rec history : %s", key, err.Error())
-			}
+			note = fmt.Sprintf("[savedatagrab.%s] Unable to get last snapshot :%s", key, err.Error())
+			Log.AddLog(note, "ERROR")
+		}
+		mutex.Unlock()
 
-			Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to save rec history : %s", key, err.Error()), "ERROR")
-			dt = dt.Set("note", note)
-			_ = savehistory(dt)
+		outtm := make(chan toolkit.M)
+		wgstream.Add(1)
+		go func(intm chan toolkit.M, sQ dbox.IQuery, key string, dt toolkit.M) {
+			streamsavedata(intm, sQ, key, dt)
+			wgstream.Done()
+		}(outtm, q, key, dt)
+
+		wg.Add(1)
+		go func(outtm chan toolkit.M, csr dbox.ICursor) {
+			condition := true
+			for condition {
+				results := make([]toolkit.M, 0)
+				err = csr.Fetch(&results, 1000, false)
+				if err != nil {
+					note = fmt.Sprintf("[savedatagrab.%s] Unable to fetch data :%s", key, err.Error())
+					Log.AddLog(note, "ERROR")
+					condition = false
+					continue
+				}
+
+				for _, result := range results {
+					xresult := toolkit.M{}
+					for _, column := range sGrabber.CollectionSettings[key].MapsColumns {
+						var val, tval interface{}
+						strsplits := strings.Split(column.Source, "|")
+
+						ttm := toolkit.M{}
+						lskey := ""
+						for i, strsplit := range strsplits {
+							lskey = strsplit
+							if i == 0 && result.Has(strsplit) {
+								ttm.Set(strsplit, result[strsplit])
+							} else if ttm.Has(strsplit) {
+								ttm = toolkit.M{}.Set(strsplit, ttm[strsplit])
+							}
+						}
+
+						strsplits = strings.Split(column.Destination, "|")
+						if ttm.Has(lskey) {
+							tval = ttm[lskey]
+						} else {
+							tval = sedotan.DefaultValue(column.DType)
+						}
+
+						// if len(strsplits) > 1 {
+						// 	if xresult.Has(strsplits[0]) {
+						// 		val = xre
+						// 	} else {
+
+						// 	}
+						// }
+
+						tm := toolkit.M{}
+						if xresult.Has(strsplits[0]) {
+							tm, _ = toolkit.ToM(xresult[strsplits[0]])
+						}
+						// xval = val.Set(strsplits[1], getresultobj(strsplits[1:], tval, tm))
+
+						val = getresultobj(strsplits, tval, tm)
+
+						// if len(strsplits) == 1 {
+						// 	val = tval
+						// } else {
+						// 	val = getresultobj(strsplits[1:], tval)
+						// }
+
+						// if len(strsplits) > 1 && {
+
+						// }
+						xresult.Set(strsplits[0], val)
+
+						// for i, strsplit := range strsplits {
+						// 	if i == 0 && ttm.Has(lskey) {
+						// 		xresult.Set(strsplit, ttm[lskey])
+						// 	} else if (i + 1) == len(strsplits) {
+
+						// 	}
+						// 	// else if ttm.Has(strsplit) {
+						// 	// 	ttm = toolkit.M{}.Set(strsplit, ttm[strsplit])
+						// 	// }
+						// }
+
+					}
+					outtm <- xresult
+				}
+
+				if len(results) < 1000 || err != nil {
+					condition = false
+				}
+			}
+			//
+			//
+
+			// ms := []toolkit.M{}
+			// for _, val := range results {
+			// 	m := toolkit.M{}
+			// 	for _, column := range g.CollectionSettings[dataSettingId].MapsColumns {
+			// 		m.Set(column.Source, "")
+			// 		if val.Has(column.Destination) {
+			// 			m.Set(column.Source, val[column.Destination])
+			// 		}
+			// 	}
+			// 	ms = append(ms, m)
+			// }
+
+			close(outtm)
+			wg.Done()
+		}(outtm, csr)
+
+	}
+
+	wgstream.Wait()
+	wg.Wait()
+
+	return
+}
+
+func getresultobj(strsplits []string, tval interface{}, val toolkit.M) interface{} {
+	var xval interface{}
+	if val == nil {
+		val = toolkit.M{}
+	}
+
+	switch {
+	case len(strsplits) == 1:
+		xval = tval
+	case len(strsplits) > 1:
+		tm := toolkit.M{}
+		if val.Has(strsplits[1]) {
+			tm, _ = toolkit.ToM(val[strsplits[1]])
+		}
+		xval = val.Set(strsplits[1], getresultobj(strsplits[1:], tval, tm))
+	}
+
+	return xval
+	// if  {
+	// 	val = tval
+	// } else {
+	// 	val = val.Set(k, v)
+	// 	if val == nil {
+
+	// 	} else {
+
+	// 	}
+
+	// 	val = getresultobj(strsplits[1:], tval)
+	// }
+
+	// return val
+}
+
+func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolkit.M) {
+	var err error
+	iN, note := 0, ""
+
+	for intm := range intms {
+		if destDboxs[key].desttype == "mongo" {
+			intm.Set("_id", toolkit.GenerateRandomString("", 32))
+		}
+
+		if len(intm) == 0 {
+			continue
+		}
+		//Pre Execute Program
+
+		err = sQ.Exec(toolkit.M{
+			"data": intm,
+		})
+
+		if err != nil {
+			Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to insert data [%s-%s]:%s", key, "csv", destDboxs[key].IConnection.Info().Host, err.Error()), "ERROR")
+			note = "Error Found"
 			continue
 		}
 
-		dt = dt.Set("note", note).Set("grabstatus", "done").Set("recfile", filerec)
-		err = savehistory(dt)
+		err = saverechistory(key, intm)
 		if err != nil {
-			Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to save history : %s", key), "ERROR")
+			Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to insert record data [%s-%s]:%s", key, "csv", destDboxs[key].IConnection.Info().Host, err.Error()), "ERROR")
+			note = "Error Found"
 		}
-		snapshotdata.Rowgrabbed += iN
-		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Finish save data", key), "INFO")
+
+		iN += 1
+		if math.Mod(float64(iN), 100) == 0 {
+			_ = updatesnapshot(iN, key)
+			iN = 0
+		}
+
+		//Post Execute Program
 	}
-	return
+	dt = dt.Set("note", note).Set("grabstatus", "done").Set("rowsaved", iN)
+	_ = updatesnapshot(iN, key)
+	err = savehistory(dt)
+	if err != nil {
+		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to save history : %s", key), "ERROR")
+	}
+	Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Finish save data", key), "INFO")
+	destDboxs[key].IConnection.Close()
 }
 
 func checkexiterror(err error) {
@@ -488,9 +716,11 @@ func checkfatalerror(err error) {
 	}
 
 	snapshotdata.Errorfound += 1
-	snapshotdata.Lastgrabstatus = "failed"
-	snapshotdata.Grabstatus = "done"
-	snapshotdata.Note = fmt.Sprintf("Fatal error on running web grabber : %v", err.Error())
+	if snapshotdata.Pid == pid {
+		snapshotdata.Lastgrabstatus = "failed"
+		snapshotdata.Grabstatus = "done"
+		snapshotdata.Note = fmt.Sprintf("Fatal error on running data grabber : %v", err.Error())
+	}
 
 	e := savesnapshot()
 	if e != nil {
@@ -506,6 +736,7 @@ func main() {
 	flagConfigPath := flag.String("config", "", "config file")
 	flagSnapShot := flag.String("snapshot", "", "snapshot filepath")
 	flagID := flag.String("id", "", "_id of the config (if array)")
+	flagPID := flag.Int("pid", 0, "process id number for identify snapshot active")
 
 	flag.Parse()
 	tconfigPath := toolkit.ToString(*flagConfigPath)
@@ -530,6 +761,11 @@ func main() {
 	err = getsnapshot()
 	if err != nil {
 		sedotan.CheckError(errors.New(fmt.Sprintf("get snapshot error found : %v", err.Error())))
+	}
+
+	pid = *flagPID
+	if pid == 0 {
+		sedotan.CheckError(errors.New("-pid cannot be empty or zero value"))
 	}
 
 	err = getConfig()
@@ -573,9 +809,11 @@ func main() {
 	snapshotdata.Lastgrabstatus = "success"
 	snapshotdata.Grabstatus = "done"
 
-	err = savesnapshot()
-	if err != nil {
-		checkexiterror(errors.New(fmt.Sprintf("Save snapshot error : %v", err.Error())))
+	if pid == snapshotdata.Pid {
+		err = savesnapshot()
+		if err != nil {
+			checkexiterror(errors.New(fmt.Sprintf("Save snapshot error : %v", err.Error())))
+		}
 	}
 
 	Log.AddLog("Finish grab data", "INFO")

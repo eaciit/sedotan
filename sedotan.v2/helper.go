@@ -43,3 +43,19 @@ func DateSecondPress(tm time.Time) time.Time {
 func TimeNow() time.Time {
 	return time.Now().UTC()
 }
+
+func DefaultValue(datatype string) interface{} {
+
+	switch datatype {
+	case "int":
+		return int(0)
+	case "float32":
+		return float32(0)
+	case "float64":
+		return float64(0)
+	case "string":
+		return ""
+	}
+
+	return nil
+}

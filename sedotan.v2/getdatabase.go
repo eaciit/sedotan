@@ -10,10 +10,11 @@ import (
 	_ "github.com/eaciit/dbox/dbc/mongo"
 	_ "github.com/eaciit/dbox/dbc/xlsx"
 	"github.com/eaciit/toolkit"
-	"reflect"
+	// "reflect"
 	// "regexp"
 	"errors"
 	// "strings"
+	"strings"
 	"time"
 )
 
@@ -23,16 +24,23 @@ import (
 // 	// ValueType string //-- Text, Attr, InnerHtml, OuterHtml
 // 	// AttrName  string
 // }
+type MapColumn struct {
+	Source      string
+	SType       string
+	Destination string //-- Text, Attr, InnerHtml, OuterHtml
+	DType       string
+}
 
 type CollectionSetting struct {
-	Collection   string
-	SelectColumn []*GrabColumn
-	FilterCond   toolkit.M
-	filterDbox   *dbox.Filter
+	Collection  string
+	MapsColumns []*MapColumn
+	FilterCond  toolkit.M
+	filterDbox  *dbox.Filter
 }
 
 type GetDatabase struct {
 	dbox.ConnectionInfo
+	conn               dbox.IConnection
 	desttype           string
 	CollectionSettings map[string]*CollectionSetting
 
@@ -62,11 +70,11 @@ func NewGetDatabase(host string, desttype string, connInfo *dbox.ConnectionInfo)
 	return g, nil
 }
 
-func (ds *CollectionSetting) Column(i int, column *GrabColumn) *GrabColumn {
+func (ds *CollectionSetting) Column(i int, column *MapColumn) *MapColumn {
 	if i == 0 {
-		ds.SelectColumn = append(ds.SelectColumn, column)
-	} else if i <= len(ds.SelectColumn) {
-		ds.SelectColumn[i-1] = column
+		ds.MapsColumns = append(ds.MapsColumns, column)
+	} else if i <= len(ds.MapsColumns) {
+		ds.MapsColumns[i-1] = column
 	} else {
 		return nil
 	}
@@ -77,6 +85,86 @@ func (ds *CollectionSetting) Column(i int, column *GrabColumn) *GrabColumn {
 // 	ds.FilterCond = filter
 // 	ds.filterDbox =
 // }
+
+func (g *GetDatabase) CloseConn() {
+	g.conn.Close()
+}
+
+func (g *GetDatabase) GetQuery(dataSettingId string) (iQ dbox.IQuery, err error) {
+
+	g.conn, err = dbox.NewConnection(g.desttype, &g.ConnectionInfo)
+	if err != nil {
+		return
+	}
+
+	err = g.conn.Connect()
+	if err != nil {
+		return
+	}
+
+	// defer c.Close()
+
+	iQ = g.conn.NewQuery()
+	if g.CollectionSettings[dataSettingId].Collection != "" {
+		iQ.From(g.CollectionSettings[dataSettingId].Collection)
+	}
+
+	aSelect := make([]string, 0, 0)
+	for _, val := range g.CollectionSettings[dataSettingId].MapsColumns {
+		tstring := val.Source
+		if strings.Contains(val.Source, "|") {
+			splitstring := strings.Split(val.Source, "|")
+			tstring = splitstring[0]
+		}
+
+		if tstring != "" && toolkit.HasMember(aSelect, tstring) {
+			aSelect = append(aSelect, tstring)
+		}
+
+	}
+
+	if len(aSelect) > 0 {
+		iQ.Select(aSelect...)
+	}
+
+	if len(g.CollectionSettings[dataSettingId].FilterCond) > 0 {
+		iQ.Where(g.CollectionSettings[dataSettingId].filterDbox)
+	}
+
+	return
+	// csr, e := iQ.Cursor(nil)
+
+	// if e != nil {
+	// 	return e
+	// }
+	// if csr == nil {
+	// 	return e
+	// }
+	// defer csr.Close()
+
+	// results := make([]toolkit.M, 0)
+	// e = csr.Fetch(&results, 0, false)
+	// if e != nil {
+	// 	return e
+	// }
+
+	// ms := []toolkit.M{}
+	// for _, val := range results {
+	// 	m := toolkit.M{}
+	// 	for _, column := range g.CollectionSettings[dataSettingId].MapsColumns {
+	// 		m.Set(column.Source, "")
+	// 		if val.Has(column.Destination) {
+	// 			m.Set(column.Source, val[column.Destination])
+	// 		}
+	// 	}
+	// 	ms = append(ms, m)
+	// }
+
+	// if edecode := toolkit.Unjson(toolkit.Jsonify(ms), out); edecode != nil {
+	// 	return edecode
+	// }
+	// return nil
+}
 
 func (g *GetDatabase) ResultFromDatabase(dataSettingId string, out interface{}) error {
 
@@ -97,8 +185,8 @@ func (g *GetDatabase) ResultFromDatabase(dataSettingId string, out interface{}) 
 		iQ.From(g.CollectionSettings[dataSettingId].Collection)
 	}
 
-	for _, val := range g.CollectionSettings[dataSettingId].SelectColumn {
-		iQ.Select(val.Selector)
+	for _, val := range g.CollectionSettings[dataSettingId].MapsColumns {
+		iQ.Select(val.Source)
 	}
 
 	if len(g.CollectionSettings[dataSettingId].FilterCond) > 0 {
@@ -124,10 +212,10 @@ func (g *GetDatabase) ResultFromDatabase(dataSettingId string, out interface{}) 
 	ms := []toolkit.M{}
 	for _, val := range results {
 		m := toolkit.M{}
-		for _, column := range g.CollectionSettings[dataSettingId].SelectColumn {
-			m.Set(column.Alias, "")
-			if val.Has(column.Selector) {
-				m.Set(column.Alias, val[column.Selector])
+		for _, column := range g.CollectionSettings[dataSettingId].MapsColumns {
+			m.Set(column.Source, "")
+			if val.Has(column.Destination) {
+				m.Set(column.Source, val[column.Destination])
 			}
 		}
 		ms = append(ms, m)
@@ -174,24 +262,46 @@ func filterCondition(cond toolkit.M) *dbox.Filter {
 			}
 
 		} else {
-			if reflect.ValueOf(val).Kind() == reflect.Map {
+			if toolkit.TypeName(val) == "map[string]interface {}" {
 				mVal := val.(map[string]interface{})
 				tomVal, _ := toolkit.ToM(mVal)
 				switch {
 				case tomVal.Has("$eq"):
-					fb = dbox.Eq(key, tomVal["$eq"].(string))
+					fb = dbox.Eq(key, tomVal["$eq"])
 				case tomVal.Has("$ne"):
-					fb = dbox.Ne(key, tomVal["$ne"].(string))
+					fb = dbox.Ne(key, tomVal["$ne"])
 				case tomVal.Has("$regex"):
-					fb = dbox.Contains(key, tomVal["$regex"].(string))
+					fb = dbox.Contains(key, toolkit.ToString(tomVal["$regex"]))
 				case tomVal.Has("$gt"):
-					fb = dbox.Gt(key, tomVal["$gt"].(string))
+					fb = dbox.Gt(key, tomVal["$gt"])
 				case tomVal.Has("$gte"):
-					fb = dbox.Gte(key, tomVal["$gte"].(string))
+					fb = dbox.Gte(key, tomVal["$gte"])
 				case tomVal.Has("$lt"):
-					fb = dbox.Lt(key, tomVal["$lt"].(string))
+					fb = dbox.Lt(key, tomVal["$lt"])
 				case tomVal.Has("$lte"):
-					fb = dbox.Lte(key, tomVal["$lte"].(string))
+					fb = dbox.Lte(key, tomVal["$lte"])
+				case tomVal.Has("$in"):
+					tval := make([]interface{}, 0, 0)
+					if toolkit.TypeName(tomVal["$in"]) == "[]interface {}" {
+						for _, tin := range tomVal["$in"].([]interface{}) {
+							tval = append(tval, tin)
+						}
+					} else {
+						tval = append(tval, tomVal["$in"])
+					}
+
+					fb = dbox.In(key, tval...)
+				case tomVal.Has("$nin"):
+					tval := make([]interface{}, 0, 0)
+					if toolkit.TypeName(tomVal["$nin"]) == "[]interface {}" {
+						for _, tin := range tomVal["$nin"].([]interface{}) {
+							tval = append(tval, tin)
+						}
+					} else {
+						tval = append(tval, tomVal["$nin"])
+					}
+
+					fb = dbox.Nin(key, tval...)
 				}
 			} else {
 				fb = dbox.Eq(key, val)

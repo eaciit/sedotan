@@ -244,6 +244,10 @@ func foundCondition(dataCheck toolkit.M, cond toolkit.M) bool {
 
 	for key, val := range cond {
 		if key == "$and" || key == "$or" {
+			if len(val.([]interface{})) == 0 {
+				resBool = true
+			}
+
 			for i, sVal := range val.([]interface{}) {
 				rVal := sVal.(map[string]interface{})
 				mVal := toolkit.M{}
@@ -298,7 +302,7 @@ func foundCondition(dataCheck toolkit.M, cond toolkit.M) bool {
 						resBool = true
 					}
 				}
-			} else if reflect.ValueOf(val).Kind() == reflect.String && val != dataCheck.Get(key, "").(string) {
+			} else if reflect.ValueOf(val).Kind() == reflect.String && val == dataCheck.Get(key, "").(string) {
 				resBool = true
 			}
 		}

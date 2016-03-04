@@ -14,21 +14,21 @@
             "Submit": "Go",
             "action": "Pu00231_result"
           },
-        "timeout": 60
+        "timeout": 25
       },
     "intervalconf": 
       {
         "starttime":"2016-02-26 00-00-00",
         "intervaltype": "seconds",
-        "grabinterval": 25,
+        "grabinterval": 30,
         "timeoutinterval": 5,
-        "cronconf" : "* "
+        "cronconf" : {}
       },
     "logconf": 
       {
         "logpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\log",
         "filename": "LOG-GRABDCE",
-        "filepattern": "YYYYMMdd"
+        "filepattern": "YYYYMM"
       },
     "histconf": 
       {
@@ -40,7 +40,7 @@
     "datasettings": 
       [
         {
-          "_id": "Iron01",
+          "nameid": "Iron01",
           "rowselector": "table .table tbody tr",
           "columnsettings": 
             [
@@ -107,11 +107,11 @@
             ],
           "filtercond":
             { 
-              "$or":
+              "$and":
                 [
-                  {"Contract": "Contract"},
-                  {"Contract": "Iron Ore Subtotal"},
-                  {"Contract": "Total"}
+                  {"Contract": {"$ne" : "Contract"}},
+                  {"Contract": {"$ne" : "Iron Ore Subtotal"}},
+                  {"Contract": {"$ne" : "Total"}}
                 ]
             },
           "desttype": "mongo",
@@ -147,13 +147,13 @@
         "intervaltype": "seconds",
         "grabinterval": 25,
         "timeoutinterval": 5,
-        "cronconf" : ""
+        "cronconf" : {}
       },
     "logconf": 
       {
         "logpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\log",
         "filename": "LOG-IOPRICE",
-        "filepattern": "YYYYMMdd"
+        "filepattern": "YYYYMM"
       },
     "histconf": 
       {
@@ -165,9 +165,9 @@
     "datasettings": 
       [
         {
-          "_id": "histiopriceindices",
+          "nameid": "histiopriceindices",
           "rowselector": "HIST",
-          "columnsettings": 
+          "mapssettings": 
             [
               {
                 "alias": "Date",
@@ -226,6 +226,11 @@
             }
         }
       ],
-    "running": false
+    "extcommand":
+      {
+        "pre" : "",
+        "post" : ""
+      },
+    "running": true
   }
 ]

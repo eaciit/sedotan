@@ -28,6 +28,7 @@ const (
 
 var (
 	_id          string
+	pid          int
 	configpath   string
 	snapshot     string
 	snapshotdata Snapshot
@@ -53,13 +54,26 @@ type DestInfo struct {
 type Snapshot struct {
 	Id             string
 	Starttime      string
-	Endtime        string
+	Laststartgrab  string
+	Lastupdate     string
 	Grabcount      int
 	Rowgrabbed     int
 	Errorfound     int
 	Lastgrabstatus string //[success|failed]
 	Grabstatus     string //[running|done]
+	Cgtotal        int
+	Cgprocess      int
 	Note           string
+	Pid            int
+	// Id             string
+	// Starttime      string
+	// Endtime        string
+	// Grabcount      int
+	// Rowgrabbed     int
+	// Errorfound     int
+	// Lastgrabstatus string //[success|failed]
+	// Grabstatus     string //[running|done]
+	// Note           string
 }
 
 func init() {
@@ -196,8 +210,8 @@ func fetchConfig() (err error) {
 			continue
 		}
 
-		t_id := toolkit.ToString(mVal.Get("_id", ""))
-		if t_id == "" {
+		tnameid := toolkit.ToString(mVal.Get("nameid", ""))
+		if tnameid == "" {
 			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d] Data Setting Id is not found", i), "ERROR")
 			continue
 		}
@@ -205,7 +219,7 @@ func fetchConfig() (err error) {
 
 		// Fetch columnsettings
 		if !mVal.Has("columnsettings") || !(toolkit.TypeName(mVal["columnsettings"]) == "[]interface {}") {
-			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : columnsettings is not found or incorrect", i, t_id), "ERROR")
+			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : columnsettings is not found or incorrect", i, tnameid), "ERROR")
 			continue
 		}
 
@@ -214,7 +228,7 @@ func fetchConfig() (err error) {
 			mValcs := toolkit.M{}
 			mValcs, err = toolkit.ToM(Valcs)
 			if err != nil {
-				Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v.%v] Found : columnsettings is not found or incorrect", i, t_id, xi), "ERROR")
+				Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v.%v] Found : columnsettings is not found or incorrect", i, tnameid, xi), "ERROR")
 				continue
 			}
 
@@ -233,7 +247,7 @@ func fetchConfig() (err error) {
 			tfiltercond := toolkit.M{}
 			tfiltercond, err = toolkit.ToM(mVal.Get("filtercond", toolkit.M{}))
 			if err != nil {
-				Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : filter cond is incorrect, %v", i, t_id, err.Error()), "ERROR")
+				Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : filter cond is incorrect, %v", i, tnameid, err.Error()), "ERROR")
 			} else {
 				tDataSetting.SetFilterCond(tfiltercond)
 			}
@@ -243,7 +257,7 @@ func fetchConfig() (err error) {
 		tConnInfo := toolkit.M{}
 		tConnInfo, err = toolkit.ToM(mVal.Get("connectioninfo", toolkit.M{}))
 		if err != nil {
-			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : %v", i, t_id, err.Error()), "ERROR")
+			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Found : %v", i, tnameid, err.Error()), "ERROR")
 			continue
 		}
 		tDestDbox.desttype = toolkit.ToString(mVal.Get("desttype", ""))
@@ -256,19 +270,19 @@ func fetchConfig() (err error) {
 		tSettings := toolkit.M{}
 		tSettings, err = toolkit.ToM(tConnInfo.Get("settings", nil))
 		if err != nil {
-			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Connection Setting Found : %v", i, t_id, err.Error()), "ERROR")
+			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Connection Setting Found : %v", i, tnameid, err.Error()), "ERROR")
 			continue
 		}
 
 		tDestDbox.IConnection, err = prepareconnection(tDestDbox.desttype, tHost, tDatabase, tUserName, tPassword, tSettings)
 		if err != nil {
-			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Create connection found : %v", i, t_id, err.Error()), "ERROR")
+			Log.AddLog(fmt.Sprintf("[Fetch.Ds.%d.%v] Create connection found : %v", i, tnameid, err.Error()), "ERROR")
 			continue
 		}
 		tDestDbox.IConnection.Close()
 
-		destDboxs[t_id] = &tDestDbox
-		wGrabber.DataSettings[t_id] = &tDataSetting
+		destDboxs[tnameid] = &tDestDbox
+		wGrabber.DataSettings[tnameid] = &tDataSetting
 
 	}
 	err = nil
@@ -347,7 +361,7 @@ func savesnapshot() (err error) {
 		return
 	}
 
-	snapshotdata.Endtime = sedotan.DateToString(sedotan.TimeNow())
+	snapshotdata.Lastupdate = sedotan.DateToString(sedotan.TimeNow())
 	err = conn.NewQuery().SetConfig("multiexec", true).Save().Exec(toolkit.M{}.Set("data", snapshotdata))
 
 	conn.Close()
@@ -496,9 +510,11 @@ func checkfatalerror(err error) {
 	}
 
 	snapshotdata.Errorfound += 1
-	snapshotdata.Lastgrabstatus = "failed"
-	snapshotdata.Grabstatus = "done"
-	snapshotdata.Note = fmt.Sprintf("Fatal error on running web grabber : %v", err.Error())
+	if snapshotdata.Pid == pid {
+		snapshotdata.Lastgrabstatus = "failed"
+		snapshotdata.Grabstatus = "done"
+		snapshotdata.Note = fmt.Sprintf("Fatal error on running web grabber : %v", err.Error())
+	}
 
 	e := savesnapshot()
 	if e != nil {
@@ -514,6 +530,7 @@ func main() {
 	flagConfigPath := flag.String("config", "", "config file")
 	flagSnapShot := flag.String("snapshot", "", "snapshot filepath")
 	flagID := flag.String("id", "", "_id of the config (if array)")
+	flagPID := flag.Int("pid", 0, "process id number for identify snapshot active")
 
 	flag.Parse()
 	tconfigPath := toolkit.ToString(*flagConfigPath)
@@ -538,6 +555,11 @@ func main() {
 	err = getsnapshot()
 	if err != nil {
 		sedotan.CheckError(errors.New(fmt.Sprintf("get snapshot error found : %v", err.Error())))
+	}
+
+	pid = *flagPID
+	if pid == 0 {
+		sedotan.CheckError(errors.New("-pid cannot be empty or zero value"))
 	}
 
 	err = getConfig()
@@ -581,9 +603,11 @@ func main() {
 	snapshotdata.Lastgrabstatus = "success"
 	snapshotdata.Grabstatus = "done"
 
-	err = savesnapshot()
-	if err != nil {
-		checkexiterror(errors.New(fmt.Sprintf("Save snapshot error : %v", err.Error())))
+	if pid == snapshotdata.Pid {
+		err = savesnapshot()
+		if err != nil {
+			checkexiterror(errors.New(fmt.Sprintf("Save snapshot error : %v", err.Error())))
+		}
 	}
 
 	Log.AddLog("Finish grab data", "INFO")
