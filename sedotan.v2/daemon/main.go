@@ -272,7 +272,7 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 		Starttime:      "",
 		Laststartgrab:  "",
 		Lastupdate:     "",
-		Grabcount:      0,
+		Grabcount:      1,
 		Rowgrabbed:     0,
 		Errorfound:     0,
 		Lastgrabstatus: "",
@@ -286,7 +286,6 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 
 	strintervalconf := intervalconf.Get("starttime", "").(string)
 	intervalstart := sedotan.StringToDate(strintervalconf)
-	mapcronconf, _ := toolkit.ToM(intervalconf.Get("cronconf", nil))
 	strintervaltype := intervalconf.Get("intervaltype", "").(string)
 	grabinterval := toolkit.ToInt(intervalconf.Get("grabinterval", 0), toolkit.RoundingAuto)
 
@@ -323,8 +322,6 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 		grabinterval = toolkit.ToInt(intervalconf.Get("timeoutinterval", 0), toolkit.RoundingAuto)
 	}
 
-	minutetime := sedotan.DateMinutePress(thistime) //review this and the usage and parsing in cron
-
 	if strintervalconf != "" && intervalstart.Before(thistime) {
 		_, fcond := mapsnapshot[id]
 
@@ -354,6 +351,8 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 		}
 	}
 
+	mapcronconf, _ := toolkit.ToM(intervalconf.Get("cronconf", nil))
+	minutetime := sedotan.DateMinutePress(thistime) //review this and the usage and parsing in cron
 	if len(mapcronconf) > 0 {
 		//min hour dayofmonth month dayofweek
 		cond = true
@@ -390,7 +389,7 @@ func checkistimerun(id string, intervalconf toolkit.M, grabconf toolkit.M) (cond
 			cond = cond && minutetime.After(sedotan.StringToDate(mtkdata.Laststartgrab))
 		}
 
-		if cond {
+		if cond && minutetime.Before(sedotan.StringToDate(mtkdata.Starttime)) {
 			tempss.Grabcount = mtkdata.Grabcount + 1
 			tempss.Rowgrabbed = mtkdata.Rowgrabbed
 			tempss.Errorfound = mtkdata.Errorfound
@@ -515,7 +514,7 @@ func main() {
 			etype := econfig.Get("sourcetype", "").(string)
 			//check grab status onprocess/done/na/error -> conf file / snapshot file ? (isonprocess)
 			//check interval+time start/corn schedulling and check last running for interval(istimerun)
-			//fmt.Printf("!%v && %v && %v \n", isonprocess, isconfrun, istimerun)
+			// fmt.Printf("!%v && %v && %v \n", isonprocess, isconfrun, istimerun)
 			if !isonprocess && isconfrun && istimerun {
 				Log.AddLog(fmt.Sprintf("Start grabbing for id : %v", eid), "INFO")
 

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	dateformat string = "YYYY-MM-dd HH-mm-ss"
+	dateformat string = "YYYY-MM-dd HH:mm:ss"
 )
 
 func CheckError(err error) {
@@ -33,7 +33,7 @@ func StringToDate(sdate string) time.Time {
 }
 
 func DateMinutePress(tm time.Time) time.Time {
-	return toolkit.String2Date(toolkit.Date2String(tm, "YYYY-MM-dd HH-mm"), "YYYY-MM-dd HH-mm").UTC()
+	return toolkit.String2Date(toolkit.Date2String(tm, "YYYY-MM-dd HH:mm"), "YYYY-MM-dd HH:mm").UTC()
 }
 
 func DateSecondPress(tm time.Time) time.Time {

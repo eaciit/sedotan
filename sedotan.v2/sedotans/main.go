@@ -9,6 +9,7 @@ import (
 	_ "github.com/eaciit/dbox/dbc/csv"
 	_ "github.com/eaciit/dbox/dbc/json"
 	_ "github.com/eaciit/dbox/dbc/mongo"
+	_ "github.com/eaciit/dbox/dbc/xlsx"
 	"github.com/eaciit/sedotan/sedotan.v2"
 	"github.com/eaciit/toolkit"
 	"io/ioutil"
@@ -485,6 +486,7 @@ func savedatagrab() (err error) {
 
 		//Update Total Process
 		mutex.Lock()
+		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] get snapshot for update total process", key), "INFO")
 		err = getsnapshot()
 		if err != nil {
 			note = fmt.Sprintf("[savedatagrab.%s] Unable to get last snapshot :%s", key, err.Error())
@@ -492,6 +494,7 @@ func savedatagrab() (err error) {
 		}
 
 		if pid == snapshotdata.Pid {
+			Log.AddLog(fmt.Sprintf("[savedatagrab.%s] update total process data : %v", key, csr.Count()), "INFO")
 			snapshotdata.Cgtotal += csr.Count()
 			err = savesnapshot()
 		}
@@ -512,6 +515,7 @@ func savedatagrab() (err error) {
 		wg.Add(1)
 		go func(outtm chan toolkit.M, csr dbox.ICursor) {
 			condition := true
+
 			for condition {
 				results := make([]toolkit.M, 0)
 				err = csr.Fetch(&results, 1000, false)
@@ -559,6 +563,14 @@ func savedatagrab() (err error) {
 							tm, _ = toolkit.ToM(xresult[strsplits[0]])
 						}
 						// xval = val.Set(strsplits[1], getresultobj(strsplits[1:], tval, tm))
+						switch column.DType {
+						case "int":
+							tval = toolkit.ToInt(tval, toolkit.RoundingAuto)
+						case "float":
+							tval = toolkit.ToFloat64(tval, 2, toolkit.RoundingAuto)
+						default:
+							tval = toolkit.ToString(tval)
+						}
 
 						val = getresultobj(strsplits, tval, tm)
 
