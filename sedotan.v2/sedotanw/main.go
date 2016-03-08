@@ -9,13 +9,16 @@ import (
 	_ "github.com/eaciit/dbox/dbc/csv"
 	_ "github.com/eaciit/dbox/dbc/json"
 	_ "github.com/eaciit/dbox/dbc/mongo"
+	_ "github.com/eaciit/dbox/dbc/xlsx"
 	"github.com/eaciit/sedotan/sedotan.v2"
 	"github.com/eaciit/toolkit"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -41,6 +44,8 @@ var (
 	destDboxs  map[string]*DestInfo
 	Log        *toolkit.LogEngine
 
+	mutex = &sync.Mutex{}
+
 	EC_APP_PATH  string = os.Getenv("EC_APP_PATH")
 	EC_DATA_PATH string = os.Getenv("EC_DATA_PATH")
 )
@@ -65,15 +70,6 @@ type Snapshot struct {
 	Cgprocess      int
 	Note           string
 	Pid            int
-	// Id             string
-	// Starttime      string
-	// Endtime        string
-	// Grabcount      int
-	// Rowgrabbed     int
-	// Errorfound     int
-	// Lastgrabstatus string //[success|failed]
-	// Grabstatus     string //[running|done]
-	// Note           string
 }
 
 func init() {
@@ -369,6 +365,29 @@ func savesnapshot() (err error) {
 	return
 }
 
+func updatesnapshot(iN int, key string) (err error) {
+	mutex.Lock()
+	err = getsnapshot()
+	if err != nil {
+		note := fmt.Sprintf("[savedatagrab.%s] Unable to get last snapshot :%s", key, err.Error())
+		Log.AddLog(note, "ERROR")
+	}
+
+	if pid == snapshotdata.Pid {
+		snapshotdata.Cgprocess += iN
+		snapshotdata.Rowgrabbed += iN
+		err = savesnapshot()
+	}
+
+	if err != nil {
+		note := fmt.Sprintf("[savedatagrab.%s] Unable to update process in snapshot : %s", key, err.Error())
+		Log.AddLog(note, "ERROR")
+	}
+	mutex.Unlock()
+
+	return
+}
+
 func savehistory(dt toolkit.M) (err error) {
 	err = nil
 	filename := fmt.Sprintf("%s-%s.csv", toolkit.ToString(histConf.Get("filename", "")), toolkit.Date2String(sedotan.TimeNow(), toolkit.ToString(histConf.Get("filepattern", ""))))
@@ -435,6 +454,28 @@ func savedatagrab() (err error) {
 
 		dt = dt.Set("rowgrabbed", len(docs))
 
+		//Update Total Process
+		mutex.Lock()
+		Log.AddLog(fmt.Sprintf("[savedatagrab.%s] get snapshot for update total process", key), "INFO")
+		err = getsnapshot()
+		if err != nil {
+			note = fmt.Sprintf("[savedatagrab.%s] Unable to get last snapshot :%s", key, err.Error())
+			Log.AddLog(note, "ERROR")
+		}
+
+		if pid == snapshotdata.Pid {
+			Log.AddLog(fmt.Sprintf("[savedatagrab.%s] update total process data : %v", key, len(docs)), "INFO")
+			snapshotdata.Cgtotal += len(docs)
+			err = savesnapshot()
+		}
+
+		if err != nil {
+			note = fmt.Sprintf("[savedatagrab.%s] Unable to get last snapshot :%s", key, err.Error())
+			Log.AddLog(note, "ERROR")
+		}
+		mutex.Unlock()
+		//==================== Split to multiexec with goroutine <<---
+
 		err = destDboxs[key].IConnection.Connect()
 		if err != nil {
 			note = fmt.Sprintf("[savedatagrab.%s] Unable to connect [%s-%s]:%s", key, destDboxs[key].desttype, destDboxs[key].IConnection.Info().Host, err.Error())
@@ -466,10 +507,15 @@ func savedatagrab() (err error) {
 			} else {
 				iN += 1
 			}
+
+			if math.Mod(float64(iN), 100) == 0 {
+				_ = updatesnapshot(iN, key)
+				iN = 0
+			}
 		}
 
 		dt = dt.Set("rowsaved", iN)
-
+		_ = updatesnapshot(iN, key)
 		filerec, err := saverechistory(key, docs)
 		if err != nil {
 			if note != "" {
@@ -598,6 +644,12 @@ func main() {
 		checkexiterror(errors.New(fmt.Sprintf("Save data finish with error : %v", err.Error())))
 	}
 	Log.AddLog("Save data grab success", "INFO")
+
+	err = getsnapshot()
+	if err != nil {
+		note := fmt.Sprintf("Unable to get last snapshot :%s", err.Error())
+		Log.AddLog(note, "ERROR")
+	}
 
 	snapshotdata.Note = ""
 	snapshotdata.Lastgrabstatus = "success"

@@ -26,6 +26,7 @@ type SourceTypeEnum int
 
 const (
 	SourceType_DocExcel SourceTypeEnum = iota
+	SourceType_DocMongo
 )
 
 var (
@@ -38,6 +39,7 @@ var (
 	thistime     time.Time
 
 	histConf        toolkit.M
+	extCommand      toolkit.M
 	SourceType      SourceTypeEnum
 	sGrabber        *sedotan.GetDatabase
 	destDboxs       map[string]*DestInfo
@@ -132,6 +134,8 @@ func fetchConfig() (err error) {
 	switch toolkit.ToString(config.Get("sourcetype", "")) {
 	case "SourceType_DocExcel":
 		SourceType = SourceType_DocExcel
+	case "SourceType_DocMongo":
+		SourceType = SourceType_DocMongo
 	default:
 		err = errors.New(fmt.Sprintf("Fetch Config, Source type is not defined : %v", config.Get("sourcetype", "")))
 		return
@@ -295,6 +299,13 @@ func fetchConfig() (err error) {
 		return
 	}
 
+	if !config.Has("extcommand") {
+		return
+	}
+
+	Log.AddLog("Start fetch extcommand", "INFO")
+	extCommand, _ = toolkit.ToM(config.Get("extcommand", nil))
+
 	return
 }
 
@@ -370,9 +381,10 @@ func updatesnapshot(iN int, key string) (err error) {
 
 	if pid == snapshotdata.Pid {
 		snapshotdata.Cgprocess += iN
-		snapshotdata.Rowgrabbed += iN
-		err = savesnapshot()
 	}
+
+	snapshotdata.Rowgrabbed += iN
+	err = savesnapshot()
 
 	if err != nil {
 		note := fmt.Sprintf("[savedatagrab.%s] Unable to update process in snapshot : %s", key, err.Error())
@@ -418,10 +430,13 @@ func saverechistory(key string, dt toolkit.M) (err error) {
 	}
 
 	q := conn.NewQuery().SetConfig("multiexec", true).Insert()
-	// for _, dt := range dts {
-	err = q.Exec(toolkit.M{}.Set("data", dt))
-	// }
+	for k, v := range dt {
+		if toolkit.TypeName(v) == "toolkit.M" {
+			dt.Set(k, fmt.Sprintf("%v", v))
+		}
+	}
 
+	err = q.Exec(toolkit.M{}.Set("data", dt))
 	conn.Close()
 
 	return
@@ -568,8 +583,10 @@ func savedatagrab() (err error) {
 							tval = toolkit.ToInt(tval, toolkit.RoundingAuto)
 						case "float":
 							tval = toolkit.ToFloat64(tval, 2, toolkit.RoundingAuto)
-						default:
+						case "string":
 							tval = toolkit.ToString(tval)
+						default:
+							tval = tval
 						}
 
 						val = getresultobj(strsplits, tval, tm)
@@ -678,6 +695,9 @@ func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolk
 			continue
 		}
 		//Pre Execute Program
+		if extCommand.Has("pre") {
+
+		}
 
 		err = sQ.Exec(toolkit.M{
 			"data": intm,
@@ -698,12 +718,18 @@ func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolk
 		iN += 1
 		if math.Mod(float64(iN), 100) == 0 {
 			_ = updatesnapshot(iN, key)
+			dt = dt.Set("rowsaved", (toolkit.ToInt(dt.Get("rowsaved", 0), toolkit.RoundingAuto) + iN))
 			iN = 0
 		}
 
 		//Post Execute Program
+		if extCommand.Has("post") {
+
+		}
 	}
-	dt = dt.Set("note", note).Set("grabstatus", "done").Set("rowsaved", iN)
+	dt = dt.Set("note", note).
+		Set("grabstatus", "done").
+		Set("rowsaved", (toolkit.ToInt(dt.Get("rowsaved", 0), toolkit.RoundingAuto) + iN))
 	_ = updatesnapshot(iN, key)
 	err = savehistory(dt)
 	if err != nil {
