@@ -14,13 +14,13 @@
             "Submit": "Go",
             "action": "Pu00231_result"
           },
-        "timeout": 25
+        "timeout": 30
       },
     "intervalconf": 
       {
         "starttime":"2016-02-26 00-00-00",
         "intervaltype": "seconds",
-        "grabinterval": 30,
+        "grabinterval": 60,
         "timeoutinterval": 5,
         "cronconf" : {}
       },
@@ -145,7 +145,7 @@
       {
         "starttime":"2016-02-26 00-00-00",
         "intervaltype": "seconds",
-        "grabinterval": 25,
+        "grabinterval": 60,
         "timeoutinterval": 5,
         "cronconf" : {}
       },
@@ -229,6 +229,115 @@
               "settings":
                 {
                   "timeout": 1
+                }
+            }
+        }
+      ],
+    "extcommand":
+      {
+        "pre" : "",
+        "post" : ""
+      },
+    "running": false
+  },
+  {
+    "_id": "testecshell",
+    "sourcetype": "SourceType_DocMongo",
+    "grabconf":  
+      {
+        "doctype": "mongo",
+        "connectioninfo": 
+          {
+            "host" : "192.168.0.200:27017",
+            "database" : "ecshell",
+            "settings" : 
+             {
+              "timeout" : 3
+             }
+          },
+        "timeout": 60
+      },
+    "intervalconf": 
+      {
+        "starttime":"2016-02-26 00-00-00",
+        "intervaltype": "seconds",
+        "grabinterval": 120,
+        "timeoutinterval": 5,
+        "cronconf" : {}
+      },
+    "logconf": 
+      {
+        "logpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\log",
+        "filename": "LOG-ECSHELL",
+        "filepattern": "YYYYMM"
+      },
+    "histconf": 
+      {
+        "histpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "recpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "filename": "HIST-ECSHELL",
+        "filepattern": "YYYYMMdd"
+      },
+    "datasettings": 
+      [
+        {
+          "nameid": "userlogecshell",
+          "collection": "WEISUserLog",
+          "mapssettings": 
+            [
+              {
+                "destination": "Source Id",
+                "destinationtype": "int",
+                "source": "_id",
+                "sourcetype": "int"
+              },
+              {
+                "destination": "Log Type",
+                "destinationtype": "string",
+                "source": "LogType",
+                "sourcetype": "string"
+              },
+              {
+                "destination": "User|Username",
+                "destinationtype": "string",
+                "source": "UserName",
+                "sourcetype": "string"
+              },
+              {
+                "destination": "User|Email",
+                "destinationtype": "string",
+                "source": "Email",
+                "sourcetype": "string"
+              },
+              {
+                "destination": "Accesstime|Time",
+                "destinationtype": "date",
+                "source": "Time",
+                "sourcetype": "date"
+              },
+              {
+                "destination": "Accesstime|Lastupdate",
+                "destinationtype": "date",
+                "source": "LastUpdate",
+                "sourcetype": "date"
+              },
+              {
+                "destination": "Accesstime|Duration",
+                "destinationtype": "int",
+                "source": "Duration",
+                "sourcetype": "int"
+              }
+            ],
+          "filtercond": {},
+          "desttype": "mongo",
+          "connectioninfo": 
+            {
+              "host": "localhost:27017",
+              "database": "valegrab",
+              "collection": "shelltest",
+              "settings":
+                {
+                  "timeout": 3
                 }
             }
         }
