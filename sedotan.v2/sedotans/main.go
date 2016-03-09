@@ -696,7 +696,26 @@ func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolk
 		}
 		//Pre Execute Program
 		if extCommand.Has("pre") {
+			jsonintm, err := json.Marshal(intm)
 
+			if err != nil {
+				fmt.Sprintf("ERROR %s :%s", intm, err.Error())
+			}
+
+			jsonTranformedintm := string(jsonintm)
+
+			preCommand := "C:\\Users\\PC\\Desktop\\pre\\pre.exe "+`%1`
+
+			if strings.Contains(preCommand, FLAG_ARG_DATA) {
+				preCommand = strings.TrimSpace(strings.Replace(preCommand, FLAG_ARG_DATA, "", -1))
+			}
+
+			output, err := toolkit.RunCommand(preCommand, jsonTranformedintm)
+			err = toolkit.UnjsonFromString(output, &intm)
+
+			if err != nil{
+				fmt.Println("EROOOOOOOR")
+			}
 		}
 
 		err = sQ.Exec(toolkit.M{
