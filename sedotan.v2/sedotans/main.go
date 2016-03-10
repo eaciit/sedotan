@@ -248,6 +248,15 @@ func fetchConfig() (err error) {
 			}
 		}
 
+		//Fetch limit data
+		if mVal.Has("limitrow") {
+			tLimitrow, err := toolkit.ToM(mVal["limitrow"])
+			if err == nil {
+				tCollectionSetting.Take = toolkit.ToInt(tLimitrow.Get("take", 0), toolkit.RoundingAuto)
+				tCollectionSetting.Skip = toolkit.ToInt(tLimitrow.Get("skip", 0), toolkit.RoundingAuto)
+			}
+		}
+
 		//Fetch Connection Info
 		tConnInfo := toolkit.M{}
 		tConnInfo, err = toolkit.ToM(mVal.Get("connectioninfo", toolkit.M{}))
@@ -706,9 +715,10 @@ func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolk
 
 			preCommand := "C:\\Users\\PC\\Desktop\\pre\\pre.exe " + `%1`
 
-			if strings.Contains(preCommand, FLAG_ARG_DATA) {
-				preCommand = strings.TrimSpace(strings.Replace(preCommand, FLAG_ARG_DATA, "", -1))
-			}
+			// Note : Please check FLAG_ARG_DATA
+			// if strings.Contains(preCommand, FLAG_ARG_DATA) {
+			// 	preCommand = strings.TrimSpace(strings.Replace(preCommand, FLAG_ARG_DATA, "", -1))
+			// }
 
 			output, err := toolkit.RunCommand(preCommand, jsonTranformedintm)
 			err = toolkit.UnjsonFromString(output, &intm)

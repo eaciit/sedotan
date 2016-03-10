@@ -36,6 +36,8 @@ type CollectionSetting struct {
 	MapsColumns []*MapColumn
 	FilterCond  toolkit.M
 	filterDbox  *dbox.Filter
+	Take        int
+	Skip        int
 }
 
 type GetDatabase struct {
@@ -130,6 +132,12 @@ func (g *GetDatabase) GetQuery(dataSettingId string) (iQ dbox.IQuery, err error)
 	if len(g.CollectionSettings[dataSettingId].FilterCond) > 0 {
 		iQ.Where(g.CollectionSettings[dataSettingId].filterDbox)
 	}
+
+	if g.CollectionSettings[dataSettingId].Take > 0 {
+		iQ.Take(g.CollectionSettings[dataSettingId].Take)
+	}
+
+	iQ.Take(g.CollectionSettings[dataSettingId].Skip)
 
 	return
 	// csr, e := iQ.Cursor(nil)

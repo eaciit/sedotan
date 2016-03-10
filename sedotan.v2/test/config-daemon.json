@@ -329,6 +329,11 @@
               }
             ],
           "filtercond": {},
+          "limitrow": 
+            {
+              "take" : 20,
+              "skip" : 0
+            },
           "desttype": "mongo",
           "connectioninfo": 
             {
