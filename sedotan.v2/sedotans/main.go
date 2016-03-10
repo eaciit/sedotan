@@ -704,7 +704,7 @@ func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolk
 
 			jsonTranformedintm := string(jsonintm)
 
-			preCommand := "C:\\Users\\PC\\Desktop\\pre\\pre.exe "+`%1`
+			preCommand := "C:\\Users\\PC\\Desktop\\pre\\pre.exe " + `%1`
 
 			if strings.Contains(preCommand, FLAG_ARG_DATA) {
 				preCommand = strings.TrimSpace(strings.Replace(preCommand, FLAG_ARG_DATA, "", -1))
@@ -713,9 +713,34 @@ func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolk
 			output, err := toolkit.RunCommand(preCommand, jsonTranformedintm)
 			err = toolkit.UnjsonFromString(output, &intm)
 
-			if err != nil{
+			if err != nil {
 				fmt.Println("EROOOOOOOR")
 			}
+
+			// sintm := toolkit.JsonString(intm)
+			// arrcmd := make([]string, 0, 0)
+
+			// if runtime.GOOS == "windows" {
+			// 	arrcmd = append(arrcmd, "cmd")
+			// 	arrcmd = append(arrcmd, "/C")
+			// }
+
+			// arrcmd = append(arrcmd, toolkit.ToString(extCommand["pre"]))
+			// arrcmd = append(arrcmd, sintm)
+
+			// output, err := toolkit.RunCommand(arrcmd[0], arrcmd[1:])
+			// if err != nil {
+			// 	Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to execute pre external command :%s", key, err.Error()), "ERROR")
+			// 	note = "Error Found"
+			// 	continue
+			// }
+
+			// err = toolkit.UnjsonFromString(output, &intm)
+			// if err != nil {
+			// 	Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to get pre external command output :%s", key, err.Error()), "ERROR")
+			// 	note = "Error Found"
+			// 	continue
+			// }
 		}
 
 		err = sQ.Exec(toolkit.M{
