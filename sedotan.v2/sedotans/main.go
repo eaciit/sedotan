@@ -705,52 +705,31 @@ func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolk
 		}
 		//Pre Execute Program
 		if extCommand.Has("pre") {
-			jsonintm, err := json.Marshal(intm)
-
-			if err != nil {
-				fmt.Sprintf("ERROR %s :%s", intm, err.Error())
-			}
-
-			jsonTranformedintm := string(jsonintm)
-
-			preCommand := "C:\\Users\\PC\\Desktop\\pre\\pre.exe " + `%1`
-
-			// Note : Please check FLAG_ARG_DATA
-			// if strings.Contains(preCommand, FLAG_ARG_DATA) {
-			// 	preCommand = strings.TrimSpace(strings.Replace(preCommand, FLAG_ARG_DATA, "", -1))
-			// }
-
-			output, err := toolkit.RunCommand(preCommand, jsonTranformedintm)
-			err = toolkit.UnjsonFromString(output, &intm)
-
-			if err != nil {
-				fmt.Println("EROOOOOOOR")
-			}
-
-			// sintm := toolkit.JsonString(intm)
-			// arrcmd := make([]string, 0, 0)
+			sintm := toolkit.JsonString(intm)
+			arrcmd := make([]string, 0, 0)
 
 			// if runtime.GOOS == "windows" {
 			// 	arrcmd = append(arrcmd, "cmd")
 			// 	arrcmd = append(arrcmd, "/C")
 			// }
 
-			// arrcmd = append(arrcmd, toolkit.ToString(extCommand["pre"]))
-			// arrcmd = append(arrcmd, sintm)
+			arrcmd = append(arrcmd, toolkit.ToString(extCommand["pre"]))
+			arrcmd = append(arrcmd, sintm)
 
 			// output, err := toolkit.RunCommand(arrcmd[0], arrcmd[1:])
-			// if err != nil {
-			// 	Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to execute pre external command :%s", key, err.Error()), "ERROR")
-			// 	note = "Error Found"
-			// 	continue
-			// }
+			output, err := toolkit.RunCommand(arrcmd[0], arrcmd[1])
+			if err != nil {
+				Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to execute pre external command :%s", key, err.Error()), "ERROR")
+				note = "Error Found"
+				continue
+			}
 
-			// err = toolkit.UnjsonFromString(output, &intm)
-			// if err != nil {
-			// 	Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to get pre external command output :%s", key, err.Error()), "ERROR")
-			// 	note = "Error Found"
-			// 	continue
-			// }
+			err = toolkit.UnjsonFromString(output, &intm)
+			if err != nil {
+				Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to get pre external command output :%s", key, err.Error()), "ERROR")
+				note = "Error Found"
+				continue
+			}
 		}
 
 		err = sQ.Exec(toolkit.M{
@@ -778,7 +757,31 @@ func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolk
 
 		//Post Execute Program
 		if extCommand.Has("post") {
+			sintm := toolkit.JsonString(intm)
+			arrcmd := make([]string, 0, 0)
 
+			// if runtime.GOOS == "windows" {
+			// 	arrcmd = append(arrcmd, "cmd")
+			// 	arrcmd = append(arrcmd, "/C")
+			// }
+
+			arrcmd = append(arrcmd, toolkit.ToString(extCommand["post"]))
+			arrcmd = append(arrcmd, sintm)
+
+			// output, err := toolkit.RunCommand(arrcmd[0], arrcmd[1:])
+			output, err := toolkit.RunCommand(arrcmd[0], arrcmd[1])
+			if err != nil {
+				Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to execute post external command :%s", key, err.Error()), "ERROR")
+				note = "Error Found"
+				continue
+			}
+
+			err = toolkit.UnjsonFromString(output, &intm)
+			if err != nil {
+				Log.AddLog(fmt.Sprintf("[savedatagrab.%s] Unable to get post external command output :%s", key, err.Error()), "ERROR")
+				note = "Error Found"
+				continue
+			}
 		}
 	}
 	dt = dt.Set("note", note).
