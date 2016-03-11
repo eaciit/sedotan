@@ -137,7 +137,7 @@
         "doctype": "xlsx",
         "connectioninfo": 
           {
-            "host": "E:\\data\\sample\\IO Price Indices.xlsm"
+            "host": "E:\\EACIIT\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\sample file\\IO Price Indices.xlsm"
           },
         "timeout": 60
       },
@@ -235,8 +235,8 @@
       ],
     "extcommand":
       {
-        "pre" : "",
-        "post" : ""
+        "pre" : "C:\\Users\\PC\\Desktop\\pre\\pre.exe",
+        "post" : "C:\\Users\\PC\\Desktop\\post\\post.exe"
       },
     "running": false
   },
