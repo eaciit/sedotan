@@ -13,14 +13,27 @@ import (
 	"github.com/eaciit/cast"
 	"strconv"
 	"io/ioutil"
+	"os"
+	"strings"
+	"bufio"
+	f "path/filepath"
+	"github.com/eaciit/colony-manager/helper"
+	// "github.com/eaciit/colony-core/v0"
+	// "encoding/json"
 )
 
 var (
 	fLocation = flag.String("pathfile", "", "Full path file location include filename and pattern") //support using environment variable EC_DATA_PATH
 	fReadType = flag.String("readtype", "", "read type sedotan file")
-	fNameid = flag.String("nameid", "", "read type sedotan file")   
+	fNameid = flag.String("nameid", "", "read type sedotan file") 
+	fDateTime = flag.String("datetime", "", "Date time for log file")  
+	fRecFile = flag.String("recfile", "", "Record history file")  
+	fDatas = flag.String("datas", "", "Data")  
 	tLocation string
 	tNameid string
+	tDateTime string
+	tDatas string
+	tRecfile string
 )
 
 type Grabber struct {
@@ -37,7 +50,6 @@ func main() {
 	container := toolkit.M{}
 	dataset := make([]toolkit.M, 0, 0)
 	var datatemp []interface{}
-
 	// fReadType := flag.String("readtype", "", "read type sedotan file")                               //snapshot,history,rechistory,logfile,[daemonlog]
 	// fLocation := flag.String("pathfile", "", "Full path file location include filename and pattern") //support using environment variable EC_DATA_PATH
 
@@ -50,50 +62,17 @@ func main() {
 	tReadType := toolkit.ToString(*fReadType)
 	tLocation = toolkit.ToString(*fLocation)
 	tNameid = toolkit.ToString(*fNameid)
+	tDateTime = toolkit.ToString(*fDateTime)
+	tDatas = toolkit.ToString(*fDatas)
+	tRecfile = toolkit.ToString(*fRecFile)
 	//snapshot,history,rechistory,logfile,[daemonlog]
 
 	//=========== Parse other flag ===========
 	// HERE
 	//========================================
 
-	// switch tReadType {
-	// case "snapshot":
-	// 	module := NewHistory(tLocation)
-	// 	datatemp, err = module.OpenHistory()
-	// 	datastring = toolkit.JsonString(datatemp)
-	// 	err = toolkit.UnjsonFromString(datastring, &dataset)
-	// case "history":
-	// 	// go run main.go -readtype="history" -pathfile="E:\EACIIT\src\github.com\eaciit\sedotan\sedotan.v2\test\hist\HIST-GRABDCE-20160225.csv"
-	// 	module := NewHistory(tLocation)
-	// 	datatemp, err = module.OpenHistory()
-	// 	datastring = toolkit.JsonString(datatemp)
-	// 	err = toolkit.UnjsonFromString(datastring, &dataset)
-	// 	fmt.Println(datastring)
-	// case "rechistory":
-	// 	module := NewHistory(tLocation)
-	// 	datatemp, err = module.OpenHistory()
-	// 	datastring = toolkit.JsonString(datatemp)
-	// 	err = toolkit.UnjsonFromString(datastring, &dataset)
-	// case "logfile":
-	// 	// go run main.go -readtype="logfile" -pathfile="E:\EACIIT\src\github.com\eaciit\sedotan\sedotan.v2\test\log\LOG-GRABDCE-20160225"
-	// 	test, err := GetLogs()
-	// 	if err != nil {
-			
-	// 	}
-	// 	datatemp = append(datatemp,test)
-	// 	datastring = toolkit.JsonString(datatemp)
-	// case "daemonlog":
-	// 	test, err := GetLogs()
-	// 	if err != nil {
-			
-	// 	}
-	// 	datatemp = append(datatemp,test)
-	// 	datastring = toolkit.JsonString(datatemp)
-	// default:
-	// 	err = errors.New(fmt.Sprintf("-readtype cannot empty or get wrong format"))
-	// }
-
-	if tReadType == "snapshot" {
+	switch tReadType {
+	case "snapshot":
 		module := GetDirSnapshot(tNameid)
 		SnapShot, err := module.OpenSnapShot(tNameid)
 		if err != nil {
@@ -102,7 +81,7 @@ func main() {
 		datastring = toolkit.JsonString(SnapShot)
 		err = toolkit.UnjsonFromString(datastring, &dataset)
 		container.Set("DATA", dataset)
-	}else if tReadType == "history" || tReadType == "rechistory"{
+	case "history":
 		module := NewHistory(tLocation)
 		datatemp, err = module.OpenHistory()
 		if err != nil {
@@ -111,7 +90,26 @@ func main() {
 		datastring = toolkit.JsonString(datatemp)
 		err = toolkit.UnjsonFromString(datastring, &dataset)
 		container.Set("DATA", dataset)
-	}else if tReadType == "logfile" || tReadType == "daemonlog" {
+	case "rechistory":
+		var data []toolkit.M
+		config := toolkit.M{"useheader": true, "delimiter": ","}
+		query := helper.Query("csv", tRecfile, "", "", "", config)
+		data, err = query.SelectAll("")
+		container.Set("DATA", data)
+	case "logfile":
+		// o, err := toolkit.ToM()
+		// if err != nil {
+		// 	return nil
+		// }
+		// history := NewHistory(tNameid)
+		// err = toolkit.UnjsonFromString(tDatas, &dataset)
+		// if err != nil {
+		// 	fmt.Sprintf("ERROR: %s", err)
+		// }
+		// logs := history.GetLogHistory([]interface{}{tDatas}, tDateTime)	
+		// stringtest := toolkit.ToString(wg)		
+		container.Set("DATA", "")
+	case "daemonlog":
 		logs, err := GetLogs()
 		if err != nil {
 			fmt.Sprintf("ERROR: %s", err)
@@ -119,7 +117,7 @@ func main() {
 		datatemp = append(datatemp,logs)
 		datastring = toolkit.JsonString(datatemp)
 		container.Set("DATA", datastring)
-	}else{
+	default:
 		container.Set("DATA", dataset)
 		err = errors.New(fmt.Sprintf("-readtype cannot empty or get wrong format"))
 	}
@@ -194,7 +192,7 @@ func (w *Grabber) OpenHistory() ([]interface{}, error) {
 	}
 	return history, nil
 }
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 func NewHistory(nameid string) *Grabber {
 	w := new(Grabber)
 
@@ -255,4 +253,78 @@ func (w *Grabber) OpenSnapShot(Nameid string) ([]interface{}, error) {
 		snapShot = append(snapShot, addToMap)
 	}
 	return snapShot, nil
+}
+
+func (w *Grabber) GetLogHistory(datas []interface{}, date string) interface{} {
+
+	for _, v := range datas {
+		vMap, _ := toolkit.ToM(v)
+
+		logConf := vMap["logconf"].(map[string]interface{})
+		dateNowFormat := logConf["filepattern"].(string)
+		theDate := cast.String2Date(date, "YYYY/MM/dd HH:mm:ss")
+		theDateString := cast.Date2String(theDate, dateNowFormat)
+		fileName := fmt.Sprintf("%s-%s", logConf["filename"], theDateString)
+		fmt.Println(fileName)
+		w.logPath = f.Join(`E:\EACIIT\src\github.com\eaciit\colony-app\data-root`, "webgrabber", "log", fileName)
+	}
+
+	file, err := os.Open(w.logPath)
+
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	addMinute := toolkit.String2Date(date, "YYYY/MM/dd HH:mm:ss").Add(1 * time.Minute)
+	dateAddMinute := toolkit.Date2String(addMinute, "YYYY/MM/dd HH:mm:ss")
+	getHours := strings.Split(date, ":")
+	getAddMinute := strings.Split(dateAddMinute, ":")
+	containString := getHours[0] + ":" + getHours[1]
+	containString2 := getAddMinute[0] + ":" + getAddMinute[1]
+	scanner := bufio.NewScanner(file)
+	lines := 0
+	containLines := 0
+	logsseparator := ""
+
+	add7Hours := func(s string) string {
+		t, _ := time.Parse("2006/01/02 15:04", s)
+		t = t.Add(time.Hour * 7)
+		return t.Format("2006/01/02 15:04")
+	}
+
+	containString = add7Hours(containString)
+	containString2 = add7Hours(containString2)
+
+	var logs []interface{}
+	for scanner.Scan() {
+		lines++
+		contains := strings.Contains(scanner.Text(), containString)
+		contains2 := strings.Contains(scanner.Text(), containString2)
+
+		if contains {
+			containLines = lines
+			logsseparator = containString
+		}
+
+		if contains2 {
+			containLines = lines
+			logsseparator = containString2
+		}
+		result := toolkit.M{}
+		if lines == containLines {
+			arrlogs := strings.Split(scanner.Text(), logsseparator)
+			result.Set("Type", arrlogs[0])
+			result.Set("Date", logsseparator+":"+arrlogs[1][1:3])
+			result.Set("Desc", arrlogs[1][4:len(arrlogs[1])])
+			logs = append(logs, result)
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	var addSlice = toolkit.M{}
+	addSlice.Set("logs", logs)
+	return addSlice
 }
