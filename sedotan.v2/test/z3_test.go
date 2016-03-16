@@ -15,7 +15,17 @@ import (
 	_ "github.com/eaciit/dbox/dbc/mongo"
 	_ "github.com/eaciit/dbox/dbc/xlsx"
 	"github.com/eaciit/sedotan/sedotan.v2"
+	"fmt"
+	"github.com/eaciit/colony-core/v0"
+	"github.com/eaciit/sshclient"
+	"golang.org/x/crypto/ssh"
 )
+
+var s *ServerController
+
+type ServerController struct {
+	
+}
 
 type SourceTypeEnum int
 
@@ -173,19 +183,108 @@ func TestRunSedotanw(t *testing.T) {
 	}
 }
 
-func TestRunTesting(t *testing.T) {
- 	// fullfilename := filepath.Join(toolkit.ToString(histConf["histpath"]), toolkit.ToString(histConf["filename"]))
+func TestRunSedotanReadHistory(t *testing.T) {
+	t.Skip("Skip : Comment this line to do test")
+	var history = toolkit.M{}
+	arrcmd := make([]string, 0, 0)
+
+	arrcmd = append(arrcmd, EC_APP_PATH+`\bin\sedotanread.exe`)
+	arrcmd = append(arrcmd, `-readtype=history`)
+	arrcmd = append(arrcmd, `-pathfile=`+EC_DATA_PATH+`\webgrabber\history\HIST-GRABDCE-20160316.csv`)
 
 	if runtime.GOOS == "windows" {
-		// cmd = exec.Command("cmd", "/C", "E:\\EACIIT\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\sedotanread\\main.exe", `-config="`+tbasepath+`\config-daemon.json"`, `-logpath="`+tbasepath+`\log"`, `-readtype="history"`)
-		cmd = exec.Command("cmd", "/C", "E:\\EACIIT\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\sedotanread\\main.exe", `-config="`+tbasepath+`\config-daemon.json"`, `-readtype="history"`, `-pathfile="E:\EACIIT\src\github.com\eaciit\sedotan\sedotan.v2\test\hist\HIST-GRABDCE-20160225.csv"`)
+		historystring, _ := toolkit.RunCommand(arrcmd[0], arrcmd[1:]...)
+		err := toolkit.UnjsonFromString(historystring, &history)
+		if err != nil {
+			t.Errorf("Error, %s \n", err)
+		}
 	} else {
-		cmd = exec.Command("sudo", "../daemon/sedotandaemon", `-config="`+tbasepath+`\config-daemon.json"`, `-logpath="`+tbasepath+`\log"`)
+		// cmd = exec.Command("sudo", "../daemon/sedotandaemon", `-config="`+tbasepath+`\config-daemon.json"`, `-logpath="`+tbasepath+`\log"`)
 	}
-	// cmd = exec.Command("go run main.go -readtype=history -pathfile=E:/EACIIT\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist\\HIST-GRABDCE-20160225.csv")
-	err := cmd.Start()
-	if err != nil {
-		t.Errorf("Error, %s \n", err)
-	}
+	
+	fmt.Println(history)
 }
 
+func TestRunSedotanReadSnapshot(t *testing.T) {
+	t.Skip("Skip : Comment this line to do test")
+	arrcmd := make([]string, 0, 0)
+	result := toolkit.M{}
+
+	arrcmd = append(arrcmd, EC_APP_PATH+`\bin\sedotanread.exe`)
+	arrcmd = append(arrcmd, `-readtype=snapshot`)
+	arrcmd = append(arrcmd, `-pathfile=`+EC_DATA_PATH+`\daemon\daemonsnapshot.csv`)
+	arrcmd = append(arrcmd, `-nameid=irondcecomcn`)
+
+	if runtime.GOOS == "windows" {
+		SnapShot, err := toolkit.RunCommand(arrcmd[0], arrcmd[1:]...)
+		err = toolkit.UnjsonFromString(SnapShot, &result)
+		if err != nil {
+			t.Errorf("Error, %s \n", err)
+		}
+	} else {
+		// cmd = exec.Command("sudo", "../daemon/sedotandaemon", `-config="`+tbasepath+`\config-daemon.json"`, `-logpath="`+tbasepath+`\log"`)
+	}
+	
+	fmt.Println(result)
+}
+
+func TestRunSedotanReadRecHistory(t *testing.T) {
+	t.Skip("Skip : Comment this line to do test")
+	arrcmd := make([]string, 0, 0)
+	result := toolkit.M{}
+
+	arrcmd = append(arrcmd, EC_APP_PATH+`\bin\sedotanread.exe`)
+	arrcmd = append(arrcmd, `-readtype=rechistory`)
+	arrcmd = append(arrcmd, `-recfile=E:\EACIIT\src\github.com\eaciit\colony-app\data-root\webgrabber\historyrec\irondcecomcn.Iron01-20160316022830.csv`)
+
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command(arrcmd[0], arrcmd[1:]...)
+		rechistory, err := toolkit.RunCommand(arrcmd[0], arrcmd[1:]...)
+		err = toolkit.UnjsonFromString(rechistory, &result)
+		if err != nil {
+			t.Errorf("Error, %s \n", err)
+		}
+		byteoutput, err := cmd.CombinedOutput()
+		if err != nil {
+			// Log.AddLog(fmt.Sprintf("[%v] run at %v, found error : %v", eid, sedotan.DateToString(thistime), err.Error()), "ERROR")
+		}
+		err = toolkit.UnjsonFromString(string(byteoutput), &result)
+	} else {
+		// cmd = exec.Command("sudo", "../daemon/sedotandaemon", `-config="`+tbasepath+`\config-daemon.json"`, `-logpath="`+tbasepath+`\log"`)
+	}
+	
+	fmt.Println(result)
+}
+
+func TestRunSedotanReadRecHistorySSH(t *testing.T) {
+	// t.Skip("Skip : Comment this line to do test")
+
+	data := new(colonycore.Server)
+	
+	sshSetting, client, err := s.SSHConnect(data)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer client.Close()
+
+	output, err := sshSetting.GetOutputCommandSsh(`dir`)
+	if err != nil {
+		// do something
+	}
+	fmt.Println(output)
+}
+
+func (s *ServerController) SSHConnect(payload *colonycore.Server) (sshclient.SshSetting, *ssh.Client, error) {
+	client := sshclient.SshSetting{}
+	client.SSHHost = "192.168.56.103:22"
+
+	client.SSHAuthType = 0
+	client.SSHUser = "eaciit1"
+	client.SSHPassword = "12345"
+
+	//fmt.Println(client) {192.168.56.103:22 eaciit1 12345  0}
+
+	theClient, err := client.Connect()
+
+	return client, theClient, err
+}
