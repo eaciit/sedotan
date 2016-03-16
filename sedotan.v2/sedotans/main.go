@@ -704,7 +704,7 @@ func streamsavedata(intms <-chan toolkit.M, sQ dbox.IQuery, key string, dt toolk
 			continue
 		}
 		//Pre Execute Program
-		if extCommand.Has("pre") {
+		if extCommand.Has("pre") && toolkit.ToString(extCommand["pre"]) != "" {
 			sintm := toolkit.JsonString(intm)
 			arrcmd := make([]string, 0, 0)
 

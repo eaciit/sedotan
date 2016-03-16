@@ -157,8 +157,8 @@
       },
     "histconf": 
       {
-        "histpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
-        "recpath": "E:\\goproject\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "histpath": "E:\\EACIIT\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
+        "recpath": "E:\\EACIIT\\src\\github.com\\eaciit\\sedotan\\sedotan.v2\\test\\hist",
         "filename": "HIST-IOPRICE",
         "filepattern": "YYYYMMdd"
       },
