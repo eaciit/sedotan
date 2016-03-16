@@ -18,17 +18,15 @@ import (
 	"bufio"
 	f "path/filepath"
 	"github.com/eaciit/colony-manager/helper"
-	// "github.com/eaciit/colony-core/v0"
-	// "encoding/json"
 )
 
 var (
 	fLocation = flag.String("pathfile", "", "Full path file location include filename and pattern") //support using environment variable EC_DATA_PATH
 	fReadType = flag.String("readtype", "", "read type sedotan file")
-	fNameid = flag.String("nameid", "", "read type sedotan file") 
+	fNameid = flag.String("nameid", "", "read name id for snapshot and log file") 
 	fDateTime = flag.String("datetime", "", "Date time for log file")  
 	fRecFile = flag.String("recfile", "", "Record history file")  
-	fDatas = flag.String("datas", "", "Data")  
+	fDatas = flag.String("datas", "", "Read interface of getlog")  
 	tLocation string
 	tNameid string
 	tDateTime string
@@ -45,11 +43,10 @@ type Grabber struct {
 func main() {
 	var err error
 	var datastring string
-	// var data toolkit.M
-
+	var datatemp []interface{}
+	var logs interface{}
 	container := toolkit.M{}
 	dataset := make([]toolkit.M, 0, 0)
-	var datatemp []interface{}
 	// fReadType := flag.String("readtype", "", "read type sedotan file")                               //snapshot,history,rechistory,logfile,[daemonlog]
 	// fLocation := flag.String("pathfile", "", "Full path file location include filename and pattern") //support using environment variable EC_DATA_PATH
 
@@ -97,26 +94,20 @@ func main() {
 		data, err = query.SelectAll("")
 		container.Set("DATA", data)
 	case "logfile":
-		// o, err := toolkit.ToM()
-		// if err != nil {
-		// 	return nil
-		// }
-		// history := NewHistory(tNameid)
-		// err = toolkit.UnjsonFromString(tDatas, &dataset)
+		history := NewHistory(tNameid)
+		err = toolkit.UnjsonFromString(tDatas, &datatemp)
+		logs = history.GetLogHistory(datatemp, tDateTime)	
+		container.Set("DATA", logs)
+	case "daemonlog":
+		// logs, err := GetLogs()
 		// if err != nil {
 		// 	fmt.Sprintf("ERROR: %s", err)
 		// }
-		// logs := history.GetLogHistory([]interface{}{tDatas}, tDateTime)	
-		// stringtest := toolkit.ToString(wg)		
-		container.Set("DATA", "")
-	case "daemonlog":
-		logs, err := GetLogs()
-		if err != nil {
-			fmt.Sprintf("ERROR: %s", err)
-		}
-		datatemp = append(datatemp,logs)
-		datastring = toolkit.JsonString(datatemp)
-		container.Set("DATA", datastring)
+		// datatemp = append(datatemp,logs)
+		// datastring = toolkit.JsonString(datatemp)
+		// container.Set("DATA", datastring)
+		container.Set("DATA", dataset)
+		err = errors.New(fmt.Sprintf("-readtype cannot empty or get wrong format"))
 	default:
 		container.Set("DATA", dataset)
 		err = errors.New(fmt.Sprintf("-readtype cannot empty or get wrong format"))
@@ -124,7 +115,7 @@ func main() {
 
 	container.Set("ERROR", err)
 	outputstring := toolkit.JsonString(container)
- 
+
 	fmt.Printf("%s", outputstring)
 }
 
@@ -265,7 +256,6 @@ func (w *Grabber) GetLogHistory(datas []interface{}, date string) interface{} {
 		theDate := cast.String2Date(date, "YYYY/MM/dd HH:mm:ss")
 		theDateString := cast.Date2String(theDate, dateNowFormat)
 		fileName := fmt.Sprintf("%s-%s", logConf["filename"], theDateString)
-		fmt.Println(fileName)
 		w.logPath = f.Join(`E:\EACIIT\src\github.com\eaciit\colony-app\data-root`, "webgrabber", "log", fileName)
 	}
 
