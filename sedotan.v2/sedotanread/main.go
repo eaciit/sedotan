@@ -25,13 +25,11 @@ var (
 	fReadType = flag.String("readtype", "", "read type sedotan file")
 	fNameid = flag.String("nameid", "", "read name id for snapshot and log file") 
 	fDateTime = flag.String("datetime", "", "Date time for log file")  
-	fRecFile = flag.String("recfile", "", "Record history file")  
 	fDatas = flag.String("datas", "", "Read interface of getlog")  
 	tLocation string
 	tNameid string
 	tDateTime string
 	tDatas string
-	tRecfile string
 )
 
 type Grabber struct {
@@ -61,7 +59,6 @@ func main() {
 	tNameid = toolkit.ToString(*fNameid)
 	tDateTime = toolkit.ToString(*fDateTime)
 	tDatas = toolkit.ToString(*fDatas)
-	tRecfile = toolkit.ToString(*fRecFile)
 	//snapshot,history,rechistory,logfile,[daemonlog]
 
 	//=========== Parse other flag ===========
@@ -90,7 +87,7 @@ func main() {
 	case "rechistory":
 		var data []toolkit.M
 		config := toolkit.M{"useheader": true, "delimiter": ","}
-		query := helper.Query("csv", tRecfile, "", "", "", config)
+		query := helper.Query("csv", tLocation, "", "", "", config)
 		data, err = query.SelectAll("")
 		container.Set("DATA", data)
 	case "logfile":
