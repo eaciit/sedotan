@@ -206,7 +206,7 @@ func TestRunSedotanReadHistory(t *testing.T) {
 }
 
 func TestRunSedotanReadSnapshot(t *testing.T) {
-	t.Skip("Skip : Comment this line to do test")
+	// t.Skip("Skip : Comment this line to do test")
 	arrcmd := make([]string, 0, 0)
 	result := toolkit.M{}
 
@@ -235,7 +235,7 @@ func TestRunSedotanReadRecHistory(t *testing.T) {
 
 	arrcmd = append(arrcmd, EC_APP_PATH+`\bin\sedotanread.exe`)
 	arrcmd = append(arrcmd, `-readtype=rechistory`)
-	arrcmd = append(arrcmd, `-recfile=E:\EACIIT\src\github.com\eaciit\colony-app\data-root\webgrabber\historyrec\irondcecomcn.Iron01-20160316022830.csv`)
+	arrcmd = append(arrcmd, `-pathfile=E:\EACIIT\src\github.com\eaciit\colony-app\data-root\webgrabber\historyrec\irondcecomcn.Iron01-20160316022830.csv`)
 
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command(arrcmd[0], arrcmd[1:]...)
@@ -257,7 +257,7 @@ func TestRunSedotanReadRecHistory(t *testing.T) {
 }
 
 func TestRunSedotanReadRecHistorySSH(t *testing.T) {
-	// t.Skip("Skip : Comment this line to do test")
+	t.Skip("Skip : Comment this line to do test")
 
 	data := new(colonycore.Server)
 	
@@ -287,4 +287,52 @@ func (s *ServerController) SSHConnect(payload *colonycore.Server) (sshclient.Ssh
 	theClient, err := client.Connect()
 
 	return client, theClient, err
+}
+
+func TestSshReadRecHistory(t *testing.T) {
+	// t.Skip("Skip : Comment this line to do test")
+	SshClient := sshclient.SshSetting{}
+
+	SshClient.SSHHost = "192.168.56.101:22"
+	SshClient.SSHAuthType = 0
+	SshClient.SSHUser = "eaciit1"
+	SshClient.SSHPassword = "12345"
+
+	output, err := SshClient.GetOutputCommandSsh(`/home/eaciit1/src/github.com/eaciit/sedotan/sedotan.v2/sedotanread/sedotanread -readtype=rechistory -recfile=/home/eaciit1/src/github.com/eaciit/sedotan/sedotan.v2/sedotanread/irondcecomcn.Iron01-20160316022830.csv`)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(output)
+}
+
+func TestSshReadHistory(t *testing.T) {
+	// t.Skip("Skip : Comment this line to do test")
+	SshClient := sshclient.SshSetting{}
+
+	SshClient.SSHHost = "192.168.56.101:22"
+	SshClient.SSHAuthType = 0
+	SshClient.SSHUser = "eaciit1"
+	SshClient.SSHPassword = "12345"
+
+	output, err := SshClient.GetOutputCommandSsh(`/home/eaciit1/src/github.com/eaciit/sedotan/sedotan.v2/sedotanread/sedotanread -readtype=history -pathfile=/home/eaciit1/src/github.com/eaciit/sedotan/sedotan.v2/sedotanread/HIST-GRABDCE-20160316.csv`)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(output)
+}
+
+func TestSshReadSnapShot(t *testing.T) {
+	// t.Skip("Skip : Comment this line to do test")
+	SshClient := sshclient.SshSetting{}
+
+	SshClient.SSHHost = "192.168.56.101:22"
+	SshClient.SSHAuthType = 0
+	SshClient.SSHUser = "eaciit1"
+	SshClient.SSHPassword = "12345"
+
+	output, err := SshClient.GetOutputCommandSsh(`/home/eaciit1/src/github.com/eaciit/sedotan/sedotan.v2/sedotanread/sedotanread -readtype=snapshot -nameid=irondcecomcn -pathfile=/home/eaciit1/src/github.com/eaciit/sedotan/sedotan.v2/sedotanread/daemonsnapshot.csv`)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(output)
 }
