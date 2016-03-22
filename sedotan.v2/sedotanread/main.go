@@ -16,7 +16,6 @@ import (
 	"os"
 	"strings"
 	"bufio"
-	f "path/filepath"
 	"github.com/eaciit/colony-manager/helper"
 )
 
@@ -24,18 +23,16 @@ var (
 	fLocation = flag.String("pathfile", "", "Full path file location include filename and pattern") //support using environment variable EC_DATA_PATH
 	fReadType = flag.String("readtype", "", "read type sedotan file")
 	fNameid = flag.String("nameid", "", "read name id for snapshot and log file") 
-	fDateTime = flag.String("datetime", "", "Date time for log file")  
-	fDatas = flag.String("datas", "", "Read interface of getlog")  
+	fDateTime = flag.String("datetime", "", "Date time for log file")	 
 	tLocation string
 	tNameid string
 	tDateTime string
-	tDatas string
 )
 
 type Grabber struct {
 	filepathName, nameid, logPath string
-	humanDate                     string
-	rowgrabbed, rowsaved          float64
+	humanDate					 string
+	rowgrabbed, rowsaved		  float64
 }
 
 func main() {
@@ -45,7 +42,7 @@ func main() {
 	var logs interface{}
 	container := toolkit.M{}
 	dataset := make([]toolkit.M, 0, 0)
-	// fReadType := flag.String("readtype", "", "read type sedotan file")                               //snapshot,history,rechistory,logfile,[daemonlog]
+	// fReadType := flag.String("readtype", "", "read type sedotan file")							   //snapshot,history,rechistory,logfile,[daemonlog]
 	// fLocation := flag.String("pathfile", "", "Full path file location include filename and pattern") //support using environment variable EC_DATA_PATH
 
 	// fDateTime := flag.String("datetime", "", "Date time for log file")
@@ -58,7 +55,7 @@ func main() {
 	tLocation = toolkit.ToString(*fLocation)
 	tNameid = toolkit.ToString(*fNameid)
 	tDateTime = toolkit.ToString(*fDateTime)
-	tDatas = toolkit.ToString(*fDatas)
+
 	//snapshot,history,rechistory,logfile,[daemonlog]
 
 	//=========== Parse other flag ===========
@@ -92,17 +89,9 @@ func main() {
 		container.Set("DATA", data)
 	case "logfile":
 		history := NewHistory(tNameid)
-		err = toolkit.UnjsonFromString(tDatas, &datatemp)
-		logs = history.GetLogHistory(datatemp, tDateTime)	
+		logs = history.GetLogHistory(tLocation, tDateTime)	
 		container.Set("DATA", logs)
 	case "daemonlog":
-		// logs, err := GetLogs()
-		// if err != nil {
-		// 	fmt.Sprintf("ERROR: %s", err)
-		// }
-		// datatemp = append(datatemp,logs)
-		// datastring = toolkit.JsonString(datatemp)
-		// container.Set("DATA", datastring)
 		container.Set("DATA", dataset)
 		err = errors.New(fmt.Sprintf("-readtype cannot empty or get wrong format"))
 	default:
@@ -180,7 +169,7 @@ func (w *Grabber) OpenHistory() ([]interface{}, error) {
 	}
 	return history, nil
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										
 func NewHistory(nameid string) *Grabber {
 	w := new(Grabber)
 
@@ -243,20 +232,9 @@ func (w *Grabber) OpenSnapShot(Nameid string) ([]interface{}, error) {
 	return snapShot, nil
 }
 
-func (w *Grabber) GetLogHistory(datas []interface{}, date string) interface{} {
+func (w *Grabber) GetLogHistory(logpath string, date string) interface{} {
 
-	for _, v := range datas {
-		vMap, _ := toolkit.ToM(v)
-
-		logConf := vMap["logconf"].(map[string]interface{})
-		dateNowFormat := logConf["filepattern"].(string)
-		theDate := cast.String2Date(date, "YYYY/MM/dd HH:mm:ss")
-		theDateString := cast.Date2String(theDate, dateNowFormat)
-		fileName := fmt.Sprintf("%s-%s", logConf["filename"], theDateString)
-		w.logPath = f.Join(`E:\EACIIT\src\github.com\eaciit\colony-app\data-root`, "webgrabber", "log", fileName)
-	}
-
-	file, err := os.Open(w.logPath)
+	file, err := os.Open(logpath)
 
 	if err != nil {
 		return err
