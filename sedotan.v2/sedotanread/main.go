@@ -21,9 +21,9 @@ import (
 
 var (
 	fLocation = flag.String("pathfile", "", "Full path file location include filename and pattern") //support using environment variable EC_DATA_PATH
-	fReadType = flag.String("readtype", "", "read type sedotan file")
-	fNameid = flag.String("nameid", "", "read name id for snapshot and log file") 
-	fDateTime = flag.String("datetime", "", "Date time for log file")	 
+	fReadType = flag.String("readtype", "", "Read type sedotan file. Ex: snapshot, history, rechistory, logfile")
+	fNameid = flag.String("nameid", "", "Read name id for snapshot and logfile") 
+	fDateTime = flag.String("datetime", "", "Date time for log file (YYYY/MM/dd HH:mm:ss)")	 
 	tLocation string
 	tNameid string
 	tDateTime string
